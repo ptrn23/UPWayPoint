@@ -1,15 +1,5 @@
 # Turborepo starter
 
-This Turborepo starter is maintained by the Turborepo core team.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
-
 ## What's inside?
 
 This Turborepo includes the following packages/apps:
@@ -37,14 +27,10 @@ This Turborepo has some additional tools already setup for you:
 To build all apps and packages, run the following command:
 
 ```
-cd my-turborepo
-
 # With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
 turbo build
 
 # Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
 pnpm exec turbo build
 ```
 
@@ -55,8 +41,6 @@ You can build a specific package by using a [filter](https://turborepo.dev/docs/
 turbo build --filter=docs
 
 # Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
 pnpm exec turbo build --filter=docs
 ```
 
@@ -65,14 +49,10 @@ pnpm exec turbo build --filter=docs
 To develop all apps and packages, run the following command:
 
 ```
-cd my-turborepo
-
 # With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
 turbo dev
 
 # Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
 pnpm exec turbo dev
 ```
 
@@ -83,8 +63,6 @@ You can develop a specific package by using a [filter](https://turborepo.dev/doc
 turbo dev --filter=web
 
 # Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
 pnpm exec turbo dev --filter=web
 ```
 
@@ -98,14 +76,10 @@ Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/do
 By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
 
 ```
-cd my-turborepo
-
 # With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
 turbo login
 
 # Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
 pnpm exec turbo login
 ```
 
@@ -118,8 +92,6 @@ Next, you can link your Turborepo to your Remote Cache by running the following 
 turbo link
 
 # Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
 pnpm exec turbo link
 ```
 
