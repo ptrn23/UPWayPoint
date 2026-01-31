@@ -4,6 +4,7 @@ import { useState } from "react";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
+import { midnightTheme } from "@/config/mapStyles";
 
 // SPRINT 1: Hardcoded Data
 const HARDCODED_PINS = [
@@ -39,6 +40,7 @@ export default function Home() {
           defaultZoom={17}
           mapId="ID"
           disableDefaultUI={true}
+          styles={midnightTheme}
           style={{ width: "100%", height: "100%" }}
         >
           {HARDCODED_PINS.map(pin => (
