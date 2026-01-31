@@ -10,7 +10,7 @@ export default function Home() {
       fontFamily: "monospace",
       fontSize: "2rem"
     }}>
-      <h1>test</h1>
+      <h1>abcd</h1>
     </div>
   );
 }
