@@ -37,7 +37,8 @@ export default function Home() {
         {/*MAP LAYER */}
         <Map
           defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
-          defaultZoom={17}
+          defaultZoom={19}
+          minZoom={17}
           mapId="default"
           disableDefaultUI={true}
           styles={midnightTheme}
