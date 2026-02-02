@@ -28,7 +28,11 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-chakra), sans-serif;
+}
+
+.font-desc {
+  font-family: var(--font-nunito), sans-serif;
 }
 
 /* HUD */

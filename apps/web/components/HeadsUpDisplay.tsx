@@ -51,7 +51,14 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps)
                 <span style={{ fontSize: "12px", textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "1px" }}>{selectedPin.type}</span>
               </div>
             </div>
-            <p style={{ fontSize: "14px", color: "var(--text-muted)", margin: "10px 0" }}>{selectedPin.desc}</p>
+            <p style={{ 
+                fontSize: "14px", 
+                color: "var(--text-muted)", 
+                margin: "10px 0",
+                fontFamily: "var(--font-nunito)" 
+            }}>
+                {selectedPin.desc}
+            </p>
             <div style={{ display: "flex", gap: "10px" }}>
               <button 
                 onClick={onLockClick}
