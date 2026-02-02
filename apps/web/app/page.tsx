@@ -8,8 +8,86 @@ import { midnightTheme } from "@/config/mapStyles";
 
 // SPRINT 1: Hardcoded Data
 const HARDCODED_PINS = [
-  { id: 1, name: "Quezon Hall", type: "academic", desc: "hiii", icon: "Q", pos: { lat: 14.655114156443288, lng: 121.06492168770944 } },
-  { id: 2, name: "Area 2", type: "food", desc: "heyyy", icon: "A", pos: { lat: 14.659680383534933, lng: 121.06807840570266 } },
+  { 
+    id: 1, 
+    name: "Alumni Engineers Hall", 
+    type: "academic", 
+    desc: "Home to the College of Engineering, featuring computer labs and the engineering library.", 
+    icon: "A", 
+    pos: { lat: 14.64867, lng: 121.06849 } 
+  },
+  { 
+    id: 2, 
+    name: "CS Library", 
+    type: "academic", 
+    desc: "Quiet, air-conditioned library with extensive science and math resources.", 
+    icon: "C", 
+    pos: { lat: 14.64921, lng: 121.06895 } 
+  },
+  { 
+    id: 3, 
+    name: "Melchor Hall", 
+    type: "academic", 
+    desc: "College of Arts and Letters building with classrooms and faculty offices.", 
+    icon: "M", 
+    pos: { lat: 14.65658, lng: 121.06946 } 
+  },
+  { 
+    id: 4, 
+    name: "Sunken Garden", 
+    type: "social",
+    desc: "Iconic oval-shaped garden, perfect for picnics, studying, and sunset viewing.", 
+    icon: "S", 
+    pos: { lat: 14.65485, lng: 121.06999 } 
+  },
+  { 
+    id: 5, 
+    name: "Enriquez Shakes", 
+    type: "food", 
+    desc: "Fruit shake stall near College of Science offering fresh shakes and fruits.", 
+    icon: "E", 
+    pos: { lat: 14.65991, lng: 121.06612 } 
+  },
+  { 
+    id: 6, 
+    name: "7-Eleven", 
+    type: "utility",
+    desc: "24-hour convenience store near the shopping center, great for late-night snacks.", 
+    icon: "7", 
+    pos: { lat: 14.65822, lng: 121.06461 } 
+  },
+  { 
+    id: 7, 
+    name: "Palma Hall CR", 
+    type: "utility",
+    desc: "Clean restroom on the first floor of Palma Hall, accessible during office hours.", 
+    icon: "P", 
+    pos: { lat: 14.65349, lng: 121.06908 } 
+  },
+  { 
+    id: 8, 
+    name: "Accenture Hall", 
+    type: "utility",
+    desc: "Business administration building with reliable WiFi and air-conditioned study spaces.", 
+    icon: "A", 
+    pos: { lat: 14.64842, lng: 121.06855 } 
+  },
+  { 
+    id: 9, 
+    name: "Quezon Hall", 
+    type: "academic", 
+    desc: "hiii", 
+    icon: "Q", 
+    pos: { lat: 14.655114156443288, lng: 121.06492168770944 } 
+  },
+  { 
+    id: 10, 
+    name: "Area 2", 
+    type: "food", 
+    desc: "heyyy", 
+    icon: "A", 
+    pos: { lat: 14.659680383534933, lng: 121.06807840570266 } 
+  },
 ];
 
 export default function Home() {
