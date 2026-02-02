@@ -43,6 +43,15 @@ export default function Home() {
           disableDefaultUI={true}
           styles={midnightTheme}
           style={{ width: "100%", height: "100%" }}
+          restriction={{
+            latLngBounds: {
+              north: 14.663668030362242,
+              south: 14.649682779044548,
+              east: 121.0758243807482,
+              west: 121.05536053150871,
+            },
+            strictBounds: false
+          }}
         >
           {HARDCODED_PINS.map(pin => (
             <NeonPin 
