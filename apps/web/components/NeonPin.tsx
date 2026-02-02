@@ -2,7 +2,7 @@ import { AdvancedMarker } from "@vis.gl/react-google-maps";
 
 interface NeonPinProps {
   position: { lat: number; lng: number };
-  type: "academic" | "food" | "social" | "transit";
+  type: "academic" | "food" | "social" | "transit" | "utility";
   icon: string;
   isSelected: boolean;
   isLocked: boolean;
@@ -16,6 +16,7 @@ export function NeonPin({ position, type, icon, isSelected, isLocked, onClick }:
       case "food": return "var(--neon-green)";
       case "social": return "var(--neon-pink)";
       case "transit": return "var(--neon-yellow)";
+      case "utility": return "var(--neon-blue)";
       default: return "white";
     }
   };
