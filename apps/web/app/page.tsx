@@ -8,7 +8,7 @@ import { midnightTheme } from "@/config/mapStyles";
 
 // SPRINT 1: Hardcoded Data
 const HARDCODED_PINS = [
-  { id: 1, name: "Quezon Hal", type: "academic", desc: "hiii", icon: "Q", pos: { lat: 14.655114156443288, lng: 121.06492168770944 } },
+  { id: 1, name: "Quezon Hall", type: "academic", desc: "hiii", icon: "Q", pos: { lat: 14.655114156443288, lng: 121.06492168770944 } },
   { id: 2, name: "Area 2", type: "food", desc: "heyyy", icon: "A", pos: { lat: 14.659680383534933, lng: 121.06807840570266 } },
 ];
 
@@ -38,7 +38,7 @@ export default function Home() {
         <Map
           defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
           defaultZoom={17}
-          mapId="ID"
+          mapId="default"
           disableDefaultUI={true}
           styles={midnightTheme}
           style={{ width: "100%", height: "100%" }}
