@@ -117,8 +117,8 @@ export default function Home() {
           defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
           defaultZoom={19}
           minZoom={17}
+          mapId='71238adec955b8c6d66f595a'
           disableDefaultUI={true}
-          styles={midnightTheme}
           restriction={{
             latLngBounds: {
               north: 14.663668030362242,
