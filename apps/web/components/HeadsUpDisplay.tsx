@@ -13,10 +13,10 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps)
       
       {/* TOP BAR */}
       <div style={{ padding: "20px", pointerEvents: "auto", display: "flex", justifyContent: "space-between" }}>
-        <div className="hud-glass" style={{ padding: "8px 16px", borderRadius: "4px", fontWeight: "bold", fontSize: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
+        <div className="hud-glass" style={{ padding: "8px 16px", borderRadius: "4px", fontWeight: "bold", fontSize: "12px", display: "flex", alignItems: "center", gap: "8px", backdropFilter: "blur(5px)" }}>
           <span style={{ color: "var(--neon-green)" }}>●</span> ONLINE
         </div>
-        <div className="hud-glass" style={{ width: "40px", height: "40px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--neon-blue)", fontWeight: "bold" }}>
+        <div className="hud-glass" style={{ width: "40px", height: "40px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--neon-blue)", fontWeight: "bold", backdropFilter: "blur(5px)" }}>
           UP
         </div>
       </div>
@@ -26,7 +26,7 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps)
         
         {/* RADAR */}
         {!selectedPin && (
-          <div className="hud-glass" style={{ padding: "10px 15px", borderRadius: "12px", display: "flex", gap: "20px", boxShadow: "var(--shadow-hard)" }}>
+          <div className="hud-glass" style={{ padding: "10px 15px", borderRadius: "12px", display: "flex", gap: "20px", boxShadow: "var(--shadow-hard)", backdropFilter: "blur(5px)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", opacity: 1 }}>
               <div style={{ color: "var(--neon-maroon)" }}>▲</div>
               <div>
@@ -43,7 +43,7 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps)
             background: "var(--hud-glass-solid)", backdropFilter: "blur(20px)",
             border: "var(--hud-border)", borderRadius: "16px", padding: "20px",
             boxShadow: "var(--shadow-hard)", width: "100%", maxWidth: "400px",
-            animation: "slideUp 0.3s ease-out"
+            animation: "slideUp 0.3s ease-out", 
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <div>
