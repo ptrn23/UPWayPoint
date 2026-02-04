@@ -122,8 +122,8 @@ export default function Home() {
           restriction={{
             latLngBounds: {
               north: 14.663668030362242,
-              south: 14.649682779044548,
-              east: 121.0758243807482,
+              south: 14.645343854083508,
+              east: 121.0755837087427,
               west: 121.05536053150871,
             },
             strictBounds: false
