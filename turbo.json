@@ -17,5 +17,10 @@
       "cache": false,
       "persistent": true
     }
+  },
+  "pipeline": {
+    "db:check": {
+      "cache": false
+    }
   }
 }
