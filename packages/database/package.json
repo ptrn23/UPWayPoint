@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "db:check": "drizzle-kit check"
+    "db:check": "drizzle-kit check",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx ./migrate.ts"
   },
   "dependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -16,6 +18,7 @@
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.8",
+    "tsx": "^4.21.0",
     "typescript": "^5.2.2"
   }
 }

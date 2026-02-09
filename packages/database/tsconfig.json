@@ -1,9 +1,27 @@
 {
   "extends": "../typescript-config/base.json",
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "nodenext",
     "target": "ES2021",
-    "outDir": "./dist"
+    "lib": ["ES2021"],
+    "outDir": "./dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "moduleResolution": "nodenext"
   },
-  "exclude": ["dist", "node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "drizzle"
+  ]
 }
