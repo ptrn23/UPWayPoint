@@ -112,6 +112,7 @@ export default function Home() {
           defaultZoom={19}
           minZoom={17}
           mapId={process.env.NEXT_PUBLIC_MAP_ID || '71238adec955b8c6d66f595a'} 
+          gestureHandling={'greedy'}
           disableDefaultUI={true}
           onClick={() => clearSelection()}
           restriction={{
