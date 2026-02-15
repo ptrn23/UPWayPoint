@@ -16,9 +16,8 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
 
   return (
     <div className="top-bar-container">
-      <div className="search-row">
-        {/* menu button */}
-        <button onClick={onMenuClick} className="icon-button">
+      <div className="nav-row">
+        <button onClick={onMenuClick} className="icon-button menu-btn">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -26,7 +25,6 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
           </svg>
         </button>
 
-        {/* search bar */}
         <div className="search-wrapper">
           <input 
             type="text"
@@ -35,21 +33,27 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
             onChange={(e) => setSearch(e.target.value)}
             className="search-input"
           />
-          <div className="search-icon">
+          
+          <div className="search-icon-right">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                <circle cx="11" cy="11" r="8"></circle>
                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </div>
         </div>
+
+        <button className="icon-button profile-btn">
+           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+           </svg>
+        </button>
       </div>
 
-      {/* filter chips */}
       <div className="filter-row no-scrollbar">
         {filters.map((filter) => {
           const chipColor = getFilterColor(filter);
           const isActive = activeFilter === filter;
-
           return (
             <button
               key={filter}
@@ -58,7 +62,8 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
               style={{
                 borderColor: isActive ? chipColor : 'rgba(255,255,255,0.1)',
                 color: isActive ? '#000' : chipColor,
-                backgroundColor: isActive ? chipColor : 'rgba(3, 3, 4, 0.6)'
+                backgroundColor: isActive ? chipColor : 'rgba(3, 3, 4, 0.6)',
+                boxShadow: isActive ? `0 0 15px ${chipColor}` : 'none'
               }}
             >
               {filter.toUpperCase()}
@@ -78,16 +83,18 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
           display: flex;
           flex-direction: column;
           gap: 12px;
-          pointer-events: none; /* Let clicks pass to map */
+          pointer-events: none;
         }
 
-        .search-row {
+        .nav-row {
           display: flex;
+          align-items: center;
+          justify-content: space-between;
           gap: 12px;
-          max-width: 500px;
+          max-width: 1200px;
           margin: 0 auto;
           width: 100%;
-          pointer-events: auto; /* Buttons are clickable */
+          pointer-events: auto;
         }
 
         .icon-button {
@@ -103,13 +110,27 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
           justify-content: center;
           cursor: pointer;
           transition: all 0.2s;
+          flex-shrink: 0;
         }
 
-        .icon-button:active { transform: scale(0.95); }
+        .profile-btn {
+          display: flex; /* Shown by default */
+        }
+
+        /* MOBILE HIDE PROFILE */
+        @media (max-width: 768px) {
+          .profile-btn {
+            display: none;
+          }
+          .nav-row {
+            max-width: 500px;
+          }
+        }
 
         .search-wrapper {
           flex: 1;
           position: relative;
+          max-width: 500px;
         }
 
         .search-input {
@@ -119,10 +140,10 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
           backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 12px;
-          padding: 0 16px 0 44px;
+          padding: 0 44px 0 16px;
           color: white;
           font-family: inherit;
-          transition: border-color 0.3s, box-shadow 0.3s;
+          transition: all 0.3s;
         }
 
         .search-input:focus {
@@ -131,9 +152,9 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
           box-shadow: 0 0 15px rgba(0, 255, 153, 0.2);
         }
 
-        .search-icon {
+        .search-icon-right {
           position: absolute;
-          left: 14px;
+          right: 14px;
           top: 50%;
           transform: translateY(-50%);
           color: #888;
@@ -147,7 +168,6 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
           margin: 0 auto;
           width: 100%;
           pointer-events: auto;
-          padding-bottom: 4px;
         }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -155,29 +175,20 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
 
         .filter-chip {
           padding: 6px 16px;
-          background: rgba(3, 3, 4, 0.6);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border: 1px solid;
           border-radius: 20px;
-          color: #ccc;
-          font-size: 12px;
-          font-weight: bold;
+          font-size: 11px;
+          font-weight: 800;
           white-space: nowrap;
           cursor: pointer;
           transition: all 0.2s;
-        }
-
-        .filter-chip.active {
-          background: var(--neon-blue, #00D1FF);
-          border-color: var(--neon-blue, #00D1FF);
-          color: black;
         }
       `}</style>
     </div>
   );
 }
 
-const getFilterColor = (type: string) => {
+export const getFilterColor = (type: string) => {
   switch (type) {
     case "academic": return "var(--neon-maroon, #ff0000)";
     case "food": return "var(--neon-green, #00ff00)";

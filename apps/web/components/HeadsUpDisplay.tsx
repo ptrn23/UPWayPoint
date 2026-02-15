@@ -1,3 +1,5 @@
+import { getFilterColor } from "@/components/TopBar";
+
 interface HUDProps {
   selectedPin: any;
   onLockClick: () => void;
@@ -8,72 +10,118 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps)
   return (
     <div style={{
       position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-      pointerEvents: "none", zIndex: 100, display: "flex", flexDirection: "column", justifyContent: "space-between"
+      pointerEvents: "none", zIndex: 90, // Lower than TopBar if needed
+      display: "flex", flexDirection: "column", justifyContent: "flex-end" // Align to bottom
     }}>
       
-      {/* TOP BAR */}
-      <div style={{ padding: "20px", pointerEvents: "auto", display: "flex", justifyContent: "space-between" }}>
-        <div className="hud-glass" style={{ padding: "8px 16px", borderRadius: "4px", fontWeight: "bold", fontSize: "12px", display: "flex", alignItems: "center", gap: "8px", backdropFilter: "blur(5px)" }}>
-          <span style={{ color: "var(--neon-green)" }}>●</span> ONLINE
-        </div>
-        <div className="hud-glass" style={{ width: "40px", height: "40px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--neon-blue)", fontWeight: "bold", backdropFilter: "blur(5px)" }}>
-          UP
-        </div>
-      </div>
-
       {/* BOTTOM SECTION */}
-      <div style={{ padding: "20px", pointerEvents: "auto", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+      <div style={{ 
+        padding: "20px", 
+        pointerEvents: "auto", 
+        display: "flex", 
+        flexDirection: "column", 
+        alignItems: "center", 
+        gap: "10px",
+        marginBottom: "20px" 
+      }}>
         
-        {/* RADAR */}
+        {/* RADAR / PROXIMITY (Only if NO pin is selected) */}
         {!selectedPin && (
-          <div className="hud-glass" style={{ padding: "10px 15px", borderRadius: "12px", display: "flex", gap: "20px", boxShadow: "var(--shadow-hard)", backdropFilter: "blur(5px)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", opacity: 1 }}>
-              <div style={{ color: "var(--neon-maroon)" }}>▲</div>
+          <div className="radar-container" style={{
+            background: "rgba(3, 3, 4, 0.6)",
+            backdropFilter: "blur(10px)",
+            padding: "10px 15px",
+            borderRadius: "12px",
+            border: "1px solid rgba(255,255,255,0.1)",
+            display: "flex",
+            gap: "20px",
+            animation: "fadeIn 0.5s ease-out"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ color: "var(--neon-maroon)", animation: "pulse 2s infinite" }}>▲</div>
               <div>
-                <div style={{ fontWeight: "bold", fontSize: "14px" }}>Quezon Hall</div>
-                <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>150m NE</div>
+                <div style={{ fontWeight: "bold", fontSize: "14px", color: "white" }}>Quezon Hall</div>
+                <div style={{ fontSize: "12px", color: "#888" }}>150m NE</div>
               </div>
             </div>
           </div>
         )}
 
-        {/* DETAILS CARD */}
+        {/* DETAILS CARD (Only if pin IS selected) */}
         {selectedPin && (
-          <div style={{
-            background: "var(--hud-glass-solid)", backdropFilter: "blur(20px)",
-            border: "var(--hud-border)", borderRadius: "16px", padding: "20px",
-            boxShadow: "var(--shadow-hard)", width: "100%", maxWidth: "400px",
-            animation: "slideUp 0.3s ease-out", 
-          }}>
+          <div className="details-card">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <div>
-                <h2 style={{ fontSize: "20px", fontWeight: "bold", margin: 0 }}>{selectedPin.name}</h2>
-                <span style={{ fontSize: "12px", textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "1px" }}>{selectedPin.type}</span>
+                <h2 style={{ fontSize: "20px", fontWeight: "bold", margin: 0, color: "white" }}>
+                  {selectedPin.title || selectedPin.name}
+                </h2>
+                <span style={{ 
+                  fontSize: "11px", 
+                  textTransform: "uppercase", 
+                  color: getFilterColor(selectedPin.type), 
+                  letterSpacing: "2px",
+                  fontWeight: "800"
+                }}>
+                  {selectedPin.type}
+                </span>
               </div>
             </div>
+            
             <p style={{ 
                 fontSize: "14px", 
-                color: "var(--text-muted)", 
-                margin: "10px 0",
-                fontFamily: "var(--font-nunito)" 
+                color: "#ccc", 
+                margin: "12px 0",
+                lineHeight: "1.4"
             }}>
-                {selectedPin.desc}
+                {selectedPin.description || selectedPin.desc}
             </p>
+
             <div style={{ display: "flex", gap: "10px" }}>
               <button 
                 onClick={onLockClick}
                 style={{
-                  flex: 1, padding: "12px", borderRadius: "8px", border: "none",
-                  background: isLocked ? "var(--neon-blue)" : "white",
-                  color: "black", fontWeight: "bold", cursor: "pointer"
+                  flex: 1, padding: "14px", borderRadius: "10px", border: "none",
+                  background: isLocked ? "var(--neon-blue, #00D1FF)" : "white",
+                  color: "black", fontWeight: "900", cursor: "pointer",
+                  letterSpacing: "1px", transition: "all 0.2s"
                 }}
               >
-                {isLocked ? "UNLOCK TARGET" : "LOCK TARGET"}
+                {isLocked ? "TARGET LOCKED" : "LOCK TARGET"}
               </button>
             </div>
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        .details-card {
+          background: rgba(3, 3, 4, 0.9);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          padding: 24px;
+          width: 100%;
+          max-width: 400px;
+          animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        @keyframes slideUp {
+          from { transform: translateY(100px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulse {
+          0% { opacity: 1; }
+          50% { opacity: 0.4; }
+          100% { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }
