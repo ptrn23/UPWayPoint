@@ -46,15 +46,25 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
 
       {/* filter chips */}
       <div className="filter-row no-scrollbar">
-        {filters.map((filter) => (
-          <button
-            key={filter}
-            onClick={() => onFilterChange(filter)}
-            className={`filter-chip ${activeFilter === filter ? 'active' : ''}`}
-          >
-            {filter.toUpperCase()}
-          </button>
-        ))}
+        {filters.map((filter) => {
+          const chipColor = getFilterColor(filter);
+          const isActive = activeFilter === filter;
+
+          return (
+            <button
+              key={filter}
+              onClick={() => onFilterChange(filter)}
+              className={`filter-chip ${isActive ? 'active' : ''}`}
+              style={{
+                borderColor: isActive ? chipColor : 'rgba(255,255,255,0.1)',
+                color: isActive ? '#000' : chipColor,
+                backgroundColor: isActive ? chipColor : 'rgba(3, 3, 4, 0.6)'
+              }}
+            >
+              {filter.toUpperCase()}
+            </button>
+          );
+        })}
       </div>
 
       <style jsx>{`
@@ -161,9 +171,19 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
           background: var(--neon-blue, #00D1FF);
           border-color: var(--neon-blue, #00D1FF);
           color: black;
-          box-shadow: 0 0 10px rgba(0, 209, 255, 0.4);
         }
       `}</style>
     </div>
   );
 }
+
+const getFilterColor = (type: string) => {
+  switch (type) {
+    case "academic": return "var(--neon-maroon, #ff0000)";
+    case "food": return "var(--neon-green, #00ff00)";
+    case "social": return "var(--neon-pink, #ff00ff)";
+    case "transit": return "var(--neon-yellow, #ffff00)";
+    case "utility": return "var(--neon-blue, #0000ff)";
+    default: return "#ccc";
+  }
+};
