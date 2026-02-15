@@ -15,189 +15,186 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
   const filters: FilterType[] = ["all", "academic", "food", "social", "utility"];
 
   return (
-    <div className="top-bar-container">
-      {/* NAVIGATION ROW */}
-      <div className="nav-row">
-        
-        {/* LEFTMOST: Menu */}
-        <button onClick={onMenuClick} className="icon-button menu-btn">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-
-        {/* CENTERED: Search Bar */}
-        <div className="search-wrapper">
-          <input 
-            type="text"
-            placeholder="Search Waypoints..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-          />
-          <div className="search-icon-right">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-               <circle cx="11" cy="11" r="8"></circle>
-               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    <>
+      <div className="top-bar-container">
+        <div className="nav-row">
+          <button onClick={onMenuClick} className="icon-button menu-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
+          </button>
+
+          <div className="search-wrapper">
+            <input 
+              type="text"
+              placeholder="Search Waypoints..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="search-input"
+            />
+            <div className="search-icon-right">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                 <circle cx="11" cy="11" r="8"></circle>
+                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+          </div>
+
+          <div className="top-right-stack">
+             <button className="icon-button profile-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                   <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+             </button>
+             <button className="icon-button theme-toggle">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+             </button>
           </div>
         </div>
 
-        {/* RIGHTMOST: Profile (Hidden on Mobile) */}
-        <button className="icon-button profile-btn">
-           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-           </svg>
-        </button>
+        <div className="filter-row no-scrollbar">
+          {filters.map((filter) => {
+            const chipColor = getFilterColor(filter);
+            const isActive = activeFilter === filter;
+            return (
+              <button
+                key={filter}
+                onClick={() => onFilterChange(filter)}
+                className={`filter-chip ${isActive ? 'active' : ''}`}
+                style={{
+                  borderColor: isActive ? chipColor : 'rgba(255,255,255,0.12)',
+                  color: isActive ? '#000' : chipColor,
+                  backgroundColor: isActive ? chipColor : 'rgba(10, 10, 12, 0.8)',
+                }}
+              >
+                {filter.toUpperCase()}
+              </button>
+            );
+          })}
+        </div>
       </div>
-
-      {/* FILTER ROW */}
-      <div className="filter-row no-scrollbar">
-        {filters.map((filter) => {
-          const chipColor = getFilterColor(filter);
-          const isActive = activeFilter === filter;
-          return (
-            <button
-              key={filter}
-              onClick={() => onFilterChange(filter)}
-              className={`filter-chip ${isActive ? 'active' : ''}`}
-              style={{
-                borderColor: isActive ? chipColor : 'rgba(255,255,255,0.15)',
-                color: isActive ? '#000' : chipColor,
-                backgroundColor: isActive ? chipColor : 'rgba(3, 3, 4, 0.7)',
-                boxShadow: 'none' // Removed glow
-              }}
-            >
-              {filter.toUpperCase()}
+      
+      <div className="bottom-right-controls">
+         <button className="control-button gps-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+               <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+            </svg>
+         </button>
+         
+         <div className="zoom-stack">
+            <button className="control-button zoom-in">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+               </svg>
             </button>
-          );
-        })}
+            <div className="divider"></div>
+            <button className="control-button zoom-out">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+               </svg>
+            </button>
+         </div>
       </div>
 
       <style jsx>{`
         .top-bar-container {
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: 100;
-          padding: 16px;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
+          top: 0; left: 0; right: 0;
+          z-index: 100; padding: 8px;
+          display: flex; flex-direction: column; gap: 10px;
           pointer-events: none;
         }
 
         .nav-row {
-          display: flex;
-          align-items: center;
-          justify-content: center; /* Centers the search bar */
-          position: relative; /* Allows buttons to pin to edges */
-          width: 100%;
-          height: 48px;
-          pointer-events: auto;
+          display: flex; align-items: flex-start; justify-content: center;
+          position: relative; width: 100%; pointer-events: auto;
         }
 
-        .icon-button {
-          position: absolute; /* Pins buttons to the far corners */
-          width: 48px;
-          height: 48px;
-          background: rgba(3, 3, 4, 0.85);
+        .icon-button, .control-button {
+          background: rgba(10, 10, 12, 0.9);
           backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
           color: white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.2s;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: all 0.1s;
         }
 
-        .menu-btn { left: 0; }
-        .profile-btn { right: 0; }
+        .icon-button { width: 44px; height: 44px; border-radius: 10px; }
+        .control-button { width: 48px; height: 48px; border-radius: 12px; }
+
+        .menu-btn { position: absolute; left: 4px; }
+        
+        .top-right-stack {
+          position: absolute; right: 4px;
+          display: flex; flex-direction: column; gap: 8px;
+        }
 
         @media (max-width: 768px) {
           .profile-btn { display: none; }
         }
 
-        .search-wrapper {
-          width: 100%;
-          max-width: 400px; /* Adjust this for your preferred bar width */
-          position: relative;
-          margin: 0 60px; /* Prevents bar from overlapping corner buttons */
-        }
-
+        .search-wrapper { width: 100%; max-width: 280px; position: relative; }
         .search-input {
-          width: 100%;
-          height: 48px;
-          background: rgba(3, 3, 4, 0.85);
+          width: 100%; height: 44px;
+          background: rgba(10, 10, 12, 0.9);
           backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 14px;
-          padding: 0 48px 0 18px; /* Padding-right for the icon */
-          color: white;
-          font-family: inherit;
-          font-size: 14px;
-          transition: border-color 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 0 40px 0 14px;
+          color: white; font-family: inherit; font-size: 13px; font-weight: 500;
         }
 
-        .search-input:focus {
-          outline: none;
-          border-color: var(--neon-green, #00FF99);
-        }
-
-        .search-icon-right {
-          position: absolute;
-          right: 16px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #888;
-          pointer-events: none;
-        }
+        .search-icon-right { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #aaa; }
 
         .filter-row {
-          display: flex;
-          justify-content: center;
-          gap: 8px;
-          overflow-x: auto;
-          width: 100%;
-          pointer-events: auto;
-          padding-bottom: 4px;
+          display: flex; gap: 6px; overflow-x: auto; width: 100%;
+          pointer-events: auto; padding: 0 4px;
         }
-
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         .filter-chip {
-          padding: 8px 16px;
-          border: 1px solid;
-          border-radius: 20px;
-          font-size: 11px;
-          font-weight: 800; /* Bold/Boldest font back */
-          letter-spacing: 0.05em;
-          white-space: nowrap;
-          cursor: pointer;
-          transition: transform 0.1s;
-          font-family: 'Inter', system-ui, sans-serif; /* Clean, bold system font */
+          padding: 6px 14px; border: 1px solid; border-radius: 18px;
+          font-size: 10px; font-weight: 900; white-space: nowrap;
         }
 
-        .filter-chip:active { transform: scale(0.95); }
+        /* BOTTOM RIGHT CONTROLS */
+        .bottom-right-controls {
+          position: absolute; bottom: 24px; right: 12px;
+          display: flex; flex-direction: column; gap: 12px;
+          z-index: 100; pointer-events: auto;
+        }
+
+        .zoom-stack {
+          display: flex; flex-direction: column;
+          background: rgba(10, 10, 12, 0.9);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          overflow: hidden;
+        }
+
+        .zoom-stack .control-button { border: none; border-radius: 0; }
+        .divider { height: 1px; background: rgba(255, 255, 255, 0.1); width: 80%; margin: 0 auto; }
+        
+        .control-button:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.1); }
       `}</style>
-    </div>
+    </>
   );
 }
 
 export const getFilterColor = (type: string) => {
   switch (type) {
-    case "academic": return "var(--neon-maroon, #ff0000)";
-    case "food": return "var(--neon-green, #00ff00)";
-    case "social": return "var(--neon-pink, #ff00ff)";
-    case "transit": return "var(--neon-yellow, #ffff00)";
-    case "utility": return "var(--neon-blue, #0000ff)";
+    case "academic": return "#ff4d4d";
+    case "food": return "#00ffa3";
+    case "social": return "#ff007a";
+    case "transit": return "#f4ff4d";
+    case "utility": return "#00d1ff";
     default: return "#ffffff";
   }
 };
