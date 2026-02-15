@@ -77,7 +77,7 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps)
             </p>
 
             <div style={{ display: "flex", gap: "10px" }}>
-              <button 
+              <button className="lock-button"
                 onClick={onLockClick}
                 style={{
                   flex: 1, padding: "14px", borderRadius: "10px", border: "none",
@@ -92,36 +92,6 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps)
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .details-card {
-          background: rgba(3, 3, 4, 0.9);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
-          padding: 24px;
-          width: 100%;
-          max-width: 400px;
-          animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-
-        @keyframes slideUp {
-          from { transform: translateY(100px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes pulse {
-          0% { opacity: 1; }
-          50% { opacity: 0.4; }
-          100% { opacity: 1; }
-        }
-      `}</style>
     </div>
   );
 }
