@@ -1,17 +1,15 @@
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
+import { Pin } from "@/types/waypoint";
 
 interface NeonPinProps {
-  position: { lat: number; lng: number };
-  type: "academic" | "food" | "social" | "transit" | "utility";
-  icon: string;
+  pin: Pin;
   isSelected: boolean;
   isLocked: boolean;
-  onClick: () => void;
 }
 
-export function NeonPin({ position, type, icon, isSelected, isLocked, onClick }: NeonPinProps) {
+export function NeonPin({ pin, isSelected, isLocked }: NeonPinProps) {
   const getColor = () => {
-    switch (type) {
+    switch (pin.type) {
       case "academic": return "var(--neon-maroon)";
       case "food": return "var(--neon-green)";
       case "social": return "var(--neon-pink)";
@@ -24,7 +22,7 @@ export function NeonPin({ position, type, icon, isSelected, isLocked, onClick }:
   const color = getColor();
 
   return (
-    <AdvancedMarker position={position} onClick={onClick}>
+    <AdvancedMarker position={pin.position}>
       <div
         style={{
           width: "44px", height: "44px",
@@ -52,7 +50,7 @@ export function NeonPin({ position, type, icon, isSelected, isLocked, onClick }:
             color: isSelected ? "black" : color, // contrast text if filled
             fontWeight: "bold"
           }}>
-            {icon}
+            {pin.icon}
           </div>
         </div>
       </div>
