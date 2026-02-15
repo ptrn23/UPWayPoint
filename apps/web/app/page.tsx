@@ -1,8 +1,8 @@
 "use client";
 
+import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
-import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import { useState } from "react";
 
 // SPRINT 1: Hardcoded Data
@@ -107,38 +107,39 @@ export default function Home() {
 		}
 	};
 
-	return (
-		<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
-			<main style={{ width: "100vw", height: "100vh", position: "relative" }}>
-				{/*MAP LAYER */}
-				<GoogleMap
-					defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
-					defaultZoom={19}
-					minZoom={17}
-					disableDefaultUI={true}
-					restriction={{
-						latLngBounds: {
-							north: 14.663668030362242,
-							south: 14.649682779044548,
-							east: 121.0758243807482,
-							west: 121.05536053150871,
-						},
-						strictBounds: false,
-					}}
-					mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID}
-				>
-					{HARDCODED_PINS.map((pin) => (
-						<NeonPin
-							key={pin.id}
-							position={pin.pos}
-							type={pin.type as any}
-							icon={pin.icon}
-							isSelected={selectedPinId === pin.id}
-							isLocked={selectedPinId === pin.id && isLocked}
-							onClick={() => handlePinClick(pin.id)}
-						/>
-					))}
-				</GoogleMap>
+  return (
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
+      <main style={{ width: "100vw", height: "100vh", position: "relative" }}>
+        
+        {/*MAP LAYER */}
+        <GoogleMap
+          defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
+          defaultZoom={19}
+          minZoom={17}
+          mapId='71238adec955b8c6d66f595a'
+          disableDefaultUI={true}
+          restriction={{
+            latLngBounds: {
+              north: 14.663668030362242,
+              south: 14.645343854083508,
+              east: 121.0755837087427,
+              west: 121.05536053150871,
+            },
+            strictBounds: false
+          }}
+        >
+          {HARDCODED_PINS.map(pin => (
+            <NeonPin 
+              key={pin.id}
+              position={pin.pos}
+              type={pin.type as any}
+              icon={pin.icon}
+              isSelected={selectedPinId === pin.id}
+              isLocked={selectedPinId === pin.id && isLocked}
+              onClick={() => handlePinClick(pin.id)}
+            />
+          ))}
+        </GoogleMap>
 
 				{/* UI LAYER */}
 				<HeadsUpDisplay
