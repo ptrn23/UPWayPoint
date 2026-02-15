@@ -4,6 +4,8 @@ import { APIProvider, Map as GoogleMap, AdvancedMarker } from "@vis.gl/react-goo
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
 import { useWaypointState } from "@/hooks/useWaypointState";
+import { TopBar, FilterType } from "@/components/TopBar"; 
+import { useState } from "react"
 import { Pin } from "@/types/waypoint";
 
 // SPRINT 1: Hardcoded Data
@@ -92,10 +94,17 @@ const HARDCODED_PINS: Pin[] = [
 
 export default function Home() {
   const { mode, selectedPin, selectPin, clearSelection, expandDetails, toggleMenu, toggleLock } = useWaypointState();
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
       <main style={{ width: "100vw", height: "100vh", position: "relative" }}>
+        {/* TOP BAR */}
+        <TopBar 
+          onMenuClick={toggleMenu}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
         
         {/* MAP LAYER */}
         <GoogleMap
