@@ -99,13 +99,6 @@ export default function Home() {
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
       <main style={{ width: "100vw", height: "100vh", position: "relative" }}>
-        {/* TOP BAR */}
-        <TopBar 
-          onMenuClick={toggleMenu}
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-        />
-        
         {/* MAP LAYER */}
         <GoogleMap
           defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
@@ -140,6 +133,13 @@ export default function Home() {
             </AdvancedMarker>
           ))}
         </GoogleMap>
+
+        {/* TOP BAR */}
+        <TopBar 
+          onMenuClick={toggleMenu}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
 
         {/* UI LAYER */}
         <HeadsUpDisplay
