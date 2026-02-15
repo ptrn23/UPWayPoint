@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
-import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import { useState } from "react";
 
 // SPRINT 1: Hardcoded Data
@@ -112,7 +113,7 @@ export default function Home() {
       <main style={{ width: "100vw", height: "100vh", position: "relative" }}>
         
         {/*MAP LAYER */}
-        <Map
+        <GoogleMap
           defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
           defaultZoom={19}
           minZoom={17}
@@ -139,7 +140,7 @@ export default function Home() {
               onClick={() => handlePinClick(pin.id)}
             />
           ))}
-        </Map>
+        </GoogleMap>
 
 				{/* UI LAYER */}
 				<HeadsUpDisplay
