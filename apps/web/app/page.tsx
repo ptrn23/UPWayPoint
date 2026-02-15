@@ -4,6 +4,8 @@ import { APIProvider, Map as GoogleMap, AdvancedMarker } from "@vis.gl/react-goo
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
 import { useWaypointState } from "@/hooks/useWaypointState";
+import { TopBar, FilterType } from "@/components/TopBar"; 
+import { useState } from "react"
 import { Pin } from "@/types/waypoint";
 
 // SPRINT 1: Hardcoded Data
@@ -92,17 +94,18 @@ const HARDCODED_PINS: Pin[] = [
 
 export default function Home() {
   const { mode, selectedPin, selectPin, clearSelection, expandDetails, toggleMenu, toggleLock } = useWaypointState();
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
       <main style={{ width: "100vw", height: "100vh", position: "relative" }}>
-        
         {/* MAP LAYER */}
         <GoogleMap
           defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
           defaultZoom={19}
           minZoom={17}
           mapId={process.env.NEXT_PUBLIC_MAP_ID || '71238adec955b8c6d66f595a'} 
+          gestureHandling={'greedy'}
           disableDefaultUI={true}
           onClick={() => clearSelection()}
           restriction={{
@@ -119,21 +122,24 @@ export default function Home() {
             <AdvancedMarker
               key={pinData.id}
               position={pinData.position}
-              onClick={(e) => {
-                 // stop the click from hitting the map background
-                 e.stop(); 
-                 selectPin(pinData);
-              }}
             >
                 {/* PASS THE FULL OBJECT */}
                 <NeonPin 
                   pin={pinData} 
                   isSelected={selectedPin?.id === pinData.id}
                   isLocked={mode === "LOCKED" && selectedPin?.id === pinData.id}
+                  onClick={() => selectPin(pinData)}
                 />
             </AdvancedMarker>
           ))}
         </GoogleMap>
+
+        {/* TOP BAR */}
+        <TopBar 
+          onMenuClick={toggleMenu}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
 
         {/* UI LAYER */}
         <HeadsUpDisplay

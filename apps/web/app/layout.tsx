@@ -4,7 +4,7 @@ import "./globals.css";
 import { TRPCProvider } from "@/components/TRPCProvider";
 
 const chakra = Chakra_Petch({
-	weight: ["400", "500", "600", "700"],
+	weight: ["300", "400", "500", "600", "700"],
 	subsets: ["latin"],
 	variable: "--font-chakra",
 });
