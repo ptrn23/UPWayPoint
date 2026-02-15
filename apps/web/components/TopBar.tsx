@@ -12,21 +12,13 @@ interface TopBarProps {
 
 export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProps) {
   const [search, setSearch] = useState("");
-
   const filters: FilterType[] = ["all", "academic", "food", "social", "utility"];
 
   return (
-    <div className="absolute top-4 left-0 right-0 z-10 px-4 flex flex-col gap-3 pointer-events-none">
-      
-      {/* search and menu */}
-      <div className="flex gap-3 pointer-events-auto max-w-md mx-auto w-full">
-        
+    <div className="top-bar-container">
+      <div className="search-row">
         {/* menu button */}
-        <button 
-          onClick={onMenuClick}
-          className="bg-black/80 backdrop-blur-md border border-white/20 text-white p-3 rounded-xl shadow-lg active:scale-95 transition-all"
-        >
-          {/* hamburger icon */}
+        <button onClick={onMenuClick} className="icon-button">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -35,49 +27,141 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
         </button>
 
         {/* search bar */}
-        <div className="flex-1 relative">
-           <input 
-             type="text"
-             placeholder="Search location..."
-             value={search}
-             onChange={(e) => setSearch(e.target.value)}
-             className="w-full h-full bg-black/80 backdrop-blur-md border border-white/20 rounded-xl px-4 text-white placeholder-gray-400 focus:outline-none focus:border-[var(--neon-green)] focus:shadow-[0_0_15px_rgba(0,255,153,0.3)] transition-all shadow-lg"
-           />
-           {/* search icon */}
-           <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-             </svg>
-           </div>
+        <div className="search-wrapper">
+          <input 
+            type="text"
+            placeholder="Search Waypoints..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
+          />
+          <div className="search-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+               <circle cx="11" cy="11" r="8"></circle>
+               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
         </div>
       </div>
 
       {/* filter chips */}
-      <div className="flex gap-2 overflow-x-auto pb-2 pointer-events-auto max-w-md mx-auto w-full no-scrollbar">
+      <div className="filter-row no-scrollbar">
         {filters.map((filter) => (
           <button
             key={filter}
             onClick={() => onFilterChange(filter)}
-            className={`
-              px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap border transition-all shadow-lg
-              ${activeFilter === filter 
-                ? "bg-[var(--neon-blue)] border-[var(--neon-blue)] text-black shadow-[0_0_10px_var(--neon-blue)]" 
-                : "bg-black/60 border-white/20 text-white hover:bg-white/10"}
-            `}
+            className={`filter-chip ${activeFilter === filter ? 'active' : ''}`}
           >
-            {filter.charAt(0).toUpperCase() + filter.slice(1)}
+            {filter.toUpperCase()}
           </button>
         ))}
       </div>
 
       <style jsx>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
+        .top-bar-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 100;
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          pointer-events: none; /* Let clicks pass to map */
         }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+
+        .search-row {
+          display: flex;
+          gap: 12px;
+          max-width: 500px;
+          margin: 0 auto;
+          width: 100%;
+          pointer-events: auto; /* Buttons are clickable */
+        }
+
+        .icon-button {
+          width: 48px;
+          height: 48px;
+          background: rgba(3, 3, 4, 0.85);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 12px;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .icon-button:active { transform: scale(0.95); }
+
+        .search-wrapper {
+          flex: 1;
+          position: relative;
+        }
+
+        .search-input {
+          width: 100%;
+          height: 48px;
+          background: rgba(3, 3, 4, 0.85);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 12px;
+          padding: 0 16px 0 44px;
+          color: white;
+          font-family: inherit;
+          transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-input:focus {
+          outline: none;
+          border-color: var(--neon-green, #00FF99);
+          box-shadow: 0 0 15px rgba(0, 255, 153, 0.2);
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #888;
+        }
+
+        .filter-row {
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          max-width: 500px;
+          margin: 0 auto;
+          width: 100%;
+          pointer-events: auto;
+          padding-bottom: 4px;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .filter-chip {
+          padding: 6px 16px;
+          background: rgba(3, 3, 4, 0.6);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          color: #ccc;
+          font-size: 12px;
+          font-weight: bold;
+          white-space: nowrap;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+          background: var(--neon-blue, #00D1FF);
+          border-color: var(--neon-blue, #00D1FF);
+          color: black;
+          box-shadow: 0 0 10px rgba(0, 209, 255, 0.4);
         }
       `}</style>
     </div>
