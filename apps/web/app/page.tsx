@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
