@@ -129,17 +129,13 @@ export default function Home() {
             <AdvancedMarker
               key={pinData.id}
               position={pinData.position}
-              onClick={(e) => {
-                 // stop the click from hitting the map background
-                 e.stop(); 
-                 selectPin(pinData);
-              }}
             >
                 {/* PASS THE FULL OBJECT */}
                 <NeonPin 
                   pin={pinData} 
                   isSelected={selectedPin?.id === pinData.id}
                   isLocked={mode === "LOCKED" && selectedPin?.id === pinData.id}
+                  onClick={() => selectPin(pinData)}
                 />
             </AdvancedMarker>
           ))}
