@@ -95,6 +95,7 @@ const HARDCODED_PINS: Pin[] = [
 export default function Home() {
   const { mode, selectedPin, selectPin, clearSelection, expandDetails, toggleMenu, toggleLock } = useWaypointState();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
@@ -118,20 +119,30 @@ export default function Home() {
             strictBounds: false
           }}
         >
-          {HARDCODED_PINS.map((pinData) => (
-            <AdvancedMarker
-              key={pinData.id}
-              position={pinData.position}
-            >
-                {/* PASS THE FULL OBJECT */}
-                <NeonPin 
-                  pin={pinData} 
-                  isSelected={selectedPin?.id === pinData.id}
-                  isLocked={mode === "LOCKED" && selectedPin?.id === pinData.id}
-                  onClick={() => selectPin(pinData)}
-                />
-            </AdvancedMarker>
-          ))}
+          {HARDCODED_PINS.map((pinData) => {
+              const matchesCategory = activeFilter === "all" || pinData.type === activeFilter;
+              const matchesSearch = 
+                pinData.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                pinData.description?.toLowerCase().includes(searchQuery.toLowerCase())
+              
+              const isVisible = (matchesCategory && matchesSearch) ? true : false;
+
+              return (
+                <AdvancedMarker
+                  key={pinData.id}
+                  position={pinData.position}
+                  zIndex={isVisible ? 10 : 0}
+                >
+                  <NeonPin 
+                    pin={pinData} 
+                    isSelected={selectedPin?.id === pinData.id}
+                    isLocked={mode === "LOCKED" && selectedPin?.id === pinData.id}
+                    isVisible={isVisible}
+                    onClick={() => selectPin(pinData)}
+                  />
+                </AdvancedMarker>
+              );
+          })}
         </GoogleMap>
 
         {/* TOP BAR */}
@@ -139,6 +150,8 @@ export default function Home() {
           onMenuClick={toggleMenu}
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
         />
 
         {/* UI LAYER */}
