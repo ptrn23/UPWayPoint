@@ -4,10 +4,11 @@ interface NeonPinProps {
   pin: Pin;
   isSelected: boolean;
   isLocked: boolean;
+  isVisible: boolean;
   onClick: () => void;
 }
 
-export function NeonPin({ pin, isSelected, isLocked, onClick }: NeonPinProps) {
+export function NeonPin({ pin, isSelected, isLocked, isVisible, onClick }: NeonPinProps) {
   const getColor = () => {
     switch (pin.type) {
       case "academic": return "var(--neon-maroon, #ff0000)";
@@ -20,20 +21,25 @@ export function NeonPin({ pin, isSelected, isLocked, onClick }: NeonPinProps) {
   };
 
   const color = getColor();
+  const baseScale = isVisible ? (isSelected ? 1.2 : 1) : 0;
+  const opacity = isVisible ? 1 : 0;
+  const pointerEvents = isVisible ? "auto" : "none";
 
   return (
       <div
         className="pin-interactive-area"
         onClick={(e) => {
           e.stopPropagation();
-          onClick();
+          if (isVisible) onClick();
         }}
         style={{
           width: "44px", height: "44px",
           display: "flex", justifyContent: "center", alignItems: "center",
-          cursor: "pointer",
-          transform: isSelected ? "scale(1.2)" : "scale(1)", 
-          transition: "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+          cursor: isVisible ? "pointer" : "default",
+          pointerEvents: pointerEvents as any,
+          transform: `scale(${baseScale})`, 
+          opacity: opacity,
+          transition: "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease"
         }}
       >
         {/* diamond shape */}
