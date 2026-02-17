@@ -175,8 +175,7 @@ p, .font-desc, .details-card p {
 
 .lock-button:active { transform: scale(0.95); }
 
-/* MOBILE HIDE */
-@media (max-width: 768px) { .profile-btn { display: none; } }
+@media (max-width: 768px) { .profile-btn, .theme-toggle { display: none; } }
 
 /* ANIMATIONS */
 @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
