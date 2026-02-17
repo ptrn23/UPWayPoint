@@ -95,6 +95,17 @@ const HARDCODED_PINS: Pin[] = [
 export default function Home() {
   const { mode, selectedPin, selectPin, clearSelection, expandDetails, toggleMenu, toggleLock } = useWaypointState();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredPins = HARDCODED_PINS.filter((pin) => {
+    const matchesCategory = activeFilter === "all" || pin.type === activeFilter;
+    
+    const matchesSearch = 
+      pin.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      pin.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
@@ -118,7 +129,7 @@ export default function Home() {
             strictBounds: false
           }}
         >
-          {HARDCODED_PINS.map((pinData) => (
+          {filteredPins.map((pinData) => (
             <AdvancedMarker
               key={pinData.id}
               position={pinData.position}
@@ -139,6 +150,8 @@ export default function Home() {
           onMenuClick={toggleMenu}
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
         />
 
         {/* UI LAYER */}

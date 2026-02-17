@@ -8,10 +8,11 @@ interface TopBarProps {
   onMenuClick: () => void;
   activeFilter: FilterType;
   onFilterChange: (filter: FilterType) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
-export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProps) {
-  const [search, setSearch] = useState("");
+export function TopBar({ onMenuClick, activeFilter, onFilterChange, searchQuery, onSearchChange }: TopBarProps) {
   const filters: FilterType[] = ["all", "academic", "food", "social", "utility"];
 
   return (
@@ -34,9 +35,9 @@ export function TopBar({ onMenuClick, activeFilter, onFilterChange }: TopBarProp
           <div className="search-block">
              <input 
                 type="text"
-                placeholder="Search Waypoints..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search..."
+                value={searchQuery || ""}
+                onChange={(e) => onSearchChange(e.target.value)}
                 className="search-input"
               />
               <div className="search-icon-right">
