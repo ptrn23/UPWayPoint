@@ -8,6 +8,91 @@ interface ExpandedPinViewProps {
   onClose: () => void;
 }
 
+type Comment = {
+  id: string;
+  author: string;
+  timeAgo: string;
+  text: string;
+  rating?: number;
+  upvotes: number;
+  replies?: Comment[];
+};
+
+const MOCK_THREADS: Comment[] = [
+  {
+    id: "c1", author: "user001", timeAgo: "2 hours ago", rating: 5, upvotes: 124, text: "nice!",
+    replies: [
+      {
+        id: "c1-1", author: "user002", timeAgo: "1 hour ago", upvotes: 15, text: "wow i love it",
+        replies: [
+          {
+            id: "c1-1-1", author: "user003", timeAgo: "45 mins ago", upvotes: 8, text: "me too!",
+            replies: [
+              { id: "c1-1-1-1", author: "user004", timeAgo: "10 mins ago", upvotes: 2, text: "woah!!!" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "c2", author: "user005", timeAgo: "1 day ago", rating: 4, upvotes: 89, text: "k lang",
+    replies: []
+  }
+];
+
+const CommentNode = ({ comment, depth = 0 }: { comment: Comment; depth: number }) => {
+  if (depth > 3) return null;
+
+  return (
+    <div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
+      <div className="comment-header">
+        <span className="comment-author">{comment.author}</span>
+        <span className="comment-time">{comment.timeAgo}</span>
+        {depth === 0 && comment.rating && (
+          <span className="comment-rating">{"★".repeat(comment.rating)} {comment.rating}/5</span>
+        )}
+      </div>
+      
+      <p className="comment-text">{comment.text}</p>
+      
+      <div className="comment-actions">
+        <button className="action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          {comment.upvotes}
+        </button>
+        <button className="action-btn">REPLY</button>
+      </div>
+
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="replies-container">
+          {comment.replies.map(reply => (
+            <CommentNode key={reply.id} comment={reply} depth={depth + 1} />
+          ))}
+        </div>
+      )}
+    
+      <style jsx>{`
+        .comment-node { margin-top: 16px; }
+        .comment-node.is-reply {
+          margin-left: 16px; padding-left: 16px; border-left: 2px solid rgba(255, 255, 255, 0.05); margin-top: 12px;
+        }
+        .comment-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .comment-author { font-family: var(--font-chakra); font-weight: 700; font-size: 13px; color: #fff; }
+        .comment-time { font-family: var(--font-nunito); font-size: 11px; color: #666; }
+        .comment-rating { color: var(--neon-yellow); font-size: 11px; margin-left: auto; letter-spacing: 0.1em; }
+        .comment-text { font-family: var(--font-nunito); font-size: 14px; color: #ccc; line-height: 1.5; margin: 4px 0; }
+        .comment-actions { display: flex; gap: 16px; align-items: center; margin-top: 8px; }
+        .action-btn {
+          background: none; border: none; color: #888; font-family: var(--font-chakra); font-size: 11px;
+          font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0; transition: color 0.2s;
+        }
+        .action-btn:hover { color: #fff; }
+      `}</style>
+    </div>
+  );
+};
+
 export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
   const color = getFilterColor(pin.type);
   const mockTime = "2026-02-21 11:45 AM PST";
@@ -102,6 +187,15 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
               <span className="meta-value">{mockTime}</span>
             </div>
           </div>
+
+          <div className="forum-section">
+            <h3 className="section-title">FORUM</h3>
+            <div className="forum-threads">
+              {MOCK_THREADS.map(thread => (
+                <CommentNode key={thread.id} comment={thread} depth={0} />
+              ))}
+            </div>
+          </div>
         </div>
 
       </div>
@@ -138,7 +232,6 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
           padding: 0; 
         }
 
-        /* --- NEW SCROLL AREA & FADE --- */
         .scroll-area {
           flex: 1;
           overflow-y: auto;
@@ -253,6 +346,41 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
           border-radius: 16px; padding: 20px;
         }
         .meta-item { display: flex; flex-direction: column; gap: 4px; }
+
+        .forum-section {
+          margin-top: 16px;
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
+          padding-top: 24px;
+        }
+
+        .section-title {
+          font-family: var(--font-chakra);
+          font-size: 12px;
+          font-weight: 900;
+          letter-spacing: 0.15em;
+          color: #666;
+          margin-bottom: 20px;
+        }
+
+        .action-btn {
+          background: none;
+          border: none;
+          color: #888;
+          font-family: var(--font-chakra);
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 0;
+          transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+          color: #fff;
+        }
+
         .col-span-2 { grid-column: span 2; } 
 
         .meta-label { font-family: var(--font-chakra); font-size: 10px; font-weight: 800; color: #666; letter-spacing: 0.1em; }
