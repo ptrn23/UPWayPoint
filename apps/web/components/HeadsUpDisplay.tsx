@@ -1,17 +1,31 @@
+"use client";
+
+import { useState } from "react";
+import { Pin } from "@/types/waypoint";
 import { getFilterColor } from "@/components/TopBar";
+import { PinDetailsCard } from "@/components/PinDetailsCard";
+import { ExpandedPinView } from "@/components/ExpandedPinView";
 
 interface HUDProps {
-  selectedPin: any;
+  selectedPin: Pin | null;
   onLockClick: () => void;
   isLocked: boolean;
+  onClearSelection?: () => void;
 }
 
-export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps) {
+export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked, onClearSelection }: HUDProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleClear = () => {
+    setIsExpanded(false);
+    if (onClearSelection) onClearSelection();
+  };
+
   return (
     <div style={{
       position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-      pointerEvents: "none", zIndex: 90, // Lower than TopBar if needed
-      display: "flex", flexDirection: "column", justifyContent: "flex-end" // Align to bottom
+      pointerEvents: "none", zIndex: 90, // lower than TopBar if needed
+      display: "flex", flexDirection: "column", justifyContent: "flex-end"
     }}>
       
       {/* BOTTOM SECTION */}
@@ -49,47 +63,21 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked }: HUDProps)
 
         {/* DETAILS CARD (Only if pin IS selected) */}
         {selectedPin && (
-          <div className="details-card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <div>
-                <h2 style={{ fontSize: "20px", fontWeight: "bold", margin: 0, color: "white" }}>
-                  {selectedPin.title || selectedPin.name}
-                </h2>
-                <span style={{ 
-                  fontSize: "11px", 
-                  textTransform: "uppercase", 
-                  color: getFilterColor(selectedPin.type), 
-                  letterSpacing: "2px",
-                  fontWeight: "800"
-                }}>
-                  {selectedPin.type}
-                </span>
-              </div>
-            </div>
-            
-            <p style={{ 
-                fontSize: "14px", 
-                color: "#ccc", 
-                margin: "12px 0",
-                lineHeight: "1.4"
-            }}>
-                {selectedPin.description || selectedPin.desc}
-            </p>
+          <PinDetailsCard 
+            pin={selectedPin} 
+            isLocked={isLocked} 
+            onLockClick={onLockClick} 
+            onClose={onClearSelection}
+            onExpand={() => setIsExpanded(true)}
+          />
+        )}
 
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button className="lock-button"
-                onClick={onLockClick}
-                style={{
-                  flex: 1, padding: "14px", borderRadius: "10px", border: "none",
-                  background: isLocked ? "var(--neon-blue, #00D1FF)" : "white",
-                  color: "black", fontWeight: "900", cursor: "pointer",
-                  letterSpacing: "1px", transition: "all 0.2s"
-                }}
-              >
-                {isLocked ? "TARGET LOCKED" : "LOCK TARGET"}
-              </button>
-            </div>
-          </div>
+        {/* EXPANDED MODAL LAYER (Renders on top of everything if isExpanded is true) */}
+        {selectedPin && isExpanded && (
+          <ExpandedPinView 
+            pin={selectedPin} 
+            onClose={() => setIsExpanded(false)}
+          />
         )}
       </div>
     </div>
