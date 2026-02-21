@@ -10,6 +10,7 @@ interface ExpandedPinViewProps {
 
 export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
   const color = getFilterColor(pin.type);
+  const mockTime = "2026-02-21 11:45 AM PST";
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -29,11 +30,52 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
           </button>
         </div>
 
-        {/* EMPTY BODY FOR FUTURE FEATURES */}
+        {/* BODY: INTEL DASHBOARD */}
         <div className="modal-body">
-          <div className="placeholder-box">
-            <p>Full location intel will go here.</p>
-            <p className="sub-text">(Images, Hours, Reviews, Routing)</p>
+          <p className="description">{pin.description}</p>
+
+          <div className="meta-grid">
+            {/* PIN ID */}
+            <div className="meta-item">
+              <span className="meta-label">PIN ID</span>
+              <span className="meta-value font-mono">{pin.id.padStart(7, '0')}</span>
+            </div>
+
+            {/* OWNER */}
+            <div className="meta-item">
+              <span className="meta-label">OWNED BY</span>
+              <span className="meta-value text-muted">Unclaimed</span>
+            </div>
+
+            {/* COORDINATES */}
+            <div className="meta-item col-span-2">
+              <span className="meta-label">COORDINATES (LAT, LNG)</span>
+              <span className="meta-value font-mono">
+                {pin.position.lat.toFixed(6)}, {pin.position.lng.toFixed(6)}
+              </span>
+            </div>
+
+            {/* STATUS */}
+            <div className="meta-item">
+              <span className="meta-label">STATUS</span>
+              <span className="meta-value text-neon-green">VERIFIED</span>
+            </div>
+
+            {/* RATING */}
+            <div className="meta-item">
+              <span className="meta-label">AVG RATING</span>
+              <span className="meta-value text-neon-yellow">★ 5.0 / 5.0</span>
+            </div>
+
+            {/* TIMESTAMPS */}
+            <div className="meta-item">
+              <span className="meta-label">CREATED AT</span>
+              <span className="meta-value">{mockTime}</span>
+            </div>
+            <div className="meta-item">
+              <span className="meta-label">LAST UPDATED</span>
+              <span className="meta-value">{mockTime}</span>
+            </div>
           </div>
         </div>
 
@@ -41,101 +83,68 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
 
       <style jsx>{`
         .modal-overlay {
-          position: fixed;
-          inset: 0; /* Stretches to all 4 corners of the screen */
-          background: rgba(0, 0, 0, 0.6); /* Blackens the map */
-          backdrop-filter: blur(8px); /* Blurs the map */
-          z-index: 200; /* Extremely high z-index to sit on top of everything */
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 24px;
-          animation: fadeIn 0.2s ease-out;
-          pointer-events: auto; /* Captures clicks so you can't click the map */
+          position: fixed; inset: 0; 
+          background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+          z-index: 200; display: flex; align-items: center; justify-content: center;
+          padding: 24px; animation: fadeIn 0.2s ease-out; pointer-events: auto;
         }
 
         .modal-content {
           background: rgba(10, 10, 12, 0.95);
           border: 1px solid rgba(255, 255, 255, 0.15);
-          border-top: 4px solid ${color};
-          border-radius: 24px;
-          width: 100%;
-          max-width: 500px;
-          min-height: 400px; /* Gives it a nice chunky size for now */
-          padding: 24px;
-          display: flex;
-          flex-direction: column;
+          border-top: 4px solid ${color}; border-radius: 24px;
+          width: 100%; max-width: 500px; padding: 28px;
+          display: flex; flex-direction: column;
           box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
           animation: scalePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 24px;
-        }
-
-        .badge {
-          font-family: var(--font-chakra);
-          font-size: 12px;
-          font-weight: 900;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-        }
-
-        h2 {
-          font-family: var(--font-chakra);
-          color: white;
-          font-size: 24px;
-          font-weight: 800;
-          margin: 4px 0 0 0;
-        }
-
+        .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { font-family: var(--font-chakra); font-size: 12px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+        h2 { font-family: var(--font-chakra); color: white; font-size: 26px; font-weight: 800; margin: 4px 0 0 0; }
+        
         .close-btn {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 50%;
-          width: 44px;
-          height: 44px;
-          color: white;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s;
+          background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 50%; width: 44px; height: 44px; color: white; cursor: pointer;
+          display: flex; align-items: center; justify-content: center; transition: all 0.2s;
         }
+        .close-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.1); }
 
-        .close-btn:active {
-          transform: scale(0.9);
-          background: rgba(255, 255, 255, 0.1);
-        }
-
-        .modal-body {
-          flex: 1;
-          display: flex;
-        }
-
-        .placeholder-box {
-          flex: 1;
-          border: 2px dashed rgba(255, 255, 255, 0.1);
+        .modal-body { display: flex; flex-direction: column; gap: 24px; }
+        .description { font-family: var(--font-nunito); font-size: 15px; color: #ccc; line-height: 1.5; margin: 0; }
+        
+        .meta-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          background: rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(255, 255, 255, 0.05);
           border-radius: 16px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          color: #888;
-          font-family: var(--font-nunito);
-          text-align: center;
+          padding: 20px;
         }
 
-        .sub-text { font-size: 12px; opacity: 0.5; margin-top: 8px; }
+        .meta-item { display: flex; flex-direction: column; gap: 4px; }
+        .col-span-2 { grid-column: span 2; } /* Makes the coordinates span the whole width */
+
+        .meta-label {
+          font-family: var(--font-chakra);
+          font-size: 10px; font-weight: 800;
+          color: #666; letter-spacing: 0.1em;
+        }
+
+        .meta-value {
+          font-family: var(--font-nunito);
+          font-size: 14px; font-weight: 700;
+          color: #eee;
+        }
+
+        .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
+        .text-muted { color: #888; font-style: italic; }
+        .text-neon-green { color: var(--neon-green, #00FF99); text-shadow: 0 0 10px rgba(0, 255, 153, 0.3); }
+        .text-neon-yellow { color: var(--neon-yellow, #FFD700); text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scalePop { 
-          from { opacity: 0; transform: scale(0.95) translateY(20px); } 
-          to { opacity: 1; transform: scale(1) translateY(0); } 
-        }
+        @keyframes scalePop { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
       `}</style>
     </div>
   );
