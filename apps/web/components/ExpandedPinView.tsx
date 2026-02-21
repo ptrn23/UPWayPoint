@@ -25,6 +25,8 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+
+        <div className="scroll-area custom-vertical-scrollbar">
         
         {/* HEADER */}
         <div className="modal-header">
@@ -104,6 +106,10 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
 
       </div>
 
+      <div className="bottom-fade"></div>
+
+      </div>
+
       <style jsx>{`
         .modal-overlay {
           position: fixed; inset: 0; 
@@ -115,14 +121,59 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
         .modal-content {
           background: rgba(10, 10, 12, 0.95);
           border: 1px solid rgba(255, 255, 255, 0.15);
-          border-top: 4px solid ${color}; border-radius: 24px;
-          width: 100%; max-width: 500px; padding: 28px;
-          display: flex; flex-direction: column;
+          border-top: 4px solid ${color}; 
+          border-radius: 24px;
+          width: 100%; 
+          max-width: 500px; 
+          
+          height: 70vh; 
+          
+          display: flex; 
+          flex-direction: column;
           box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
           animation: scalePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          max-height: 90vh; overflow-y: auto; /* Ensures card scrolls if screen is small */
+          
+          overflow: hidden; 
+          position: relative;
+          padding: 0; 
         }
-        .modal-content::-webkit-scrollbar { display: none; }
+
+        /* --- NEW SCROLL AREA & FADE --- */
+        .scroll-area {
+          flex: 1;
+          overflow-y: auto;
+          padding: 28px;
+          padding-bottom: 60px;
+        }
+
+        .bottom-fade {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 80px;
+          /* Fades from solid background color to transparent */
+          background: linear-gradient(to top, rgba(10, 10, 12, 1) 10%, rgba(10, 10, 12, 0) 100%);
+          pointer-events: none; /* Ensures you can still click text behind the fade */
+          border-bottom-left-radius: 24px;
+          border-bottom-right-radius: 24px;
+        }
+
+        .custom-vertical-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-vertical-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+          margin-top: 24px;
+          margin-bottom: 24px;
+        }
+        .custom-vertical-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: 10px;
+        }
+        .custom-vertical-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
 
         .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
         .badge { font-family: var(--font-chakra); font-size: 12px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
