@@ -4,75 +4,75 @@ import { Pin } from "@/types/waypoint";
 import { getFilterColor } from "@/components/TopBar";
 
 interface ExpandedPinViewProps {
-  pin: Pin;
-  onClose: () => void;
+    pin: Pin;
+    onClose: () => void;
 }
 
 type Comment = {
-  id: string;
-  author: string;
-  timeAgo: string;
-  text: string;
-  rating?: number;
-  upvotes: number;
-  replies?: Comment[];
+    id: string;
+    author: string;
+    timeAgo: string;
+    text: string;
+    rating?: number;
+    upvotes: number;
+    replies?: Comment[];
 };
 
 const MOCK_THREADS: Comment[] = [
-  {
-    id: "c1", author: "user001", timeAgo: "2 hours ago", rating: 5, upvotes: 124, text: "nice!",
-    replies: [
-      {
-        id: "c1-1", author: "user002", timeAgo: "1 hour ago", upvotes: 15, text: "wow i love it",
+    {
+        id: "c1", author: "user001", timeAgo: "2 hours ago", rating: 5, upvotes: 124, text: "nice!",
         replies: [
-          {
-            id: "c1-1-1", author: "user003", timeAgo: "45 mins ago", upvotes: 8, text: "me too!",
-            replies: [
-              { id: "c1-1-1-1", author: "user004", timeAgo: "10 mins ago", upvotes: 2, text: "woah!!!" }
-            ]
-          }
+            {
+                id: "c1-1", author: "user002", timeAgo: "1 hour ago", upvotes: 15, text: "wow i love it",
+                replies: [
+                    {
+                        id: "c1-1-1", author: "user003", timeAgo: "45 mins ago", upvotes: 8, text: "me too!",
+                        replies: [
+                            { id: "c1-1-1-1", author: "user004", timeAgo: "10 mins ago", upvotes: 2, text: "woah!!!" }
+                        ]
+                    }
+                ]
+            }
         ]
-      }
-    ]
-  },
-  {
-    id: "c2", author: "user005", timeAgo: "1 day ago", rating: 4, upvotes: 89, text: "k lang",
-    replies: []
-  }
+    },
+    {
+        id: "c2", author: "user005", timeAgo: "1 day ago", rating: 4, upvotes: 89, text: "k lang",
+        replies: []
+    }
 ];
 
 const CommentNode = ({ comment, depth = 0 }: { comment: Comment; depth: number }) => {
-  if (depth > 3) return null;
+    if (depth > 3) return null;
 
-  return (
-    <div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
-      <div className="comment-header">
-        <span className="comment-author">{comment.author}</span>
-        <span className="comment-time">{comment.timeAgo}</span>
-        {depth === 0 && comment.rating && (
-          <span className="comment-rating">{"★".repeat(comment.rating)} {comment.rating}/5</span>
-        )}
-      </div>
-      
-      <p className="comment-text">{comment.text}</p>
-      
-      <div className="comment-actions">
-        <button className="action-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-          {comment.upvotes}
-        </button>
-        <button className="action-btn">REPLY</button>
-      </div>
+    return (
+        <div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
+            <div className="comment-header">
+                <span className="comment-author">{comment.author}</span>
+                <span className="comment-time">{comment.timeAgo}</span>
+                {depth === 0 && comment.rating && (
+                    <span className="comment-rating">{"★".repeat(comment.rating)} {comment.rating}/5</span>
+                )}
+            </div>
 
-      {comment.replies && comment.replies.length > 0 && (
-        <div className="replies-container">
-          {comment.replies.map(reply => (
-            <CommentNode key={reply.id} comment={reply} depth={depth + 1} />
-          ))}
-        </div>
-      )}
-    
-      <style jsx>{`
+            <p className="comment-text">{comment.text}</p>
+
+            <div className="comment-actions">
+                <button className="action-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+                    {comment.upvotes}
+                </button>
+                <button className="action-btn">REPLY</button>
+            </div>
+
+            {comment.replies && comment.replies.length > 0 && (
+                <div className="replies-container">
+                    {comment.replies.map(reply => (
+                        <CommentNode key={reply.id} comment={reply} depth={depth + 1} />
+                    ))}
+                </div>
+            )}
+
+            <style jsx>{`
         .comment-node { margin-top: 16px; }
         .comment-node.is-reply {
           margin-left: 16px; padding-left: 16px; border-left: 2px solid rgba(255, 255, 255, 0.05); margin-top: 12px;
@@ -89,122 +89,122 @@ const CommentNode = ({ comment, depth = 0 }: { comment: Comment; depth: number }
         }
         .action-btn:hover { color: #fff; }
       `}</style>
-    </div>
-  );
+        </div>
+    );
 };
 
 export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
-  const color = getFilterColor(pin.type);
-  const mockTime = "2026-02-21 11:45 AM PST";
+    const color = getFilterColor(pin.type);
+    const mockTime = "2026-02-21 11:45 AM PST";
 
-  const mockImages = [
-    { id: 1, size: "large" },
-    { id: 2, size: "small" },
-    { id: 3, size: "small" },
-    { id: 4, size: "large" },
-    { id: 5, size: "small" },
-    { id: 6, size: "small" },
-    { id: 7, size: "large" },
-  ];
+    const mockImages = [
+        { id: 1, size: "large" },
+        { id: 2, size: "small" },
+        { id: 3, size: "small" },
+        { id: 4, size: "large" },
+        { id: 5, size: "small" },
+        { id: 6, size: "small" },
+        { id: 7, size: "large" },
+    ];
 
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
 
-        <div className="scroll-area custom-vertical-scrollbar">
-        
-        {/* HEADER */}
-        <div className="modal-header">
-          <div>
-            <span className="badge" style={{ color }}>{pin.type}</span>
-            <h2>{pin.title}</h2>
-          </div>
-          <button className="close-btn" onClick={onClose}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
+                <div className="scroll-area custom-vertical-scrollbar">
 
-        {/* HORIZONTAL BENTO GALLERY */}
-        <div className="photo-gallery custom-scrollbar">
-          {mockImages.map((img) => (
-            <div key={img.id} className={`photo-placeholder ${img.size}`}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                <polyline points="21 15 16 10 5 21"></polyline>
-              </svg>
+                    {/* HEADER */}
+                    <div className="modal-header">
+                        <div>
+                            <span className="badge" style={{ color }}>{pin.type}</span>
+                            <h2>{pin.title}</h2>
+                        </div>
+                        <button className="close-btn" onClick={onClose}>
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    {/* HORIZONTAL BENTO GALLERY */}
+                    <div className="photo-gallery custom-scrollbar">
+                        {mockImages.map((img) => (
+                            <div key={img.id} className={`photo-placeholder ${img.size}`}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* BODY: INTEL DASHBOARD */}
+                    <div className="modal-body">
+                        <p className="description">{pin.description}</p>
+
+                        <div className="meta-grid">
+                            {/* PIN ID */}
+                            <div className="meta-item">
+                                <span className="meta-label">PIN ID</span>
+                                <span className="meta-value font-mono">{pin.id.padStart(7, '0')}</span>
+                            </div>
+
+                            {/* OWNER */}
+                            <div className="meta-item">
+                                <span className="meta-label">OWNED BY</span>
+                                <span className="meta-value text-muted">Unclaimed</span>
+                            </div>
+
+                            {/* COORDINATES */}
+                            <div className="meta-item col-span-2">
+                                <span className="meta-label">COORDINATES (LAT, LNG)</span>
+                                <span className="meta-value font-mono">
+                                    {pin.position.lat.toFixed(6)}, {pin.position.lng.toFixed(6)}
+                                </span>
+                            </div>
+
+                            {/* STATUS */}
+                            <div className="meta-item">
+                                <span className="meta-label">STATUS</span>
+                                <span className="meta-value text-neon-green">VERIFIED</span>
+                            </div>
+
+                            {/* RATING */}
+                            <div className="meta-item">
+                                <span className="meta-label">AVG RATING</span>
+                                <span className="meta-value text-neon-yellow">★ 5.0 / 5.0</span>
+                            </div>
+
+                            {/* TIMESTAMPS */}
+                            <div className="meta-item">
+                                <span className="meta-label">CREATED AT</span>
+                                <span className="meta-value">{mockTime}</span>
+                            </div>
+                            <div className="meta-item">
+                                <span className="meta-label">LAST UPDATED</span>
+                                <span className="meta-value">{mockTime}</span>
+                            </div>
+                        </div>
+
+                        <div className="forum-section">
+                            <h3 className="section-title">FORUM</h3>
+                            <div className="forum-threads">
+                                {MOCK_THREADS.map(thread => (
+                                    <CommentNode key={thread.id} comment={thread} depth={0} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div className="bottom-fade"></div>
+
             </div>
-          ))}
-        </div>
 
-        {/* BODY: INTEL DASHBOARD */}
-        <div className="modal-body">
-          <p className="description">{pin.description}</p>
-
-          <div className="meta-grid">
-            {/* PIN ID */}
-            <div className="meta-item">
-              <span className="meta-label">PIN ID</span>
-              <span className="meta-value font-mono">{pin.id.padStart(7, '0')}</span>
-            </div>
-
-            {/* OWNER */}
-            <div className="meta-item">
-              <span className="meta-label">OWNED BY</span>
-              <span className="meta-value text-muted">Unclaimed</span>
-            </div>
-
-            {/* COORDINATES */}
-            <div className="meta-item col-span-2">
-              <span className="meta-label">COORDINATES (LAT, LNG)</span>
-              <span className="meta-value font-mono">
-                {pin.position.lat.toFixed(6)}, {pin.position.lng.toFixed(6)}
-              </span>
-            </div>
-
-            {/* STATUS */}
-            <div className="meta-item">
-              <span className="meta-label">STATUS</span>
-              <span className="meta-value text-neon-green">VERIFIED</span>
-            </div>
-
-            {/* RATING */}
-            <div className="meta-item">
-              <span className="meta-label">AVG RATING</span>
-              <span className="meta-value text-neon-yellow">★ 5.0 / 5.0</span>
-            </div>
-
-            {/* TIMESTAMPS */}
-            <div className="meta-item">
-              <span className="meta-label">CREATED AT</span>
-              <span className="meta-value">{mockTime}</span>
-            </div>
-            <div className="meta-item">
-              <span className="meta-label">LAST UPDATED</span>
-              <span className="meta-value">{mockTime}</span>
-            </div>
-          </div>
-
-          <div className="forum-section">
-            <h3 className="section-title">FORUM</h3>
-            <div className="forum-threads">
-              {MOCK_THREADS.map(thread => (
-                <CommentNode key={thread.id} comment={thread} depth={0} />
-              ))}
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div className="bottom-fade"></div>
-
-      </div>
-
-      <style jsx>{`
+            <style jsx>{`
         .modal-overlay {
           position: fixed; inset: 0; 
           background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
@@ -395,6 +395,6 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
         @keyframes scalePop { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes shimmer { 100% { left: 200%; } }
       `}</style>
-    </div>
-  );
+        </div>
+    );
 }
