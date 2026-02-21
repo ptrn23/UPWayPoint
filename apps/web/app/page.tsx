@@ -159,6 +159,7 @@ export default function Home() {
             selectedPin={selectedPin}
             isLocked={mode === "LOCKED"} 
             onLockClick={toggleLock}
+            onClearSelection={clearSelection}
         />
         
       </main>
