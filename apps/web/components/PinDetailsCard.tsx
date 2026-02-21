@@ -8,9 +8,10 @@ interface PinDetailsCardProps {
   isLocked: boolean;
   onLockClick: () => void;
   onClose?: () => void;
+  onExpand: () => void;
 }
 
-export function PinDetailsCard({ pin, isLocked, onLockClick, onClose }: PinDetailsCardProps) {
+export function PinDetailsCard({ pin, isLocked, onLockClick, onClose, onExpand }: PinDetailsCardProps) {
   const color = getFilterColor(pin.type);
 
   return (
@@ -24,7 +25,7 @@ export function PinDetailsCard({ pin, isLocked, onLockClick, onClose }: PinDetai
           </span>
         </div>
         
-        {/* Optional Close Button */}
+        {/* close button */}
         {onClose && (
           <button onClick={onClose} className="close-btn">
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -42,6 +43,9 @@ export function PinDetailsCard({ pin, isLocked, onLockClick, onClose }: PinDetai
 
       {/* FOOTER ACTIONS */}
       <div className="card-footer">
+        <button className="expand-button" onClick={onExpand}>
+          DETAILS
+        </button>
         <button 
           className="lock-button"
           onClick={onLockClick}
@@ -122,6 +126,22 @@ export function PinDetailsCard({ pin, isLocked, onLockClick, onClose }: PinDetai
           gap: 10px;
           margin-top: 8px;
         }
+
+        .expand-button {
+          padding: 14px 20px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: white;
+          font-weight: 900;
+          font-family: var(--font-chakra);
+          font-size: 13px;
+          letter-spacing: 0.05em;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .expand-button:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.1); }
 
         .lock-button {
           flex: 1;

@@ -1,6 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import { Pin } from "@/types/waypoint";
 import { getFilterColor } from "@/components/TopBar";
 import { PinDetailsCard } from "@/components/PinDetailsCard";
+import { ExpandedPinView } from "@/components/ExpandedPinView";
 
 interface HUDProps {
   selectedPin: Pin | null;
@@ -10,6 +14,13 @@ interface HUDProps {
 }
 
 export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked, onClearSelection }: HUDProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleClear = () => {
+    setIsExpanded(false);
+    if (onClearSelection) onClearSelection();
+  };
+
   return (
     <div style={{
       position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
@@ -57,6 +68,15 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked, onClearSele
             isLocked={isLocked} 
             onLockClick={onLockClick} 
             onClose={onClearSelection}
+            onExpand={() => setIsExpanded(true)}
+          />
+        )}
+
+        {/* EXPANDED MODAL LAYER (Renders on top of everything if isExpanded is true) */}
+        {selectedPin && isExpanded && (
+          <ExpandedPinView 
+            pin={selectedPin} 
+            onClose={() => setIsExpanded(false)}
           />
         )}
       </div>
