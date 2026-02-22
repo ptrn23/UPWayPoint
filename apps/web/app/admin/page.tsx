@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
-import Link from "next/link";
 
 const SignOutButton = () => {
 	const router = useRouter();
@@ -33,8 +32,7 @@ export default function Dashboard() {
 			<h1 className="text-2xl font-bold">
 				Welcome, {data?.name || "Unknown"}!
 			</h1>
-			<p className="mt-2">You made it to the protected area. 🎉</p>
-			<Link href="/admin">Admin Test Link</Link>
+			<p className="mt-2">You made it to the admin area. 🎉</p>
 			<SignOutButton />
 		</section>
 	);
