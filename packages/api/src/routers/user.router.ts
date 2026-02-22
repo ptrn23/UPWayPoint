@@ -1,7 +1,7 @@
-import { privateProcedure, router } from "../trpc";
+import { router, userProcedure } from "../trpc";
 
 export const userRouter = router({
-	getCurrent: privateProcedure.query(async ({ ctx }) => {
+	getCurrent: userProcedure.query(async ({ ctx }) => {
 		const id = ctx.user.id;
 		return ctx.services.user.getById(id);
 	}),
