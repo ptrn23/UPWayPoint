@@ -20,7 +20,7 @@ export function makePinService(
         return await _repositories_.pin.getByStatus(_status_);
     }
 
-    async function create(_data_: Parameters<typeof _repositories_.pin.create>[0]) {
+    async function create(_data_: Omit<Parameters<typeof _repositories_.pin.create>[0], "id">) {
         return await _repositories_.pin.create(_data_);
     }
 

@@ -5,9 +5,10 @@ import {
 	text,
 	timestamp,
 	boolean,
-	index, 
+	index,
 	doublePrecision,
 } from "drizzle-orm/pg-core";
+import { randomUUID } from "crypto";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
@@ -87,7 +88,9 @@ export const verification = pgTable(
 export const pins = pgTable(
 	"pins",
 	{
-		id: text("id").primaryKey(),
+		id: text("id")
+			.primaryKey()
+			.$defaultFn(() => randomUUID()),
 		status: text("status").notNull().default("PENDING_VERIFICATION"),
 		title: text("title").notNull(),
 		latitude: doublePrecision("latitude").notNull(),
@@ -97,7 +100,10 @@ export const pins = pgTable(
 			.notNull()
 			.references(() => user.id, { onDelete: "cascade" }),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at")
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
 	}
 )
 

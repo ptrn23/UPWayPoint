@@ -29,7 +29,6 @@ export const pinRouter = router({
     create: privateProcedure
         .input(
             z.object({
-                id: z.string(),
                 title: z.string().min(1),
                 description: z.string().optional(),
                 latitude: z.number().min(-90).max(90),
