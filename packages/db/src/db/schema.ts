@@ -6,7 +6,9 @@ import {
 	timestamp,
 	boolean,
 	index,
+	doublePrecision,
 } from "drizzle-orm/pg-core";
+import { randomUUID } from "crypto";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
@@ -83,6 +85,28 @@ export const verification = pgTable(
 	(table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const pins = pgTable(
+	"pins",
+	{
+		id: text("id")
+			.primaryKey()
+			.$defaultFn(() => randomUUID()),
+		status: text("status").notNull().default("PENDING_VERIFICATION"),
+		title: text("title").notNull(),
+		latitude: doublePrecision("latitude").notNull(),
+		longitude: doublePrecision("longitude").notNull(),
+		description: text("description"),
+		ownerId: text("owner_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at")
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
+	}
+)
+
 export const userRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
 	accounts: many(account),
@@ -100,4 +124,11 @@ export const accountRelations = relations(account, ({ one }) => ({
 		fields: [account.userId],
 		references: [user.id],
 	}),
+}));
+
+export const pinRelations = relations(pins, ({ one }) => ({
+    owner: one(user, {
+        fields: [pins.ownerId],
+        references: [user.id],
+    }),
 }));

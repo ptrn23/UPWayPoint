@@ -1,8 +1,9 @@
 import { db } from "./db/database";
-import { makeUserRepository } from "./repositories";
+import { makeUserRepository, makePinRepository } from "./repositories";
 
 export const repositories = {
 	user: makeUserRepository(db),
+	pin: makePinRepository(db),
 };
 
 export * from "./db/database";
