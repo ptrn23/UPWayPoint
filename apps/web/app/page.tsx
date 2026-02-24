@@ -3,6 +3,7 @@
 import { APIProvider, Map as GoogleMap, AdvancedMarker } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
+import { MapCursor } from "@/components/MapCursor";
 import { useWaypointState } from "@/hooks/useWaypointState";
 import { TopBar, FilterType } from "@/components/TopBar"; 
 import { useState } from "react"
@@ -96,6 +97,7 @@ export default function Home() {
   const { mode, selectedPin, selectPin, clearSelection, expandDetails, toggleMenu, toggleLock } = useWaypointState();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
@@ -119,6 +121,13 @@ export default function Home() {
             strictBounds: false
           }}
         >
+          <AdvancedMarker 
+            position={mockUserLocation} 
+            zIndex={50}
+          >
+            <MapCursor />
+          </AdvancedMarker>
+
           {HARDCODED_PINS.map((pinData) => {
               const matchesCategory = activeFilter === "all" || pinData.type === activeFilter;
               const matchesSearch = 
