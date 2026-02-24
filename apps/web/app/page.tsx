@@ -97,7 +97,9 @@ export default function Home() {
   const { mode, selectedPin, selectPin, clearSelection, expandDetails, toggleMenu, toggleLock } = useWaypointState();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
+
   const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
+  const mockHeading = 45;
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
@@ -125,7 +127,7 @@ export default function Home() {
             position={mockUserLocation} 
             zIndex={50}
           >
-            <MapCursor />
+            <MapCursor heading={mockHeading} />
           </AdvancedMarker>
 
           {HARDCODED_PINS.map((pinData) => {

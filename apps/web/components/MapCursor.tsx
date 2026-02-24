@@ -1,12 +1,16 @@
 "use client";
 
-export function MapCursor() {
-    return (
+interface MapCursorProps {
+  heading?: number;
+}
+
+export function MapCursor({ heading = 0 }: MapCursorProps) {
+  return (
         <div className="map-cursor-container">
             <div className="pulse-ring delay-1"></div>
             <div className="pulse-ring delay-2"></div>
 
-            <div className="cursor-arrow">
+            <div className="cursor-arrow" style={{ transform: `rotate(${heading}deg)` }}>
                 <svg
                     width="24"
                     height="24"
@@ -35,7 +39,10 @@ export function MapCursor() {
         }
         
         .cursor-arrow {
+          position: relative;
+          z-index: 10;
           filter: drop-shadow(0 0 8px var(--neon-blue, #00E5FF));
+          transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .pulse-ring {
