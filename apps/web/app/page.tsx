@@ -8,6 +8,8 @@ import { useWaypointState } from "@/hooks/useWaypointState";
 import { TopBar, FilterType } from "@/components/TopBar"; 
 import { useState } from "react"
 import { Pin } from "@/types/waypoint";
+import { TargetLine } from "@/components/TargetLine";
+import { getFilterColor } from "@/components/TopBar";
 
 // SPRINT 1: Hardcoded Data
 const HARDCODED_PINS: Pin[] = [
@@ -123,6 +125,14 @@ export default function Home() {
             strictBounds: false
           }}
         >
+          {mode === "LOCKED" && selectedPin && (
+                <TargetLine 
+                  start={mockUserLocation} 
+                  end={selectedPin.position} 
+                  color={getFilterColor(selectedPin.type)}
+                />
+              )}
+              
           <AdvancedMarker 
             position={mockUserLocation} 
             zIndex={50}
