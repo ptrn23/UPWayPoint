@@ -31,4 +31,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: pnpm install --frozen-lockfile
+
+
+      - name: Create .env for db and api packages
+        run: |
+          echo "DATABASE_URL=${DATABASE_URL}" > packages/db/.env
+        run: |
+          echo "DATABASE_URL=${DATABASE_URL}" > packages/api/.env
+
+
       - run: pnpm run test:api
