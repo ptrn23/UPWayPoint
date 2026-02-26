@@ -5,10 +5,10 @@ import { auth } from "@repo/auth";
 export async function createContext(opts: { req: Request }) {
 	const data = await auth.api.getSession({ headers: opts.req.headers });
 	if (!data?.session)
-		throw new TRPCError({
-			message: "Session does not exist",
-			code: "BAD_REQUEST",
-		});
+		return {
+			user: null,
+			services,
+		};
 
 	try {
 		const user = await services.user.getById(data?.session.userId);
