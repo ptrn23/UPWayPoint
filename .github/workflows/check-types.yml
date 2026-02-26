@@ -1,6 +1,6 @@
 # This workflow runs a type check and builds the relevant apps if there are changes to the apps.
 
-name: Type Check & Unit Test
+name: Type Checking
 
 on:
   push:
@@ -33,24 +33,3 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm run check-types
-
-# NO NEED FOR THIS SINCE WE DON'T HAVE BACKEND FUNCTIONS YET
-  # unit-tests:
-  #   needs: check-types
-  #   runs-on: ubuntu-latest
-
-  #   strategy:
-  #     matrix:
-  #       node-version: [20.x, 22.x]
-  #       # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: pnpm/action-setup@v2
-  #       with:
-  #         version: 9
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #     - run: pnpm install --frozen-lockfile
-  #     - run: pnpm test

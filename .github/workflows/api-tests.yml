@@ -1,0 +1,35 @@
+# This workflow runs a type check and builds the relevant apps if there are changes to the apps.
+
+name: API Tests on Supabase DB
+
+on:
+  workflow_dispatch:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  api-tests:
+    needs: test:api
+    runs-on: ubuntu-latest
+    
+    env: # makes env vars available to all steps
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test:api
