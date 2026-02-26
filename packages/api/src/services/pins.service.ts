@@ -1,4 +1,5 @@
 import type { Database, PinRepository } from "@repo/db";
+import { TRPCError } from "@trpc/server";
 
 export function makePinService(
 	_repositories_: { pin: PinRepository },
@@ -33,8 +34,14 @@ export function makePinService(
 		return await _repositories_.pin.update(_id_, _data_);
 	}
 
-	async function deleteById(_id_: string) {
-		// TODO: add a check for userId to see if it is the owner!!
+	async function deleteById(_id_: string, userId: string) {
+		const pin = await getById(_id_);
+		if (pin?.ownerId !== userId)
+			throw new TRPCError({
+				message: "User does not own this pin",
+				code: "FORBIDDEN",
+			});
+
 		return await _repositories_.pin.deleteById(_id_);
 	}
 
