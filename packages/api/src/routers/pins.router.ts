@@ -65,6 +65,6 @@ export const pinRouter = router({
 	delete: userProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.deleteById(input.id);
+			return ctx.services.pin.deleteById(input.id, ctx.user.id);
 		}),
 });
