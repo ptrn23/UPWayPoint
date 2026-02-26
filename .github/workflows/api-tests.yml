@@ -33,11 +33,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
 
-      - name: Create .env for db and api packages
-        run: |
-          echo "DATABASE_URL=${DATABASE_URL}" > packages/db/.env
-        run: |
-          echo "DATABASE_URL=${DATABASE_URL}" > packages/api/.env
+      - name: Create .env for db package
+        run: echo "DATABASE_URL=${DATABASE_URL}" > packages/db/.env
+      - name: Create .env for api package
+        run: echo "DATABASE_URL=${DATABASE_URL}" > packages/api/.env
 
 
       - run: pnpm run test:api
