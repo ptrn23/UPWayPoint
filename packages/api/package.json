@@ -8,7 +8,7 @@
 		"lint": "eslint . --max-warnings 0",
 		"generate:component": "turbo gen react-component",
 		"check-types": "tsc --noEmit",
-		"api-tests": "vitest"
+		"test": "vitest run"
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
