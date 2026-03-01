@@ -93,8 +93,7 @@ export function PinDetailsCard({ pin, isLocked, onLockClick, onClose, onExpand }
           font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 0.1em;
-          font-weight: 900;
-          font-family: var(--font-chakra);
+          font-family: var(--font-cubao-wide);
         }
 
         .close-btn {

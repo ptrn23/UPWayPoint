@@ -269,7 +269,7 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
             }
 
             .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-            .badge { font-family: var(--font-chakra); font-size: 12px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+            .badge { font-family: var(--font-cubao-wide); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
             h2 { font-family: var(--font-chakra); color: white; font-size: 26px; font-weight: 800; margin: 4px 0 0 0; }
 
             .close-btn {
