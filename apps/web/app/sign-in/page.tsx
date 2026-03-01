@@ -20,7 +20,7 @@ export default function SignIn() {
         <div className="header-section">
           <div className="shield-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue, #00E5FF)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <polygon points="12 3 21 12 12 21 3 12" />
             </svg>
           </div>
           
@@ -40,12 +40,144 @@ export default function SignIn() {
         
         {/* FOOTER */}
         <div className="footer-text">
-          <a href="https://github.com/ptrn23/UPWayPoint"> Source code available here. </a> <br />
+          <a href="https://github.com/ptrn23/UPWayPoint"> Source code available here </a> <br />
           v1.2.0
         </div>
       </div>
 
-      
+      <style jsx>{`
+        .sign-in-container {
+          position: relative;
+          display: flex;
+          min-height: 100vh;
+          align-items: center;
+          justify-content: center;
+          background-color: var(--bg-color, #0f1115);
+          overflow: hidden;
+          padding: 16px;
+        }
+
+        .glow-orb {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 500px;
+          height: 500px;
+          background: rgba(0, 229, 255, 0.1);
+          border-radius: 50%;
+          filter: blur(120px);
+          pointer-events: none;
+        }
+
+        .login-card {
+          position: relative;
+          z-index: 10;
+          width: 100%;
+          max-width: 380px;
+          border-radius: 24px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(10, 10, 12, 0.6);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          padding: 32px;
+          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+          animation: fadeUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .header-section {
+          text-align: center;
+          margin-bottom: 32px;
+        }
+
+        .shield-icon {
+          margin: 0 auto 20px auto;
+          display: flex;
+          height: 56px;
+          width: 56px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          border: 1px solid rgba(0, 229, 255, 0.5);
+          background: rgba(0, 229, 255, 0.1);
+          box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .login-title {
+          font-family: var(--font-cubao-wide), sans-serif;
+          font-weight: 100;
+          font-size: 32px;
+          color: white;
+          margin: 0 0 8px 0;
+          text-transform: uppercase;
+        }
+
+        .login-subtitle {
+          font-family: var(--font-nunito), sans-serif;
+          font-size: 14px;
+          color: #8899A6;
+          margin: 0;
+        }
+
+        .auth-btn {
+          position: relative;
+          display: flex;
+          width: 100%;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.05);
+          padding: 14px 24px;
+          font-family: var(--font-chakra), sans-serif;
+          font-size: 14px;
+          font-weight: 600;
+          color: white;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          letter-spacing: 0.05em;
+        }
+
+        .auth-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-btn:active {
+          transform: scale(0.98);
+        }
+
+        .google-icon {
+          height: 20px;
+          width: 20px;
+        }
+
+        .footer-text {
+          margin-top: 32px;
+          text-align: center;
+          font-family: var(--font-nunito), sans-serif;
+          font-size: 12px;
+          color: #555;
+          line-height: 1.5;
+        }
+
+        .footer-text a {
+          color: #555;
+        }
+
+        @keyframes fadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+
     </main>
   )
 }
