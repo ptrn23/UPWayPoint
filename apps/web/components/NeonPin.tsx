@@ -59,7 +59,7 @@ export function NeonPin({ pin, isSelected, isLocked, isVisible, onClick }: NeonP
             transform: "rotate(-45deg)",
             fontSize: "18px",
             color: isSelected ? "#000" : color,
-            fontWeight: "bold"
+            fontFamily: "var(--font-cubao-wide), sans-serif"
           }}>
             {pin.icon}
           </div>
