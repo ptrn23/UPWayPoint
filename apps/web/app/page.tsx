@@ -5,7 +5,7 @@ import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
 import { useWaypointState } from "@/hooks/useWaypointState";
 import { TopBar, FilterType } from "@/components/TopBar"; 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react";
 import { Pin } from "@/types/waypoint";
 
 // SPRINT 1: Hardcoded Data
@@ -98,6 +98,20 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingPin, setIsAddingPin] = useState(false);
   const [pins, setPins] = useState<Pin[]>(HARDCODED_PINS);
+  const cursorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isAddingPin) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${e.clientX - 24}px, ${e.clientY - 24}px)`;
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [isAddingPin]);
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
@@ -177,6 +191,38 @@ export default function Home() {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
         />
+
+        {/* TARGETING CROSSHAIR (Only visible when armed) */}
+        {isAddingPin && (
+          <div 
+            ref={cursorRef}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "48px",
+              height: "48px",
+              pointerEvents: "none", // Critical: Allows clicks to pass through to the map
+              zIndex: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--neon-blue, #00E5FF)",
+              filter: "drop-shadow(0 0 8px rgba(0, 229, 255, 0.8))",
+              transition: "opacity 0.2s ease",
+            }}
+          >
+            {/* Tactical Crosshair SVG */}
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="24" cy="24" r="10" strokeDasharray="4 4" />
+              <line x1="24" y1="2" x2="24" y2="10" />
+              <line x1="24" y1="38" x2="24" y2="46" />
+              <line x1="2" y1="24" x2="10" y2="24" />
+              <line x1="38" y1="24" x2="46" y2="24" />
+              <circle cx="24" cy="24" r="2" fill="currentColor" />
+            </svg>
+          </div>
+        )}
 
         {/* UI LAYER */}
         <HeadsUpDisplay
