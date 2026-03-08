@@ -96,6 +96,7 @@ export default function Home() {
   const { mode, selectedPin, selectPin, clearSelection, expandDetails, toggleMenu, toggleLock } = useWaypointState();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAddingPin, setIsAddingPin] = useState(false);
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
@@ -108,7 +109,19 @@ export default function Home() {
           mapId={process.env.NEXT_PUBLIC_MAP_ID || '71238adec955b8c6d66f595a'} 
           gestureHandling={'greedy'}
           disableDefaultUI={true}
-          onClick={() => clearSelection()}
+          onClick={(e) => {
+            if (isAddingPin) {
+              const lat = e.detail.latLng?.lat;
+              const lng = e.detail.latLng?.lng;
+              
+              if (lat && lng) {
+                console.log("New Pin Dropped at:", lat, lng);
+                setIsAddingPin(false); 
+              }
+            } else {
+              clearSelection();
+            }
+          }}
           restriction={{
             latLngBounds: {
               north: 14.663668,
@@ -160,6 +173,10 @@ export default function Home() {
             isLocked={mode === "LOCKED"} 
             onLockClick={toggleLock}
             onClearSelection={clearSelection}
+            onAddPinClick={() => {
+              clearSelection();
+              setIsAddingPin(true);
+            }}
         />
         
       </main>
