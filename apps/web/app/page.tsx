@@ -133,7 +133,7 @@ export default function Home() {
             strictBounds: false
           }}
         >
-          {HARDCODED_PINS.map((pinData) => {
+          {pins.map((pinData) => {
               const matchesCategory = activeFilter === "all" || pinData.type === activeFilter;
               const matchesSearch = 
                 pinData.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
