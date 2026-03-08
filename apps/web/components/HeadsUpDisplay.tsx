@@ -11,9 +11,10 @@ interface HUDProps {
   onLockClick: () => void;
   isLocked: boolean;
   onClearSelection?: () => void;
+  onAddPinClick?: () => void;
 }
 
-export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked, onClearSelection }: HUDProps) {
+export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked, onClearSelection, onAddPinClick }: HUDProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleClear = () => {
@@ -39,26 +40,18 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked, onClearSele
         marginBottom: "20px" 
       }}>
         
-        {/* RADAR / PROXIMITY (Only if NO pin is selected) */}
+        {/* ADD PIN BUTTON (Only if NO pin is selected) */}
         {!selectedPin && (
-          <div className="radar-container" style={{
-            background: "rgba(3, 3, 4, 0.6)",
-            backdropFilter: "blur(10px)",
-            padding: "10px 15px",
-            borderRadius: "12px",
-            border: "1px solid rgba(255,255,255,0.1)",
-            display: "flex",
-            gap: "20px",
-            animation: "fadeIn 0.5s ease-out"
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ color: "var(--neon-maroon)", animation: "pulse 2s infinite" }}>▲</div>
-              <div>
-                <div style={{ fontWeight: "bold", fontSize: "14px", color: "white" }}>Quezon Hall</div>
-                <div style={{ fontSize: "12px", color: "#888" }}>150m NE</div>
-              </div>
-            </div>
-          </div>
+          <button 
+            className="add-pin-btn"
+            onClick={onAddPinClick}
+            title="Deploy New Waypoint"
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
         )}
 
         {/* DETAILS CARD (Only if pin IS selected) */}
@@ -80,6 +73,41 @@ export function HeadsUpDisplay({ selectedPin, onLockClick, isLocked, onClearSele
           />
         )}
       </div>
+
+      {/* TACTICAL BUTTON STYLING */}
+      <style jsx>{`
+        .add-pin-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          background: rgba(0, 229, 255, 0.1);
+          border: 2px solid var(--neon-blue, #00E5FF);
+          color: var(--neon-blue, #00E5FF);
+          box-shadow: 0 0 20px rgba(0, 229, 255, 0.2), inset 0 0 10px rgba(0, 229, 255, 0.1);
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          animation: pulseGlow 2s infinite alternate;
+        }
+
+        .add-pin-btn:hover {
+          background: rgba(0, 229, 255, 0.2);
+          box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), inset 0 0 15px rgba(0, 229, 255, 0.2);
+          transform: scale(1.1);
+          color: #fff;
+        }
+
+        .add-pin-btn:active {
+          transform: scale(0.95);
+        }
+
+        @keyframes pulseGlow {
+          0% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.2), inset 0 0 10px rgba(0, 229, 255, 0.1); }
+          100% { box-shadow: 0 0 25px rgba(0, 229, 255, 0.5), inset 0 0 15px rgba(0, 229, 255, 0.2); }
+        }
+      `}</style>
     </div>
   );
 }

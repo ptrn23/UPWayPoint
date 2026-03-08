@@ -168,7 +168,7 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
                             {/* STATUS */}
                             <div className="meta-item">
                                 <span className="meta-label">STATUS</span>
-                                <span className="meta-value text-neon-green">VERIFIED</span>
+                                <span className="meta-value text-neon-green font-cubao-wide">VERIFIED</span>
                             </div>
 
                             {/* RATING */}
@@ -269,7 +269,7 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
             }
 
             .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-            .badge { font-family: var(--font-chakra); font-size: 12px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+            .badge { font-family: var(--font-cubao-wide); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
             h2 { font-family: var(--font-chakra); color: white; font-size: 26px; font-weight: 800; margin: 4px 0 0 0; }
 
             .close-btn {
@@ -387,6 +387,7 @@ export function ExpandedPinView({ pin, onClose }: ExpandedPinViewProps) {
             .meta-value { font-family: var(--font-nunito); font-size: 14px; font-weight: 700; color: #eee; }
 
             .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
+            .font-cubao-wide { font-family: var(--font-cubao-wide); font-weight: 100; letter-spacing: 0.1em;}
             .text-muted { color: #888; font-style: italic; }
             .text-neon-green { color: var(--neon-green, #00FF99); text-shadow: 0 0 10px rgba(0, 255, 153, 0.3); }
             .text-neon-yellow { color: var(--neon-yellow, #FFD700); text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
