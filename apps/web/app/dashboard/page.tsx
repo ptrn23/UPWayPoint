@@ -3,11 +3,10 @@
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
-import Link from "next/link";
 
 export default function Dashboard() {
-  const router = useRouter();
-  const { data } = trpc.user.getCurrent.useQuery();
+	const router = useRouter();
+	const { data } = trpc.user.getCurrent.useQuery();
 
 	const goToMap = () => router.push("/");
     const goToAdmin = () => router.push("/admin");
@@ -17,27 +16,27 @@ export default function Dashboard() {
 		router.refresh();
 	};
 
-  return (
-    <main className="dashboard-container">
-      
-      <div className="glow-orb"></div>
+	return (
+		<main className="dashboard-container">
 
-      <div className="dashboard-card">
-        
-        {/* HEADER SECTION */}
-        <div className="header-section">
-          <div className="status-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green, #00FF99)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          </div>
-          
-          <h1 className="title">
-            Welcome, {data?.name ? data.name.toUpperCase() : "OPERATOR"}!
-          </h1>
-          <p className="subtitle">You made it to the protected area. 🎉</p>
-        </div>
+			<div className="glow-orb"></div>
+
+			<div className="dashboard-card">
+
+				{/* HEADER SECTION */}
+				<div className="header-section">
+					<div className="status-icon">
+						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green, #00FF99)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+							<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+							<polyline points="22 4 12 14.01 9 11.01"></polyline>
+						</svg>
+					</div>
+
+					<h1 className="title">
+						Welcome, {data?.name ? data.name.toUpperCase() : "OPERATOR"}!
+					</h1>
+					<p className="subtitle">You made it to the protected area. 🎉</p>
+				</div>
 
 				{/* ACTIONS PORTAL */}
                 <div className="action-grid">
@@ -59,16 +58,16 @@ export default function Dashboard() {
                     </button>
                 </div>
 
-        {/* FOOTER & SIGN OUT */}
-        <div className="footer-section">
-          <button type="button" onClick={handleSignOut} className="sign-out-btn">
-            [ SIGN OUT ]
-          </button>
-        </div>
+				{/* FOOTER & SIGN OUT */}
+				<div className="footer-section">
+					<button type="button" onClick={handleSignOut} className="sign-out-btn">
+						[ SIGN OUT ]
+					</button>
+				</div>
 
-      </div>
+			</div>
 
-      <style jsx>{`
+			<style jsx>{`
         .dashboard-container {
           position: relative;
           display: flex;
@@ -149,50 +148,55 @@ export default function Dashboard() {
           display: flex;
           flex-direction: column;
           gap: 16px;
+          width: 100%;
         }
 
         .action-btn {
+          position: relative;
           display: flex;
+          width: 100%;
           align-items: center;
           justify-content: center;
           gap: 12px;
-          width: 100%;
-          padding: 16px;
           border-radius: 12px;
+          padding: 14px 24px;
           font-family: var(--font-chakra), sans-serif;
           font-size: 14px;
-          font-weight: 700;
-          letter-spacing: 0.1em;
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          cursor: pointer;
           transition: all 0.2s ease;
-          text-decoration: none;
         }
 
         .action-btn:active {
           transform: scale(0.98);
         }
 
+        /* PRIMARY BUTTON (Go to Map) */
         .primary-btn {
-          background: rgba(0, 229, 255, 0.1);
+          background: rgba(0, 229, 255, 0.05);
           border: 1px solid var(--neon-blue, #00E5FF);
           color: var(--neon-blue, #00E5FF);
-          box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+          box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.1);
         }
 
         .primary-btn:hover {
-          background: var(--neon-blue, #00E5FF);
-          color: #000;
-          box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
+          background: rgba(0, 229, 255, 0.15);
+          box-shadow: 0 0 20px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.2);
+          text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+          color: #fff;
         }
 
+        /* SECONDARY BUTTON (Admin) */
         .secondary-btn {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #ccc;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          color: #aaa;
         }
 
         .secondary-btn:hover {
           background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.3);
+          border-color: rgba(255, 255, 255, 0.4);
           color: #fff;
         }
 
@@ -226,6 +230,6 @@ export default function Dashboard() {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </main>
-  );
+		</main>
+	);
 }
