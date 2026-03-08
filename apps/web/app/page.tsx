@@ -97,6 +97,7 @@ export default function Home() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingPin, setIsAddingPin] = useState(false);
+  const [pins, setPins] = useState<Pin[]>(HARDCODED_PINS);
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
