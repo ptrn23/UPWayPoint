@@ -116,7 +116,17 @@ export default function Home() {
               const lng = e.detail.latLng?.lng;
               
               if (lat && lng) {
-                console.log("New Pin Dropped at:", lat, lng);
+                const newWaypoint: Pin = {
+                  id: `temp-${Date.now()}`,
+                  title: "New Pin",
+                  description: "Description here...",
+                  position: { lat, lng },
+                  type: "utility",
+                  icon: "?"
+                };
+                
+                setPins((prevPins) => [...prevPins, newWaypoint]);
+                selectPin(newWaypoint);
                 setIsAddingPin(false); 
               }
             } else {
