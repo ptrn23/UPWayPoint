@@ -3,11 +3,14 @@
 import { APIProvider, Map as GoogleMap, AdvancedMarker } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
+import { MapCursor } from "@/components/MapCursor";
 import { useWaypointState } from "@/hooks/useWaypointState";
 import { TopBar, FilterType } from "@/components/TopBar"; 
 import { AddPinModal } from "@/components/AddPinModal";
 import { useState, useEffect, useRef } from "react";
 import { Pin } from "@/types/waypoint";
+import { TargetLine } from "@/components/TargetLine";
+import { getFilterColor } from "@/components/TopBar";
 
 // SPRINT 1: Hardcoded Data
 const HARDCODED_PINS: Pin[] = [
@@ -115,6 +118,9 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [isAddingPin]);
 
+  const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
+  const mockHeading = 45;
+
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
       <main style={{ width: "100vw", height: "100vh", position: "relative" }}>
@@ -150,6 +156,22 @@ export default function Home() {
           }}
         >
           {pins.map((pinData) => {
+          {mode === "LOCKED" && selectedPin && (
+                <TargetLine 
+                  start={mockUserLocation} 
+                  end={selectedPin.position} 
+                  color={getFilterColor(selectedPin.type)}
+                />
+              )}
+              
+          <AdvancedMarker 
+            position={mockUserLocation} 
+            zIndex={50}
+          >
+            <MapCursor heading={mockHeading} />
+          </AdvancedMarker>
+
+          {HARDCODED_PINS.map((pinData) => {
               const matchesCategory = activeFilter === "all" || pinData.type === activeFilter;
               const matchesSearch = 
                 pinData.title.toLowerCase().includes(searchQuery.toLowerCase()) || 

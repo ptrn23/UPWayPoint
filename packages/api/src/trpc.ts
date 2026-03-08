@@ -5,10 +5,10 @@ import { auth } from "@repo/auth";
 export async function createContext(opts: { req: Request }) {
 	const data = await auth.api.getSession({ headers: opts.req.headers });
 	if (!data?.session)
-		throw new TRPCError({
-			message: "Session does not exist",
-			code: "BAD_REQUEST",
-		});
+		return {
+			user: null,
+			services,
+		};
 
 	try {
 		const user = await services.user.getById(data?.session.userId);
@@ -36,7 +36,7 @@ export const privateProcedure = t.procedure.use(async ({ ctx, next }) => {
 	if (!ctx.user)
 		throw new TRPCError({
 			message: "User is not logged in",
-			code: "UNAUTHORIZED",
+			code: "UNAUTHORIZED", // 401 for users without an acount
 		});
 
 	return next({
@@ -54,7 +54,7 @@ export const userProcedure = privateProcedure.use(async ({ ctx, next }) => {
 	if (userRole !== "user" && userRole !== "admin")
 		throw new TRPCError({
 			message: "Not a user or admin",
-			code: "FORBIDDEN",
+			code: "FORBIDDEN", // 403 for users WITH an account, but without access rights
 		});
 
 	return next({ ctx });
@@ -65,7 +65,7 @@ export const adminProcedure = privateProcedure.use(async ({ ctx, next }) => {
 	if (userRole !== "admin")
 		throw new TRPCError({
 			message: "User not an admin",
-			code: "FORBIDDEN",
+			code: "FORBIDDEN", // 403 for users WITH an account, but without access rights
 		});
 
 	return next({ ctx });
