@@ -5,6 +5,7 @@ import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
 import { useWaypointState } from "@/hooks/useWaypointState";
 import { TopBar, FilterType } from "@/components/TopBar"; 
+import { AddPinModal } from "@/components/AddPinModal";
 import { useState, useEffect, useRef } from "react";
 import { Pin } from "@/types/waypoint";
 
@@ -98,6 +99,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingPin, setIsAddingPin] = useState(false);
   const [pins, setPins] = useState<Pin[]>(HARDCODED_PINS);
+  const [pendingPinCoords, setPendingPinCoords] = useState<{lat: number, lng: number} | null>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -128,19 +130,9 @@ export default function Home() {
             if (isAddingPin) {
               const lat = e.detail.latLng?.lat;
               const lng = e.detail.latLng?.lng;
-              
+
               if (lat && lng) {
-                const newWaypoint: Pin = {
-                  id: `temp-${Date.now()}`,
-                  title: "New Pin",
-                  description: "Description here...",
-                  position: { lat, lng },
-                  type: "utility",
-                  icon: "?"
-                };
-                
-                setPins((prevPins) => [...prevPins, newWaypoint]);
-                selectPin(newWaypoint);
+                setPendingPinCoords({ lat, lng });
                 setIsAddingPin(false); 
               }
             } else {
@@ -235,6 +227,18 @@ export default function Home() {
               setIsAddingPin(true);
             }}
         />
+
+        {pendingPinCoords && (
+          <AddPinModal 
+            coords={pendingPinCoords}
+            onCancel={() => setPendingPinCoords(null)}
+            onSave={(newPin) => {
+              setPins((prev) => [...prev, newPin]);
+              selectPin(newPin);
+              setPendingPinCoords(null);
+            }}
+          />
+        )}
         
       </main>
     </APIProvider>
