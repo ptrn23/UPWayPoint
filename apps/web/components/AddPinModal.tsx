@@ -31,7 +31,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
       description: description.trim(),
       position: coords,
       type: type,
-      icon: iconMap[type],
+      icon: title.trim().charAt(0).toUpperCase() || iconMap[type]
     };
 
     onSave(newPin);
