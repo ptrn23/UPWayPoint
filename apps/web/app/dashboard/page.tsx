@@ -39,24 +39,25 @@ export default function Dashboard() {
           <p className="subtitle">You made it to the protected area. 🎉</p>
         </div>
 
-        {/* ACTIONS PORTAL */}
-        <div className="action-grid">
-          <Link href="/" className="action-btn primary-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-            </svg>
-            GO TO MAP
-          </Link>
+				{/* ACTIONS PORTAL */}
+                <div className="action-grid">
+                    {/* Primary Action: Go to Map */}
+                    <button className="action-btn primary-btn" onClick={goToMap}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                        </svg>
+                        GO TO MAP
+                    </button>
 
-          {/* Secondary Action: Admin */}
-          <Link href="/admin" className="action-btn secondary-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            ADMIN OVERRIDE
-          </Link>
-        </div>
+                    {/* Secondary Action: Admin */}
+                    <button className="action-btn secondary-btn" onClick={goToAdmin}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        ADMIN OVERRIDE
+                    </button>
+                </div>
 
         {/* FOOTER & SIGN OUT */}
         <div className="footer-section">
