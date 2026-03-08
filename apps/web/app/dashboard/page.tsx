@@ -9,10 +9,13 @@ export default function Dashboard() {
   const router = useRouter();
   const { data } = trpc.user.getCurrent.useQuery();
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.refresh();
-  };
+	const goToMap = () => router.push("/");
+    const goToAdmin = () => router.push("/admin");
+
+	const handleSignOut = async () => {
+		await signOut();
+		router.refresh();
+	};
 
   return (
     <main className="dashboard-container">
