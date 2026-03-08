@@ -13,6 +13,17 @@ interface TopBarProps {
 }
 
 export function TopBar({ onMenuClick, activeFilter, onFilterChange, searchQuery, onSearchChange }: TopBarProps) {
+  const router = useRouter();
+  const { data: user } = trpc.user.getCurrent.useQuery();
+
+  const handleProfileClick = () => {
+    if (user) {
+      router.push("/dashboard");
+    } else {
+      router.push("/sign-in");
+    }
+  };
+
   const filters: FilterType[] = ["all", "academic", "food", "social", "utility"];
 
   return (
