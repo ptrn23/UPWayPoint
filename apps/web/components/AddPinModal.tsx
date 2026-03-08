@@ -26,7 +26,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
     };
 
     const newPin: Pin = {
-      id: `pin-${Date.now()}`,
+      id: `${Date.now()}`,
       title: title.trim(),
       description: description.trim(),
       position: coords,
