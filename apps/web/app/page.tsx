@@ -155,23 +155,8 @@ export default function Home() {
             strictBounds: false
           }}
         >
-          {pins.map((pinData) => {
-          {mode === "LOCKED" && selectedPin && (
-                <TargetLine 
-                  start={mockUserLocation} 
-                  end={selectedPin.position} 
-                  color={getFilterColor(selectedPin.type)}
-                />
-              )}
-              
-          <AdvancedMarker 
-            position={mockUserLocation} 
-            zIndex={50}
-          >
-            <MapCursor heading={mockHeading} />
-          </AdvancedMarker>
 
-          {HARDCODED_PINS.map((pinData) => {
+        {pins.map((pinData) => {
               const matchesCategory = activeFilter === "all" || pinData.type === activeFilter;
               const matchesSearch = 
                 pinData.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
