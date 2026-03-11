@@ -7,6 +7,7 @@ import type {
 	pin,
 	pinTags,
 	tag,
+	pinImages,
 } from "./schema";
 
 export type Session = InferSelectModel<typeof session>;
@@ -15,6 +16,7 @@ export type Account = InferSelectModel<typeof account>;
 export type Verification = InferSelectModel<typeof verification>;
 export type Tag = InferSelectModel<typeof tag>;
 export type PinTags = InferSelectModel<typeof pinTags>;
+export type PinImages = InferSelectModel<typeof pinImages>;
 export type Pin = InferSelectModel<typeof pin>;
 export type CreatePin = InferInsertModel<typeof pin>;
 export type UpdatePin = Partial<CreatePin>;
@@ -43,5 +45,9 @@ export type PinWithTags =
 				};
 			}[];
 	  }
+	| undefined;
+
+export type PinDetails =
+	| (Pin & { pinTags: (PinTags & { tag: Tag })[]; images: PinImages[] })
 	| undefined;
 export type CreatePinTags = InferInsertModel<typeof pinTags>;

@@ -1,7 +1,13 @@
 import { eq, desc } from "drizzle-orm";
 import type { Database } from "../db/database";
 import { pin } from "../db/schema";
-import type { CreatePin, Pin, PinWithTags, UpdatePin } from "../db/types";
+import type {
+	CreatePin,
+	Pin,
+	PinWithTags,
+	PinDetails,
+	UpdatePin,
+} from "../db/types";
 
 export function makePinRepository(db: Database) {
 	async function getAll(): Promise<PinWithTags[]> {
@@ -11,7 +17,7 @@ export function makePinRepository(db: Database) {
 		return query;
 	}
 
-	async function getById(id: string): Promise<PinWithTags | undefined> {
+	async function getById(id: string): Promise<PinDetails | undefined> {
 		const query = await db.query.pin.findFirst({
 			where: eq(pin.id, id),
 			with: {
@@ -20,6 +26,7 @@ export function makePinRepository(db: Database) {
 						tag: true,
 					},
 				},
+				images: true,
 			},
 		});
 

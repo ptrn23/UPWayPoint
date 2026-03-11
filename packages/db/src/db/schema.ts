@@ -117,6 +117,17 @@ export const pinTags = pgTable(
 	(table) => [primaryKey({ columns: [table.pinId, table.tagId] })],
 );
 
+export const pinImages = pgTable("pin_images", {
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
+	pinId: text("pin_id")
+		.notNull()
+		.references(() => pin.id, { onDelete: "cascade" }),
+	url: text("url").notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const pin = pgTable("pin", {
 	id: text("id")
 		.primaryKey()
@@ -161,6 +172,7 @@ export const pinRelations = relations(pin, ({ one, many }) => ({
 		references: [user.id],
 	}),
 	pinTags: many(pinTags),
+	images: many(pinImages),
 }));
 
 export const tagRelations = relations(tag, ({ many }) => ({
@@ -170,4 +182,8 @@ export const tagRelations = relations(tag, ({ many }) => ({
 export const pinTagsRelations = relations(pinTags, ({ one }) => ({
 	pin: one(pin, { fields: [pinTags.pinId], references: [pin.id] }),
 	tag: one(tag, { fields: [pinTags.tagId], references: [tag.id] }),
+}));
+
+export const pinImagesRelations = relations(pinImages, ({ one }) => ({
+	pin: one(pin, { fields: [pinImages.pinId], references: [pin.id] }),
 }));
