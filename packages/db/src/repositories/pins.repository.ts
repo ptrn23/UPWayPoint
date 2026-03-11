@@ -1,52 +1,65 @@
 import { eq, desc } from "drizzle-orm";
 import type { Database } from "../db/database";
 import { pins } from "../db/schema";
+import type { CreatePin, Pin, UpdatePin } from "../db/types";
 
-export function makePinRepository(_db_: Database) {
-    async function getAll() {
-        const query = await _db_.select().from(pins).orderBy(desc(pins.createdAt));
-        return query;
-    }
+export function makePinRepository(db: Database) {
+	async function getAll(): Promise<Pin[]> {
+		const query = await db.select().from(pins).orderBy(desc(pins.createdAt));
+		return query;
+	}
 
-    async function getById(_id_: string) {
-        const query = await _db_.select().from(pins).where(eq(pins.id, _id_)).limit(1);
-        return query[0];
-    }
+	async function getById(id: string): Promise<Pin | undefined> {
+		const query = await db.select().from(pins).where(eq(pins.id, id)).limit(1);
+		return query[0];
+	}
 
-    async function getByOwnerId(_ownerId_: string) {
-        const query = await _db_.select().from(pins).where(eq(pins.ownerId, _ownerId_)).orderBy(desc(pins.createdAt));
-        return query;
-    }
+	async function getByOwnerId(ownerId: string): Promise<Pin[]> {
+		const query = await db
+			.select()
+			.from(pins)
+			.where(eq(pins.ownerId, ownerId))
+			.orderBy(desc(pins.createdAt));
+		return query;
+	}
 
-    async function getByStatus(_status_: string) {
-        const query = await _db_.select().from(pins).where(eq(pins.status, _status_)).orderBy(desc(pins.createdAt));
-        return query;
-    }
+	async function getByStatus(status: string): Promise<Pin[]> {
+		const query = await db
+			.select()
+			.from(pins)
+			.where(eq(pins.status, status))
+			.orderBy(desc(pins.createdAt));
+		return query;
+	}
 
-    async function create(_data_: typeof pins.$inferInsert) {
-        const [pin] = await _db_.insert(pins).values(_data_).returning();
-        return pin;
-    }
+	async function create(data: CreatePin): Promise<Pin | undefined> {
+		const [pin] = await db.insert(pins).values(data).returning();
+		return pin;
+	}
 
-    async function update(_id_: string, _data_: Partial<typeof pins.$inferInsert>) {
-        const [pin] = await _db_.update(pins).set({ ..._data_, updatedAt: new Date() }).where(eq(pins.id, _id_)).returning();
-        return pin;
-    }
+	async function update(id: string, data: UpdatePin): Promise<Pin | undefined> {
+		const [pin] = await db
+			.update(pins)
+			.set({ ...data, updatedAt: new Date() })
+			.where(eq(pins.id, id))
+			.returning();
+		return pin;
+	}
 
-    async function deleteById(_id_: string) {
-        const [deleted] = await _db_.delete(pins).where(eq(pins.id, _id_)).returning();
-        return deleted ? true : false;
-    }
+	async function deleteById(id: string): Promise<boolean> {
+		const [deleted] = await db.delete(pins).where(eq(pins.id, id)).returning();
+		return !!deleted;
+	}
 
-    return {
-        getAll,
-        getById,
-        getByOwnerId,
-        getByStatus,
-        create,
-        update,
-        deleteById,
-    };
+	return {
+		getAll,
+		getById,
+		getByOwnerId,
+		getByStatus,
+		create,
+		update,
+		deleteById,
+	};
 }
 
 export type PinRepository = ReturnType<typeof makePinRepository>;
