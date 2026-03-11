@@ -136,10 +136,8 @@ const CommentNode = ({
 };
 
 export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
-	const color = getFilterColor("academic");
-	const mockTime = "2026-02-21 11:45 AM PST";
-
 	const { data: pin } = trpc.pin.getById.useQuery({ id: pinId });
+	const color = getFilterColor(pin?.pinTags[0]?.tag.title || "");
 
 	const mockImages = [
 		{ id: 1, size: "large" },
@@ -163,7 +161,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 					<div className="modal-header">
 						<div>
 							<span className="badge" style={{ color }}>
-								{/* {pin.type} */}
+								{pin?.pinTags.map((pt) => pt.tag.title).join(", ")}
 							</span>
 							<h2>{pin?.title}</h2>
 						</div>
@@ -222,7 +220,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* OWNER */}
 							<div className="meta-item">
 								<span className="meta-label">OWNED BY</span>
-								<span className="meta-value text-muted">Unclaimed</span>
+								<span className="meta-value text-muted">{pin?.ownerId}</span>
 							</div>
 
 							{/* COORDINATES */}
@@ -237,7 +235,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							<div className="meta-item">
 								<span className="meta-label">STATUS</span>
 								<span className="meta-value text-neon-green font-cubao-wide">
-									VERIFIED
+									{pin?.status}
 								</span>
 							</div>
 
@@ -250,11 +248,23 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* TIMESTAMPS */}
 							<div className="meta-item">
 								<span className="meta-label">CREATED AT</span>
-								<span className="meta-value">{mockTime}</span>
+								<span className="meta-value">
+									{new Date(pin?.createdAt || "").toLocaleString("default", {
+										month: "long",
+										year: "numeric",
+										day: "2-digit",
+									})}
+								</span>
 							</div>
 							<div className="meta-item">
 								<span className="meta-label">LAST UPDATED</span>
-								<span className="meta-value">{mockTime}</span>
+								<span className="meta-value">
+									{new Date(pin?.updatedAt || "").toLocaleString("default", {
+										month: "long",
+										year: "numeric",
+										day: "2-digit",
+									})}
+								</span>
 							</div>
 						</div>
 
