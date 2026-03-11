@@ -8,6 +8,7 @@ import type {
 	pinTags,
 	tag,
 	pinImages,
+	comment,
 } from "./schema";
 
 export type Session = InferSelectModel<typeof session>;
@@ -15,9 +16,17 @@ export type User = InferSelectModel<typeof user>;
 export type Account = InferSelectModel<typeof account>;
 export type Verification = InferSelectModel<typeof verification>;
 export type Tag = InferSelectModel<typeof tag>;
+export type Comment = InferSelectModel<typeof comment>;
+export type CreateComment = InferInsertModel<typeof comment>;
+export type CommentWithReplies = Comment & {
+	replies: CommentWithReplies[];
+	authorName: string;
+};
+
 export type PinTags = InferSelectModel<typeof pinTags>;
 export type PinImages = InferSelectModel<typeof pinImages>;
 export type Pin = InferSelectModel<typeof pin>;
+
 export type CreatePin = InferInsertModel<typeof pin>;
 export type UpdatePin = Partial<CreatePin>;
 export type PinWithTags =
