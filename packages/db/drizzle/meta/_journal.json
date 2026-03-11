@@ -15,6 +15,13 @@
       "when": 1771757971690,
       "tag": "0001_smart_harpoon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773217981242,
+      "tag": "0002_outstanding_speed_demon",
+      "breakpoints": true
     }
   ]
 }

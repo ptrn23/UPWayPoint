@@ -53,7 +53,13 @@ export default function Home() {
 
 	return (
 		<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
-			<main style={{ width: "100vw", height: "100vh", position: "relative" }}>
+			<main
+				style={{
+					width: "100vw",
+					height: "100vh",
+					position: "relative",
+				}}
+			>
 				{/* MAP LAYER */}
 				<GoogleMap
 					defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
