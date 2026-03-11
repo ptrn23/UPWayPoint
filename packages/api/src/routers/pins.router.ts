@@ -1,3 +1,4 @@
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { publicProcedure, router, userProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -43,7 +44,7 @@ export const pinRouter = router({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.create(input);
+			return ctx.services.pin.create({ data: input, ownerId: ctx.user.id });
 		}),
 
 	update: userProcedure
@@ -68,3 +69,7 @@ export const pinRouter = router({
 			return ctx.services.pin.deleteById(input.id, ctx.user.id);
 		}),
 });
+
+type PinRouter = typeof pinRouter;
+export type PinRouterOutputs = inferRouterOutputs<PinRouter>;
+export type PinRouterInputs = inferRouterInputs<PinRouter>;
