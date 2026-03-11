@@ -1,10 +1,20 @@
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import type { verification, user, session, account, pin } from "./schema";
+import type {
+	verification,
+	user,
+	session,
+	account,
+	pin,
+	pinTags,
+	tag,
+} from "./schema";
 
 export type Session = InferSelectModel<typeof session>;
 export type User = InferSelectModel<typeof user>;
 export type Account = InferSelectModel<typeof account>;
 export type Verification = InferSelectModel<typeof verification>;
+export type Tag = InferSelectModel<typeof tag>;
+export type PinTags = InferSelectModel<typeof pinTags>;
 export type Pin = InferSelectModel<typeof pin>;
 export type CreatePin = InferInsertModel<typeof pin>;
 export type UpdatePin = Partial<CreatePin>;
@@ -34,3 +44,4 @@ export type PinWithTags =
 			}[];
 	  }
 	| undefined;
+export type CreatePinTags = InferInsertModel<typeof pinTags>;

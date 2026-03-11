@@ -87,7 +87,9 @@ export const verification = pgTable(
 );
 
 export const tag = pgTable("tag", {
-	id: text("id").primaryKey(),
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
 	title: text("title").notNull(),
 	color: text("color").default("#ffffff"),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
