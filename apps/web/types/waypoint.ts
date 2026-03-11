@@ -1,8 +1,1 @@
-export interface Pin {
-  id: string;
-  icon: string;
-  position: {lat: number, lng: number};
-  title: string;
-  type: "academic" | "food" | "social" | "transit" | "utility";
-  description?: string;
-}
+// let's use the return types of the router!

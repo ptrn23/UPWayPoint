@@ -1,101 +1,119 @@
 "use client";
 
+import { trpc } from "@/lib/trpc";
+import { PinRouterInputs } from "@repo/api";
 import { useState } from "react";
-import { Pin } from "@/types/waypoint";
+
+type Pin = PinRouterInputs["create"];
 
 interface AddPinModalProps {
-  coords: { lat: number; lng: number };
-  onSave: (pin: Pin) => void;
-  onCancel: () => void;
+	coords: { lat: number; lng: number };
+	onSave: (pin: Pin) => void;
+	onCancel: () => void;
 }
 
 export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState<"academic" | "food" | "social" | "utility">("utility");
+	const createPin = trpc.pin.create.useMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
+	const [type, setType] = useState<"academic" | "food" | "social" | "utility">(
+		"utility",
+	);
 
-    const iconMap = {
-      academic: "?",
-      food: "?",
-      social: "?",
-      utility: "?"
-    };
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!title.trim()) return;
 
-    const newPin: Pin = {
-      id: `${Date.now()}`,
-      title: title.trim(),
-      description: description.trim(),
-      position: coords,
-      type: type,
-      icon: title.trim().charAt(0).toUpperCase() || iconMap[type]
-    };
+		const iconMap = {
+			academic: "?",
+			food: "?",
+			social: "?",
+			utility: "?",
+		};
 
-    onSave(newPin);
-  };
+		const newPin: Pin = {
+			id: `${Date.now()}`,
+			title: title.trim(),
+			description: description.trim(),
+			position: coords,
+			type: type,
+			icon: title.trim().charAt(0).toUpperCase() || iconMap[type],
+		};
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal-card">
-        
-        <div className="modal-header">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue, #00E5FF)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <h2 className="modal-title">ADD NEW PIN</h2>
-        </div>
+		onSave(newPin);
+	};
 
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="input-group">
-            <label>PIN TITLE</label>
-            <input 
-              type="text" 
-              value={title} 
-              onChange={(e) => setTitle(e.target.value)} 
-              placeholder="e.g. Quezon Hall" 
-              required
-              autoFocus
-            />
-          </div>
+	return (
+		<div className="modal-overlay">
+			<div className="modal-card">
+				<div className="modal-header">
+					<svg
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="var(--neon-blue, #00E5FF)"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="12" y1="5" x2="12" y2="19"></line>
+						<line x1="5" y1="12" x2="19" y2="12"></line>
+					</svg>
+					<h2 className="modal-title">ADD NEW PIN</h2>
+				</div>
 
-          <div className="input-group">
-            <label>DESCRIPTION</label>
-            <textarea 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)} 
-              placeholder="Enter description..." 
-              rows={3}
-            />
-          </div>
+				<form onSubmit={handleSubmit} className="modal-form">
+					<div className="input-group">
+						<span>PIN TITLE</span>
+						<input
+							type="text"
+							value={title}
+							onChange={(e) => setTitle(e.target.value)}
+							placeholder="e.g. Quezon Hall"
+							required
+						/>
+					</div>
 
-          <div className="input-group">
-            <label>PIN TYPE</label>
-            <div className="type-selector">
-              {(["academic", "food", "social", "utility"] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  className={`type-btn ${type === t ? "active" : ""}`}
-                  onClick={() => setType(t)}
-                >
-                  {t.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          </div>
+					<div className="input-group">
+						<span>DESCRIPTION</span>
+						<textarea
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+							placeholder="Enter description..."
+							rows={3}
+						/>
+					</div>
 
-          <div className="action-row">
-            <button type="button" className="cancel-btn" onClick={onCancel}>CANCEL</button>
-            <button type="submit" className="save-btn" disabled={!title.trim()}>CONFIRM</button>
-          </div>
-        </form>
-      </div>
+					<div className="input-group">
+						<span>PIN TYPE</span>
+						<div className="type-selector">
+							{(["academic", "food", "social", "utility"] as const).map((t) => (
+								<button
+									key={t}
+									type="button"
+									className={`type-btn ${type === t ? "active" : ""}`}
+									onClick={() => setType(t)}
+								>
+									{t.toUpperCase()}
+								</button>
+							))}
+						</div>
+					</div>
 
-      <style jsx>{`
+					<div className="action-row">
+						<button type="button" className="cancel-btn" onClick={onCancel}>
+							CANCEL
+						</button>
+						<button type="submit" className="save-btn" disabled={!title.trim()}>
+							CONFIRM
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<style jsx>{`
         .modal-overlay {
           position: fixed;
           top: 0; left: 0; width: 100vw; height: 100vh;
@@ -254,6 +272,6 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>
-    </div>
-  );
+		</div>
+	);
 }
