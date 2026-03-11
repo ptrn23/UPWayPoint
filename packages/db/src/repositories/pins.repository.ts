@@ -65,7 +65,15 @@ export function makePinRepository(db: Database) {
 		return p;
 	}
 
-	async function deleteById(id: string): Promise<boolean> {
+	async function userDeleteById(id: string): Promise<boolean> {
+		const [deleted] = await db
+			.update(pin)
+			.set({ status: "DELETED",updatedAt: new Date()})
+			.where(eq(pin.id, id))
+			.returning();
+		return !!deleted;
+	}
+	async function adminDeleteById(id: string): Promise<boolean> {
 		const [deleted] = await db.delete(pin).where(eq(pin.id, id)).returning();
 		return !!deleted;
 	}
@@ -77,7 +85,8 @@ export function makePinRepository(db: Database) {
 		getByStatus,
 		create,
 		update,
-		deleteById,
+		userDeleteById,
+		adminDeleteById,
 	};
 }
 
