@@ -8,4 +8,8 @@ export const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
-export type { PinRouterOutputs, PinRouterInputs } from "./pins.router";
+
+export type {
+	PinRouterOutputs,
+	PinRouterInputs,
+} from "./pins.router";

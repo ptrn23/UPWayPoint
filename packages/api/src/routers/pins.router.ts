@@ -9,6 +9,13 @@ const PinStatus = z.enum([
 	"DELETED",
 ]);
 
+const pinCreationSchema = z.object({
+	title: z.string().min(1),
+	description: z.string().optional(),
+	latitude: z.number().min(-90).max(90),
+	longitude: z.number().min(-180).max(180),
+});
+
 export const pinRouter = router({
 	getAll: publicProcedure.query(async ({ ctx }) => {
 		return ctx.services.pin.getAll();
@@ -33,14 +40,7 @@ export const pinRouter = router({
 		}),
 
 	create: userProcedure
-		.input(
-			z.object({
-				title: z.string().min(1),
-				description: z.string().optional(),
-				latitude: z.number().min(-90).max(90),
-				longitude: z.number().min(-180).max(180),
-			}),
-		)
+		.input(pinCreationSchema)
 		.mutation(async ({ ctx, input }) => {
 			return ctx.services.pin.create({
 				...input,

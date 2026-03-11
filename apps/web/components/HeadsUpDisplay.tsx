@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { getFilterColor } from "@/components/TopBar";
 import { PinDetailsCard } from "@/components/PinDetailsCard";
 import { ExpandedPinView } from "@/components/ExpandedPinView";
+import { useSession } from "@/lib/auth-client";
 
 interface HUDProps {
 	selectedPinId: string | null;
@@ -27,6 +28,8 @@ export function HeadsUpDisplay({
 		if (onClearSelection) onClearSelection();
 	};
 
+	const { data: sessionData } = useSession();
+	const isLoggedIn = useMemo(() => !!sessionData?.user.id, [sessionData]);
 	return (
 		<div
 			style={{
@@ -54,8 +57,8 @@ export function HeadsUpDisplay({
 					marginBottom: "20px",
 				}}
 			>
-				{/* ADD PIN BUTTON (Only if NO pin is selected) */}
-				{!selectedPinId && (
+				{/* ADD PIN BUTTON (Only if NO pin is selected AND we are logged in) */}
+				{!selectedPinId && isLoggedIn && (
 					<button
 						type="button"
 						className="add-pin-btn"

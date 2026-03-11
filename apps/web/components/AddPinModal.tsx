@@ -2,7 +2,19 @@
 
 import { trpc } from "@/lib/trpc";
 import type { PinRouterInputs } from "@repo/api";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import z from "zod";
+
+const pinCreationSchema = z.object({
+	title: z.string().min(1),
+	description: z.string().optional(),
+	latitude: z.number().min(-90).max(90),
+	longitude: z.number().min(-180).max(180),
+});
+
+type pinCreationSchemaType = z.infer<typeof pinCreationSchema>;
 
 type Pin = Omit<PinRouterInputs["create"], "ownerId">;
 
@@ -11,35 +23,23 @@ interface AddPinModalProps {
 	onSave: (pinId: string) => void;
 	onCancel: () => void;
 }
-const iconMap = {
-	academic: "?",
-	food: "?",
-	social: "?",
-	utility: "?",
-};
 
 export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
+	const utils = trpc.useUtils();
 	const createPin = trpc.pin.create.useMutation({
 		onSuccess: (newPin) => {
+			utils.pin.getAll.invalidate(); // this forces a refresh on the main page
 			if (!newPin) return;
-
 			onSave(newPin.id);
 		},
 	});
 
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
-	const [type, setType] = useState<"academic" | "food" | "social" | "utility">(
-		"utility",
-	);
+	const formMethods = useForm({ resolver: zodResolver(pinCreationSchema) });
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!title.trim()) return;
-
+	const onSubmit = (data: pinCreationSchemaType) => {
 		const newPin: Pin = {
-			title: title.trim(),
-			description: description.trim(),
+			title: data.title.trim(),
+			description: data.description?.trim(),
 			latitude: coords.lat,
 			longitude: coords.lng,
 			// type: type,
@@ -48,6 +48,17 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 
 		createPin.mutate(newPin);
 	};
+
+	const handleCancel = () => {
+		formMethods.clearErrors();
+		formMethods.reset();
+		onCancel();
+	};
+
+	useEffect(() => {
+		formMethods.setValue("latitude", coords.lat);
+		formMethods.setValue("longitude", coords.lng);
+	}, [formMethods, coords]);
 
 	return (
 		<div className="modal-overlay">
@@ -69,29 +80,30 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 					<h2 className="modal-title">ADD NEW PIN</h2>
 				</div>
 
-				<form onSubmit={handleSubmit} className="modal-form">
+				<form
+					onSubmit={formMethods.handleSubmit(onSubmit)}
+					className="modal-form"
+				>
 					<div className="input-group">
 						<span>PIN TITLE</span>
 						<input
 							type="text"
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
 							placeholder="e.g. Quezon Hall"
 							required
+							{...formMethods.register("title")}
 						/>
 					</div>
 
 					<div className="input-group">
 						<span>DESCRIPTION</span>
 						<textarea
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
 							placeholder="Enter description..."
 							rows={3}
+							{...formMethods.register("description")}
 						/>
 					</div>
 
-					<div className="input-group">
+					{/* <div className="input-group">
 						<span>PIN TYPE</span>
 						<div className="type-selector">
 							{(["academic", "food", "social", "utility"] as const).map((t) => (
@@ -105,13 +117,13 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 								</button>
 							))}
 						</div>
-					</div>
+					</div> */}
 
 					<div className="action-row">
-						<button type="button" className="cancel-btn" onClick={onCancel}>
+						<button type="button" className="cancel-btn" onClick={handleCancel}>
 							CANCEL
 						</button>
-						<button type="submit" className="save-btn" disabled={!title.trim()}>
+						<button type="submit" className="save-btn">
 							CONFIRM
 						</button>
 					</div>
