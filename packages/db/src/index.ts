@@ -4,6 +4,7 @@ import {
 	makePinRepository,
 	makeTagRepository,
 	makePinImagesRepository,
+	makeCommentRepository,
 } from "./repositories";
 import { makePinTagsRepository } from "./repositories/pinTags.repository";
 
@@ -13,6 +14,7 @@ export const repositories = {
 	pinTags: makePinTagsRepository(db),
 	tag: makeTagRepository(db),
 	pinImages: makePinImagesRepository(db),
+	comment: makeCommentRepository(db),
 };
 
 export * from "./db/database";
