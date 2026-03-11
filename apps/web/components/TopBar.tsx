@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
+import { useSession } from "@/lib/auth-client";
 
 export type FilterType = "all" | "academic" | "food" | "social" | "utility";
 
@@ -21,10 +22,10 @@ export function TopBar({
 	onSearchChange,
 }: TopBarProps) {
 	const router = useRouter();
-	const { data: user } = trpc.user.getCurrent.useQuery();
+	const { data: sessionData } = useSession();
 
 	const handleProfileClick = () => {
-		if (user) {
+		if (sessionData?.user) {
 			router.push("/dashboard");
 		} else {
 			router.push("/sign-in");
@@ -121,14 +122,18 @@ export function TopBar({
 						type="button"
 						className="icon-button profile-btn"
 						onClick={handleProfileClick}
-						title={user ? "Access Dashboard" : "System Login"}
+						title={sessionData?.user ? "Access Dashboard" : "System Login"}
 					>
 						<svg
 							width="20"
 							height="20"
 							viewBox="0 0 24 24"
 							fill="none"
-							stroke={user ? "var(--neon-green, #00FF99)" : "currentColor"}
+							stroke={
+								sessionData?.user
+									? "var(--neon-green, #00FF99)"
+									: "currentColor"
+							}
 							strokeWidth="2.5"
 						>
 							<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
