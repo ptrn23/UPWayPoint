@@ -26,7 +26,7 @@ export function makePinService(
 		return await repositories.pin.getByStatus(status);
 	}
 
-	async function create(data: CreatePin, tags: string[]) {
+	async function create(data: CreatePin, tags: string[], imageURLs: string[]) {
 		const res = await repositories.pin.create(data);
 
 		if (!res)

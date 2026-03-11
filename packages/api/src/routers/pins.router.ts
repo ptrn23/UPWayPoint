@@ -1,6 +1,7 @@
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { publicProcedure, router, userProcedure } from "../trpc";
 import { z } from "zod";
+import { pinCreationSchema } from "../schemas";
 
 const PinStatus = z.enum([
 	"PENDING_VERIFICATION",
@@ -8,14 +9,6 @@ const PinStatus = z.enum([
 	"ARCHIVED",
 	"DELETED",
 ]);
-
-const pinCreationSchema = z.object({
-	title: z.string().min(1),
-	description: z.string().optional(),
-	latitude: z.number().min(-90).max(90),
-	longitude: z.number().min(-180).max(180),
-	tags: z.array(z.string()),
-});
 
 export const pinRouter = router({
 	getAll: publicProcedure.query(async ({ ctx }) => {
@@ -50,6 +43,7 @@ export const pinRouter = router({
 					ownerId: ctx.user.id,
 				},
 				input.tags,
+				input.imageURLs,
 			);
 		}),
 

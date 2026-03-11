@@ -6,15 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import z from "zod";
-const pinCreationSchema = z.object({
-	title: z.string().min(1),
-	description: z.string().optional(),
-	latitude: z.number().min(-90).max(90),
-	longitude: z.number().min(-180).max(180),
-	tags: z.array(z.string()),
-});
-
-type pinCreationSchemaType = z.infer<typeof pinCreationSchema>;
+import { fileSchema } from "@repo/api/schemas";
 
 type Pin = Omit<PinRouterInputs["create"], "ownerId">;
 
@@ -24,7 +16,32 @@ interface AddPinModalProps {
 	onCancel: () => void;
 }
 
+async function uploadImages(files: File[]): Promise<string[]> {
+	const formData = new FormData();
+	files.forEach((file) => {
+		formData.append("images", file);
+	});
+
+	const res = await fetch("/api/upload", { method: "POST", body: formData });
+	const { urls } = await res.json();
+	return urls;
+}
+
 export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
+	const pinCreationSchema = z.object({
+		title: z.string().min(1),
+		description: z.string().optional(),
+		latitude: z.number().min(-90).max(90),
+		longitude: z.number().min(-180).max(180),
+		tags: z.array(z.string()),
+		images: z
+			.instanceof(FileList)
+			.transform((list) => Array.from(list))
+			.pipe(z.array(fileSchema).max(10)),
+	});
+
+	type pinCreationSchemaType = z.infer<typeof pinCreationSchema>;
+
 	const utils = trpc.useUtils();
 	const createPin = trpc.pin.create.useMutation({
 		onSuccess: (newPin) => {
@@ -40,13 +57,16 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 		resolver: zodResolver(pinCreationSchema),
 	});
 
-	const onSubmit = (data: pinCreationSchemaType) => {
+	const onSubmit = async (data: pinCreationSchemaType) => {
+		let urls: string[] = [];
+		if (data.images.length > 0) urls = await uploadImages(data.images);
 		const newPin: Pin = {
 			title: data.title.trim(),
 			description: data.description?.trim(),
 			latitude: coords.lat,
 			longitude: coords.lng,
 			tags: data.tags,
+			imageURLs: urls,
 		};
 
 		createPin.mutate(newPin);
@@ -132,6 +152,13 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 							))}
 						</div>
 					</div>
+
+					<input
+						type="file"
+						accept="image/jpeg,image/png,image/jpg"
+						multiple
+						{...formMethods.register("images")}
+					/>
 
 					<div className="action-row">
 						<button type="button" className="cancel-btn" onClick={handleCancel}>
