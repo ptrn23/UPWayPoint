@@ -6,6 +6,7 @@ import type {
 	PinTagsRepository,
 } from "@repo/db";
 import { TRPCError } from "@trpc/server";
+import type { CommentService } from "./comment.service";
 
 export function makePinService(
 	repositories: {
@@ -13,6 +14,7 @@ export function makePinService(
 		pinTags: PinTagsRepository;
 		pinImages: PinImagesRepository;
 	},
+	services: { comment: CommentService },
 	db: Database,
 ) {
 	async function getAll() {
@@ -20,7 +22,9 @@ export function makePinService(
 	}
 
 	async function getById(id: string) {
-		return await repositories.pin.getById(id);
+		const pin = await repositories.pin.getById(id);
+		const comments = await services.comment.getByPinId(id);
+		return { ...pin, comments: comments };
 	}
 
 	async function getByOwnerId(ownerId: string) {
