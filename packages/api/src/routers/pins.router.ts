@@ -14,6 +14,7 @@ const pinCreationSchema = z.object({
 	description: z.string().optional(),
 	latitude: z.number().min(-90).max(90),
 	longitude: z.number().min(-180).max(180),
+	tags: z.array(z.string()),
 });
 
 export const pinRouter = router({
@@ -42,11 +43,14 @@ export const pinRouter = router({
 	create: userProcedure
 		.input(pinCreationSchema)
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.create({
-				...input,
-				status: PinStatus.enum.PENDING_VERIFICATION,
-				ownerId: ctx.user.id,
-			});
+			return ctx.services.pin.create(
+				{
+					...input,
+					status: PinStatus.enum.PENDING_VERIFICATION,
+					ownerId: ctx.user.id,
+				},
+				input.tags,
+			);
 		}),
 
 	update: userProcedure
