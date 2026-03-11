@@ -4,8 +4,10 @@ import { pin } from "../db/schema";
 import type { CreatePin, Pin, PinWithTags, UpdatePin } from "../db/types";
 
 export function makePinRepository(db: Database) {
-	async function getAll(): Promise<Pin[]> {
-		const query = await db.select().from(pin).orderBy(desc(pin.createdAt));
+	async function getAll(): Promise<PinWithTags[]> {
+		const query = await db.query.pin.findMany({
+			with: { pinTags: { with: { tag: true } } },
+		});
 		return query;
 	}
 
