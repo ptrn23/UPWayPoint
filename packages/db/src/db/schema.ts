@@ -8,6 +8,7 @@ import {
 	index,
 	doublePrecision,
 	primaryKey,
+	integer,
 } from "drizzle-orm/pg-core";
 import { randomUUID } from "crypto";
 
@@ -147,9 +148,31 @@ export const pin = pgTable("pin", {
 		.notNull(),
 });
 
+export const comment = pgTable("comment", {
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
+	message: text("message").notNull(),
+	ownerId: text("owner_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	parentId: text("parent_id"),
+	pinId: text("pin_id")
+		.notNull()
+		.references(() => pin.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at")
+		.defaultNow()
+		.$onUpdate(() => new Date())
+		.notNull(),
+	deletedAt: timestamp("deleted_at"),
+});
+
 export const userRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
 	accounts: many(account),
+	pins: many(pin),
+	comments: many(comment),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -173,6 +196,7 @@ export const pinRelations = relations(pin, ({ one, many }) => ({
 	}),
 	pinTags: many(pinTags),
 	images: many(pinImages),
+	comments: many(comment),
 }));
 
 export const tagRelations = relations(tag, ({ many }) => ({
@@ -186,4 +210,14 @@ export const pinTagsRelations = relations(pinTags, ({ one }) => ({
 
 export const pinImagesRelations = relations(pinImages, ({ one }) => ({
 	pin: one(pin, { fields: [pinImages.pinId], references: [pin.id] }),
+}));
+
+export const commentRelations = relations(comment, ({ one, many }) => ({
+	owner: one(user, { fields: [comment.ownerId], references: [user.id] }),
+	pin: one(pin, { fields: [comment.pinId], references: [pin.id] }),
+	parent: one(comment, {
+		fields: [comment.parentId],
+		references: [comment.id],
+	}),
+	replies: many(comment),
 }));

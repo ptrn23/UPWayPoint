@@ -22,7 +22,9 @@ export function PinDetailsCard({
 		{ id: pinId },
 		{ refetchOnWindowFocus: false },
 	);
-	const color = getFilterColor(pin?.pinTags[0]?.tag.title || "");
+	const color = getFilterColor(
+		pin?.pinTags ? pin?.pinTags[0]?.tag.title || "" : "",
+	);
 
 	return (
 		<div className="details-card">
@@ -31,7 +33,7 @@ export function PinDetailsCard({
 				<div>
 					<h2>{pin?.title}</h2>
 					<span className="badge" style={{ color: color }}>
-						{pin?.pinTags.map((pt) => pt.tag.title).join(", ")}
+						{pin?.pinTags?.map((pt) => pt.tag.title).join(", ")}
 					</span>
 				</div>
 

@@ -29,6 +29,13 @@
       "when": 1773230033373,
       "tag": "0003_unknown_blacklash",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773235656634,
+      "tag": "0004_parched_the_hand",
+      "breakpoints": true
     }
   ]
 }

@@ -2,7 +2,12 @@
 
 import { getFilterColor } from "@/components/TopBar";
 import { trpc } from "@/lib/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
+
 interface ExpandedPinViewProps {
 	pinId: string;
 	onClose: () => void;
@@ -10,60 +15,22 @@ interface ExpandedPinViewProps {
 
 type Comment = {
 	id: string;
-	author: string;
-	timeAgo: string;
-	text: string;
-	rating?: number;
-	upvotes: number;
-	replies?: Comment[];
+	createdAt: string;
+	updatedAt: string;
+	ownerId: string;
+	pinId: string;
+	message: string;
+	parentId: string | null;
+	deletedAt: string | null;
+	replies: Comment[];
+	authorName: string;
 };
 
-const MOCK_THREADS: Comment[] = [
-	{
-		id: "c1",
-		author: "user001",
-		timeAgo: "2 hours ago",
-		rating: 5,
-		upvotes: 124,
-		text: "nice!",
-		replies: [
-			{
-				id: "c1-1",
-				author: "user002",
-				timeAgo: "1 hour ago",
-				upvotes: 15,
-				text: "wow i love it",
-				replies: [
-					{
-						id: "c1-1-1",
-						author: "user003",
-						timeAgo: "45 mins ago",
-						upvotes: 8,
-						text: "me too!",
-						replies: [
-							{
-								id: "c1-1-1-1",
-								author: "user004",
-								timeAgo: "10 mins ago",
-								upvotes: 2,
-								text: "woah!!!",
-							},
-						],
-					},
-				],
-			},
-		],
-	},
-	{
-		id: "c2",
-		author: "user005",
-		timeAgo: "1 day ago",
-		rating: 4,
-		upvotes: 89,
-		text: "k lang",
-		replies: [],
-	},
-];
+const commentSchema = z.object({
+	message: z.string(),
+});
+
+type commentSchemaType = z.infer<typeof commentSchema>;
 
 const CommentNode = ({
 	comment,
@@ -72,24 +39,43 @@ const CommentNode = ({
 	comment: Comment;
 	depth: number;
 }) => {
+	const utils = trpc.useUtils();
+	const createComment = trpc.comment.create.useMutation({
+		onSuccess(output) {
+			utils.pin.getById.invalidate();
+			setIsReplying(false);
+		},
+	});
+	const formMethods = useForm({ resolver: zodResolver(commentSchema) });
+	const [isReplying, setIsReplying] = useState(false);
 	if (depth > 3) return null;
+
+	function onSubmit(data: commentSchemaType) {
+		createComment.mutate({
+			message: data.message,
+			pinId: comment.pinId,
+			parentId: comment.id,
+		});
+	}
 
 	return (
 		<div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
 			<div className="comment-header">
-				<span className="comment-author">{comment.author}</span>
-				<span className="comment-time">{comment.timeAgo}</span>
-				{depth === 0 && comment.rating && (
+				<span className="comment-author">{comment.authorName}</span>
+				<span className="comment-time">
+					{new Date(comment.createdAt).toLocaleString("default")}
+				</span>
+				{/* {depth === 0 && comment.rating && (
 					<span className="comment-rating">
 						{"★".repeat(comment.rating)} {comment.rating}/5
 					</span>
-				)}
+				)} */}
 			</div>
 
-			<p className="comment-text">{comment.text}</p>
+			<p className="comment-text">{comment.message}</p>
 
 			<div className="comment-actions">
-				<button type="button" className="action-btn">
+				{/* <button type="button" className="action-btn">
 					<svg
 						width="14"
 						height="14"
@@ -101,10 +87,26 @@ const CommentNode = ({
 						<path d="M12 19V5M5 12l7-7 7 7" />
 					</svg>
 					{comment.upvotes}
-				</button>
-				<button type="button" className="action-btn">
-					REPLY
-				</button>
+				</button> */}
+				{!isReplying ? (
+					depth < 3 && (
+						<button
+							type="button"
+							className="action-btn"
+							onClick={() => setIsReplying(true)}
+						>
+							REPLY
+						</button>
+					)
+				) : (
+					<form onSubmit={formMethods.handleSubmit(onSubmit)}>
+						<input {...formMethods.register("message")} />
+						<button type="submit">Send</button>
+						<button type="button" onClick={() => setIsReplying(false)}>
+							Cancel
+						</button>
+					</form>
+				)}
 			</div>
 
 			{comment.replies && comment.replies.length > 0 && (
@@ -141,7 +143,10 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 		{ id: pinId },
 		{ refetchOnWindowFocus: false },
 	);
-	const color = getFilterColor(pin?.pinTags[0]?.tag.title || "");
+
+	const color = getFilterColor(
+		pin?.pinTags ? pin.pinTags[0]?.tag.title || "" : "",
+	);
 
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
@@ -155,7 +160,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 					<div className="modal-header">
 						<div>
 							<span className="badge" style={{ color }}>
-								{pin?.pinTags.map((pt) => pt.tag.title).join(", ")}
+								{pin?.pinTags?.map((pt) => pt.tag.title).join(", ")}
 							</span>
 							<h2>{pin?.title}</h2>
 						</div>
@@ -178,7 +183,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
 					{/* HORIZONTAL BENTO GALLERY */}
 					<div className="photo-gallery custom-scrollbar">
-						{pin?.images.map((img) => (
+						{pin?.images?.map((img) => (
 							<div key={img.id} className={`photo-placeholder large`}>
 								<Image alt="" src={`${img.url}`} fill objectFit="cover" />
 								{/* <svg
@@ -208,7 +213,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							<div className="meta-item">
 								<span className="meta-label">PIN ID</span>
 								<span className="meta-value font-mono">
-									{pin?.id.padStart(7, "0")}
+									{pin?.id?.padStart(7, "0")}
 								</span>
 							</div>
 
@@ -222,7 +227,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							<div className="meta-item col-span-2">
 								<span className="meta-label">COORDINATES (LAT, LNG)</span>
 								<span className="meta-value font-mono">
-									{pin?.latitude.toFixed(6)}, {pin?.longitude.toFixed(6)}
+									{pin?.latitude?.toFixed(6)}, {pin?.longitude?.toFixed(6)}
 								</span>
 							</div>
 
@@ -266,7 +271,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 						<div className="forum-section">
 							<h3 className="section-title">FORUM</h3>
 							<div className="forum-threads">
-								{MOCK_THREADS.map((thread) => (
+								{pin?.comments?.map((thread) => (
 									<CommentNode key={thread.id} comment={thread} depth={0} />
 								))}
 							</div>

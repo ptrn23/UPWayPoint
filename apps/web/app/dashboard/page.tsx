@@ -9,7 +9,7 @@ export default function Dashboard() {
 	const { data } = trpc.user.getCurrent.useQuery();
 
 	const goToMap = () => router.push("/");
-    const goToAdmin = () => router.push("/admin");
+	const goToAdmin = () => router.push("/admin");
 
 	const handleSignOut = async () => {
 		await signOut();
@@ -18,15 +18,22 @@ export default function Dashboard() {
 
 	return (
 		<main className="dashboard-container">
-
 			<div className="glow-orb"></div>
 
 			<div className="dashboard-card">
-
 				{/* HEADER SECTION */}
 				<div className="header-section">
 					<div className="status-icon">
-						<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green, #00FF99)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+						<svg
+							width="28"
+							height="28"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="var(--neon-green, #00FF99)"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
 							<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
 							<polyline points="22 4 12 14.01 9 11.01"></polyline>
 						</svg>
@@ -39,32 +46,61 @@ export default function Dashboard() {
 				</div>
 
 				{/* ACTIONS PORTAL */}
-                <div className="action-grid">
-                    {/* Primary Action: Go to Map */}
-                    <button className="action-btn primary-btn" onClick={goToMap}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                        </svg>
-                        GO TO MAP
-                    </button>
+				<div className="action-grid">
+					{/* Primary Action: Go to Map */}
+					<button
+						type="button"
+						className="action-btn primary-btn"
+						onClick={goToMap}
+					>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+						</svg>
+						GO TO MAP
+					</button>
 
-                    {/* Secondary Action: Admin */}
-                    <button className="action-btn secondary-btn" onClick={goToAdmin}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        ADMIN OVERRIDE
-                    </button>
-                </div>
-
-				{/* FOOTER & SIGN OUT */}
-				<div className="footer-section">
-					<button type="button" onClick={handleSignOut} className="sign-out-btn">
-						[ SIGN OUT ]
+					{/* Secondary Action: Admin */}
+					<button
+						type="button"
+						className="action-btn secondary-btn"
+						onClick={goToAdmin}
+					>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+							<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+						</svg>
+						ADMIN OVERRIDE
 					</button>
 				</div>
 
+				{/* FOOTER & SIGN OUT */}
+				<div className="footer-section">
+					<button
+						type="button"
+						onClick={handleSignOut}
+						className="sign-out-btn"
+					>
+						[ SIGN OUT ]
+					</button>
+				</div>
 			</div>
 
 			<style jsx>{`
