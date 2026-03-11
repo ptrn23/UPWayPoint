@@ -43,7 +43,7 @@ export function TopBar({
 		<div className="ui-layer">
 			{/* === LEFT ZONE === */}
 			<div className="zone-left">
-				<button onClick={onMenuClick} className="icon-button">
+				<button type="button" onClick={onMenuClick} className="icon-button">
 					<svg
 						width="24"
 						height="24"
@@ -94,6 +94,7 @@ export function TopBar({
 						const isActive = activeFilter === filter;
 						return (
 							<button
+								type="button"
 								key={filter}
 								onClick={() => onFilterChange(filter)}
 								className={`filter-chip ${isActive ? "active" : ""}`}
@@ -117,6 +118,7 @@ export function TopBar({
 				{/* Top Group */}
 				<div className="tool-group">
 					<button
+						type="button"
 						className="icon-button profile-btn"
 						onClick={handleProfileClick}
 						title={user ? "Access Dashboard" : "System Login"}
@@ -133,7 +135,7 @@ export function TopBar({
 							<circle cx="12" cy="7" r="4"></circle>
 						</svg>
 					</button>
-					<button className="icon-button theme-toggle">
+					<button type="button" className="icon-button theme-toggle">
 						<svg
 							width="20"
 							height="20"
@@ -149,7 +151,7 @@ export function TopBar({
 
 				{/* Bottom Group */}
 				<div className="tool-group bottom-align">
-					<button className="icon-button gps-btn">
+					<button type="button" className="icon-button gps-btn">
 						<svg
 							width="20"
 							height="20"
@@ -163,7 +165,7 @@ export function TopBar({
 					</button>
 
 					<div className="zoom-stack">
-						<button className="control-button zoom-in">
+						<button type="button" className="control-button zoom-in">
 							<svg
 								width="20"
 								height="20"
@@ -177,7 +179,7 @@ export function TopBar({
 							</svg>
 						</button>
 						<div className="divider"></div>
-						<button className="control-button zoom-out">
+						<button type="button" className="control-button zoom-out">
 							<svg
 								width="20"
 								height="20"

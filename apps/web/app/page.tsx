@@ -18,7 +18,7 @@ export default function Home() {
 
 	const {
 		mode,
-		selectedPin,
+		selectedPinId,
 		selectPin,
 		clearSelection,
 		expandDetails,
@@ -110,12 +110,10 @@ export default function Home() {
 								>
 									<NeonPin
 										pin={pinData}
-										isSelected={selectedPin?.id === pinData.id}
-										isLocked={
-											mode === "LOCKED" && selectedPin?.id === pinData.id
-										}
+										isSelected={selectedPinId === pinData.id}
+										isLocked={mode === "LOCKED" && selectedPinId === pinData.id}
 										isVisible={isVisible}
-										onClick={() => selectPin(pinData)}
+										onClick={() => selectPin(pinData.id)}
 									/>
 								</AdvancedMarker>
 							);
@@ -172,7 +170,7 @@ export default function Home() {
 
 				{/* UI LAYER */}
 				<HeadsUpDisplay
-					selectedPin={selectedPin}
+					selectedPinId={selectedPinId}
 					isLocked={mode === "LOCKED"}
 					onLockClick={toggleLock}
 					onClearSelection={clearSelection}
@@ -186,10 +184,10 @@ export default function Home() {
 					<AddPinModal
 						coords={pendingPinCoords}
 						onCancel={() => setPendingPinCoords(null)}
-						onSave={(newPin) => {
+						onSave={(newPinId) => {
 							// HANDLE NEW PIN WITH INVALIDATE
 							// setPins((prev) => [...prev, newPin]);
-							selectPin(newPin);
+							selectPin(newPinId);
 							setPendingPinCoords(null);
 						}}
 					/>

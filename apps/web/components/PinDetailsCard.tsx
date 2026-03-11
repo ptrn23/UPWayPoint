@@ -1,63 +1,79 @@
 "use client";
 
-import { Pin } from "@/types/waypoint";
 import { getFilterColor } from "@/components/TopBar";
+import { trpc } from "@/lib/trpc";
 
 interface PinDetailsCardProps {
-  pin: Pin;
-  isLocked: boolean;
-  onLockClick: () => void;
-  onClose?: () => void;
-  onExpand: () => void;
+	pinId: string;
+	isLocked: boolean;
+	onLockClick: () => void;
+	onClose?: () => void;
+	onExpand: () => void;
 }
 
-export function PinDetailsCard({ pin, isLocked, onLockClick, onClose, onExpand }: PinDetailsCardProps) {
-  const color = getFilterColor(pin.type);
+export function PinDetailsCard({
+	pinId,
+	isLocked,
+	onLockClick,
+	onClose,
+	onExpand,
+}: PinDetailsCardProps) {
+	const color = getFilterColor("academic");
+	const { data: pin } = trpc.pin.getById.useQuery({ id: pinId });
 
-  return (
-    <div className="details-card">
-      {/* HEADER */}
-      <div className="card-header">
-        <div>
-          <h2>{pin.title}</h2>
-          <span className="badge" style={{ color: color }}>
-            {pin.type}
-          </span>
-        </div>
-        
-        {/* close button */}
-        {onClose && (
-          <button onClick={onClose} className="close-btn">
-            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        )}
-      </div>
+	return (
+		<div className="details-card">
+			{/* HEADER */}
+			<div className="card-header">
+				<div>
+					<h2>{pin?.title}</h2>
+					<span className="badge" style={{ color: color }}>
+						{/* {pin.type} */}
+					</span>
+				</div>
 
-      {/* BODY */}
-      <div className="card-body">
-        <p>{pin.description}</p>
-      </div>
+				{/* close button */}
+				{onClose && (
+					<button type="button" onClick={onClose} className="close-btn">
+						<svg
+							width="24"
+							height="24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<line x1="18" y1="6" x2="6" y2="18"></line>
+							<line x1="6" y1="6" x2="18" y2="18"></line>
+						</svg>
+					</button>
+				)}
+			</div>
 
-      {/* FOOTER ACTIONS */}
-      <div className="card-footer">
-        <button className="expand-button" onClick={onExpand}>
-          DETAILS
-        </button>
-        <button 
-          className="lock-button"
-          onClick={onLockClick}
-          style={{
-            background: isLocked ? "var(--neon-blue, #00D1FF)" : "white",
-          }}
-        >
-          {isLocked ? "TARGET LOCKED" : "LOCK TARGET"}
-        </button>
-      </div>
+			{/* BODY */}
+			<div className="card-body">
+				<p>{pin?.description}</p>
+			</div>
 
-      <style jsx>{`
+			{/* FOOTER ACTIONS */}
+			<div className="card-footer">
+				<button type="button" className="expand-button" onClick={onExpand}>
+					DETAILS
+				</button>
+				<button
+					type="button"
+					className="lock-button"
+					onClick={onLockClick}
+					style={{
+						background: isLocked ? "var(--neon-blue, #00D1FF)" : "white",
+					}}
+				>
+					{isLocked ? "TARGET LOCKED" : "LOCK TARGET"}
+				</button>
+			</div>
+
+			<style jsx>{`
         .details-card {
           background: rgba(10, 10, 12, 0.95);
           backdrop-filter: blur(20px);
@@ -160,6 +176,6 @@ export function PinDetailsCard({ pin, isLocked, onLockClick, onClose, onExpand }
           transform: scale(0.95);
         }
       `}</style>
-    </div>
-  );
+		</div>
+	);
 }

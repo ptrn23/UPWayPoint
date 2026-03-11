@@ -1,19 +1,31 @@
 "use client";
 
 import { trpc } from "@/lib/trpc";
-import { PinRouterInputs } from "@repo/api";
+import type { PinRouterInputs } from "@repo/api";
 import { useState } from "react";
 
-type Pin = PinRouterInputs["create"];
+type Pin = Omit<PinRouterInputs["create"], "ownerId">;
 
 interface AddPinModalProps {
 	coords: { lat: number; lng: number };
-	onSave: (pin: Pin) => void;
+	onSave: (pinId: string) => void;
 	onCancel: () => void;
 }
+const iconMap = {
+	academic: "?",
+	food: "?",
+	social: "?",
+	utility: "?",
+};
 
 export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
-	const createPin = trpc.pin.create.useMutation();
+	const createPin = trpc.pin.create.useMutation({
+		onSuccess: (newPin) => {
+			if (!newPin) return;
+
+			onSave(newPin.id);
+		},
+	});
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
@@ -25,23 +37,16 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 		e.preventDefault();
 		if (!title.trim()) return;
 
-		const iconMap = {
-			academic: "?",
-			food: "?",
-			social: "?",
-			utility: "?",
-		};
-
 		const newPin: Pin = {
-			id: `${Date.now()}`,
 			title: title.trim(),
 			description: description.trim(),
-			position: coords,
-			type: type,
-			icon: title.trim().charAt(0).toUpperCase() || iconMap[type],
+			latitude: coords.lat,
+			longitude: coords.lng,
+			// type: type,
+			// icon: title.trim().charAt(0).toUpperCase() || iconMap[type],
 		};
 
-		onSave(newPin);
+		createPin.mutate(newPin);
 	};
 
 	return (
