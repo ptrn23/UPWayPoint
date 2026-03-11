@@ -21,8 +21,8 @@ export function makePinService(
 		return await repositories.pin.getByStatus(status);
 	}
 
-	async function create(input: { data: CreatePin; ownerId: string }) {
-		return await repositories.pin.create(input.data);
+	async function create(data: CreatePin) {
+		return await repositories.pin.create(data);
 	}
 
 	async function update(

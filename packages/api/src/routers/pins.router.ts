@@ -39,12 +39,14 @@ export const pinRouter = router({
 				description: z.string().optional(),
 				latitude: z.number().min(-90).max(90),
 				longitude: z.number().min(-180).max(180),
-				status: PinStatus.optional(),
-				ownerId: z.string(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.create({ data: input, ownerId: ctx.user.id });
+			return ctx.services.pin.create({
+				...input,
+				status: PinStatus.enum.PENDING_VERIFICATION,
+				ownerId: ctx.user.id,
+			});
 		}),
 
 	update: userProcedure
