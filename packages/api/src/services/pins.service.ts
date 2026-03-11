@@ -1,13 +1,18 @@
 import type {
 	CreatePin,
 	Database,
+	PinImagesRepository,
 	PinRepository,
 	PinTagsRepository,
 } from "@repo/db";
 import { TRPCError } from "@trpc/server";
 
 export function makePinService(
-	repositories: { pin: PinRepository; pinTags: PinTagsRepository },
+	repositories: {
+		pin: PinRepository;
+		pinTags: PinTagsRepository;
+		pinImages: PinImagesRepository;
+	},
 	db: Database,
 ) {
 	async function getAll() {
@@ -35,16 +40,15 @@ export function makePinService(
 				code: "BAD_REQUEST",
 			});
 
-		tags.map(async (t) => {
-			const tagRes = await repositories.pinTags.create({
+		imageURLs.forEach(
+			async (url) => await repositories.pinImages.create(url, res.id),
+		);
+
+		tags.forEach(async (t) => {
+			await repositories.pinTags.create({
 				pinId: res.id,
 				tagId: t,
 			});
-			if (!tagRes)
-				throw new TRPCError({
-					message: "Failed to connect pin with its tags",
-					code: "BAD_REQUEST",
-				});
 		});
 
 		return res;

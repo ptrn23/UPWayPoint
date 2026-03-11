@@ -18,7 +18,10 @@ export function PinDetailsCard({
 	onClose,
 	onExpand,
 }: PinDetailsCardProps) {
-	const { data: pin } = trpc.pin.getById.useQuery({ id: pinId });
+	const { data: pin } = trpc.pin.getById.useQuery(
+		{ id: pinId },
+		{ refetchOnWindowFocus: false },
+	);
 	const color = getFilterColor(pin?.pinTags[0]?.tag.title || "");
 
 	return (

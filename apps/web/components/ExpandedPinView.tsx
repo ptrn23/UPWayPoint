@@ -2,6 +2,7 @@
 
 import { getFilterColor } from "@/components/TopBar";
 import { trpc } from "@/lib/trpc";
+import Image from "next/image";
 interface ExpandedPinViewProps {
 	pinId: string;
 	onClose: () => void;
@@ -136,18 +137,11 @@ const CommentNode = ({
 };
 
 export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
-	const { data: pin } = trpc.pin.getById.useQuery({ id: pinId });
+	const { data: pin } = trpc.pin.getById.useQuery(
+		{ id: pinId },
+		{ refetchOnWindowFocus: false },
+	);
 	const color = getFilterColor(pin?.pinTags[0]?.tag.title || "");
-
-	const mockImages = [
-		{ id: 1, size: "large" },
-		{ id: 2, size: "small" },
-		{ id: 3, size: "small" },
-		{ id: 4, size: "large" },
-		{ id: 5, size: "small" },
-		{ id: 6, size: "small" },
-		{ id: 7, size: "large" },
-	];
 
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
@@ -184,9 +178,10 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
 					{/* HORIZONTAL BENTO GALLERY */}
 					<div className="photo-gallery custom-scrollbar">
-						{mockImages.map((img) => (
-							<div key={img.id} className={`photo-placeholder ${img.size}`}>
-								<svg
+						{pin?.images.map((img) => (
+							<div key={img.id} className={`photo-placeholder large`}>
+								<Image alt="" src={`${img.url}`} fill objectFit="cover" />
+								{/* <svg
 									width="24"
 									height="24"
 									viewBox="0 0 24 24"
@@ -199,7 +194,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 									<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 									<circle cx="8.5" cy="8.5" r="1.5"></circle>
 									<polyline points="21 15 16 10 5 21"></polyline>
-								</svg>
+								</svg> */}
 							</div>
 						))}
 					</div>

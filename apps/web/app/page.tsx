@@ -10,11 +10,13 @@ import { NeonPin } from "@/components/NeonPin";
 import { useWaypointState } from "@/hooks/useWaypointState";
 import { TopBar, type FilterType } from "@/components/TopBar";
 import { AddPinModal } from "@/components/AddPinModal";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 
 export default function Home() {
-	const { data: pins } = trpc.pin.getAll.useQuery();
+	const { data: pins } = trpc.pin.getAll.useQuery(undefined, {
+		refetchOnWindowFocus: false,
+	});
 
 	const {
 		mode,
@@ -34,6 +36,14 @@ export default function Home() {
 		lng: number;
 	} | null>(null);
 	const cursorRef = useRef<HTMLDivElement>(null);
+
+	const pinsParsed = useMemo(() => {
+		return (
+			pins
+				?.filter((p) => p !== null)
+				.filter((p) => p.id && p.latitude && p.longitude) || []
+		);
+	}, [pins]);
 
 	useEffect(() => {
 		if (!isAddingPin) return;
@@ -91,39 +101,36 @@ export default function Home() {
 						strictBounds: false,
 					}}
 				>
-					{pins
-						?.map((p) => {
-							return { ...p, type: "academic" };
-						})
-						.map((pinData) => {
-							const matchesCategory =
-								activeFilter === "all" || pinData.type === activeFilter;
-							const matchesSearch =
-								pinData.title
-									.toLowerCase()
-									.includes(searchQuery.toLowerCase()) ||
-								pinData.description
-									?.toLowerCase()
-									.includes(searchQuery.toLowerCase());
+					{pinsParsed.map((pinData) => {
+						const matchesCategory =
+							activeFilter === "all" ||
+							pinData.pinTags.map((t) => t.tag.title).includes(activeFilter);
+						const matchesSearch =
+							pinData.title
+								?.toLowerCase()
+								.includes(searchQuery.toLowerCase()) ||
+							pinData.description
+								?.toLowerCase()
+								.includes(searchQuery.toLowerCase());
 
-							const isVisible = matchesCategory && matchesSearch ? true : false;
+						const isVisible = !!(matchesCategory && matchesSearch);
 
-							return (
-								<AdvancedMarker
-									key={pinData.id}
-									position={{ lat: pinData.latitude, lng: pinData.longitude }}
-									zIndex={isVisible ? 10 : 0}
-								>
-									<NeonPin
-										pin={pinData}
-										isSelected={selectedPinId === pinData.id}
-										isLocked={mode === "LOCKED" && selectedPinId === pinData.id}
-										isVisible={isVisible}
-										onClick={() => selectPin(pinData.id)}
-									/>
-								</AdvancedMarker>
-							);
-						})}
+						return (
+							<AdvancedMarker
+								key={pinData.id}
+								position={{ lat: pinData.latitude, lng: pinData.longitude }}
+								zIndex={isVisible ? 10 : 0}
+							>
+								<NeonPin
+									pin={pinData}
+									isSelected={selectedPinId === pinData.id}
+									isLocked={mode === "LOCKED" && selectedPinId === pinData.id}
+									isVisible={isVisible}
+									onClick={() => selectPin(pinData.id || "")}
+								/>
+							</AdvancedMarker>
+						);
+					})}
 				</GoogleMap>
 
 				{/* TOP BAR */}
