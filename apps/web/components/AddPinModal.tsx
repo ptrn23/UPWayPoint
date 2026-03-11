@@ -1,101 +1,177 @@
 "use client";
 
-import { useState } from "react";
-import { Pin } from "@/types/waypoint";
+import { trpc } from "@/lib/trpc";
+import type { PinRouterInputs } from "@repo/api";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import z from "zod";
+import { fileSchema } from "@repo/api/schemas";
+
+type Pin = Omit<PinRouterInputs["create"], "ownerId">;
 
 interface AddPinModalProps {
-  coords: { lat: number; lng: number };
-  onSave: (pin: Pin) => void;
-  onCancel: () => void;
+	coords: { lat: number; lng: number };
+	onSave: (pinId: string) => void;
+	onCancel: () => void;
+}
+
+async function uploadImages(files: File[]): Promise<string[]> {
+	const formData = new FormData();
+	files.forEach((file) => {
+		formData.append("images", file);
+	});
+
+	const res = await fetch("/api/upload", { method: "POST", body: formData });
+	const { urls } = await res.json();
+	return urls;
 }
 
 export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState<"academic" | "food" | "social" | "utility">("utility");
+	const pinCreationSchema = z.object({
+		title: z.string().min(1),
+		description: z.string().optional(),
+		latitude: z.number().min(-90).max(90),
+		longitude: z.number().min(-180).max(180),
+		tags: z.array(z.string()),
+		images: z
+			.instanceof(FileList)
+			.transform((list) => Array.from(list))
+			.pipe(z.array(fileSchema).max(10)),
+	});
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
+	type pinCreationSchemaType = z.infer<typeof pinCreationSchema>;
 
-    const iconMap = {
-      academic: "?",
-      food: "?",
-      social: "?",
-      utility: "?"
-    };
+	const utils = trpc.useUtils();
+	const createPin = trpc.pin.create.useMutation({
+		onSuccess: (newPin) => {
+			utils.pin.getAll.invalidate(); // this forces a refresh on the main page
+			if (!newPin) return;
+			onSave(newPin.id);
+		},
+	});
+	const { data: tagsData } = trpc.tag.getAll.useQuery();
 
-    const newPin: Pin = {
-      id: `${Date.now()}`,
-      title: title.trim(),
-      description: description.trim(),
-      position: coords,
-      type: type,
-      icon: title.trim().charAt(0).toUpperCase() || iconMap[type]
-    };
+	const formMethods = useForm({
+		defaultValues: { tags: [] },
+		resolver: zodResolver(pinCreationSchema),
+	});
 
-    onSave(newPin);
-  };
+	const onSubmit = async (data: pinCreationSchemaType) => {
+		let urls: string[] = [];
+		if (data.images.length > 0) urls = await uploadImages(data.images);
+		const newPin: Pin = {
+			title: data.title.trim(),
+			description: data.description?.trim(),
+			latitude: coords.lat,
+			longitude: coords.lng,
+			tags: data.tags,
+			imageURLs: urls,
+		};
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal-card">
-        
-        <div className="modal-header">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue, #00E5FF)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <h2 className="modal-title">ADD NEW PIN</h2>
-        </div>
+		createPin.mutate(newPin);
+	};
 
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="input-group">
-            <label>PIN TITLE</label>
-            <input 
-              type="text" 
-              value={title} 
-              onChange={(e) => setTitle(e.target.value)} 
-              placeholder="e.g. Quezon Hall" 
-              required
-              autoFocus
-            />
-          </div>
+	const handleCancel = () => {
+		formMethods.clearErrors();
+		formMethods.reset();
+		onCancel();
+	};
 
-          <div className="input-group">
-            <label>DESCRIPTION</label>
-            <textarea 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)} 
-              placeholder="Enter description..." 
-              rows={3}
-            />
-          </div>
+	const tags = formMethods.watch("tags");
 
-          <div className="input-group">
-            <label>PIN TYPE</label>
-            <div className="type-selector">
-              {(["academic", "food", "social", "utility"] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  className={`type-btn ${type === t ? "active" : ""}`}
-                  onClick={() => setType(t)}
-                >
-                  {t.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          </div>
+	useEffect(() => {
+		formMethods.setValue("latitude", coords.lat);
+		formMethods.setValue("longitude", coords.lng);
+	}, [formMethods, coords]);
 
-          <div className="action-row">
-            <button type="button" className="cancel-btn" onClick={onCancel}>CANCEL</button>
-            <button type="submit" className="save-btn" disabled={!title.trim()}>CONFIRM</button>
-          </div>
-        </form>
-      </div>
+	return (
+		<div className="modal-overlay">
+			<div className="modal-card">
+				<div className="modal-header">
+					<svg
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="var(--neon-blue, #00E5FF)"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="12" y1="5" x2="12" y2="19"></line>
+						<line x1="5" y1="12" x2="19" y2="12"></line>
+					</svg>
+					<h2 className="modal-title">ADD NEW PIN</h2>
+				</div>
 
-      <style jsx>{`
+				<form
+					onSubmit={formMethods.handleSubmit(onSubmit)}
+					className="modal-form"
+				>
+					<div className="input-group">
+						<span>PIN TITLE</span>
+						<input
+							type="text"
+							placeholder="e.g. Quezon Hall"
+							required
+							{...formMethods.register("title")}
+						/>
+					</div>
+
+					<div className="input-group">
+						<span>DESCRIPTION</span>
+						<textarea
+							placeholder="Enter description..."
+							rows={3}
+							{...formMethods.register("description")}
+						/>
+					</div>
+
+					<div className="input-group">
+						<span>PIN TYPES (select all that apply)</span>
+						<div className="type-selector">
+							{tagsData?.map((t) => (
+								<button
+									key={t.id}
+									type="button"
+									className={`type-btn ${tags.includes(t.id) ? "active" : ""}`}
+									onClick={() => {
+										if (tags.includes(t.id)) {
+											formMethods.setValue(
+												"tags",
+												tags.filter((tag) => tag !== t.id),
+											);
+										} else {
+											formMethods.setValue("tags", [...tags, t.id]);
+										}
+									}}
+								>
+									{t.title.toUpperCase()}
+								</button>
+							))}
+						</div>
+					</div>
+
+					<input
+						type="file"
+						accept="image/jpeg,image/png,image/jpg"
+						multiple
+						{...formMethods.register("images")}
+					/>
+
+					<div className="action-row">
+						<button type="button" className="cancel-btn" onClick={handleCancel}>
+							CANCEL
+						</button>
+						<button type="submit" className="save-btn">
+							CONFIRM
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<style jsx>{`
         .modal-overlay {
           position: fixed;
           top: 0; left: 0; width: 100vw; height: 100vh;
@@ -254,6 +330,6 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>
-    </div>
-  );
+		</div>
+	);
 }

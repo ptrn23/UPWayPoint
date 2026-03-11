@@ -7,6 +7,7 @@ import {
 	boolean,
 	index,
 	doublePrecision,
+	primaryKey,
 } from "drizzle-orm/pg-core";
 import { randomUUID } from "crypto";
 
@@ -85,27 +86,66 @@ export const verification = pgTable(
 	(table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const pins = pgTable(
-	"pins",
+export const tag = pgTable("tag", {
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
+	title: text("title").notNull(),
+	color: text("color").default("#ffffff"),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at")
+		.defaultNow()
+		.$onUpdate(() => /* @__PURE__ */ new Date())
+		.notNull(),
+});
+
+export const pinTags = pgTable(
+	"pin_tags",
 	{
-		id: text("id")
-			.primaryKey()
-			.$defaultFn(() => randomUUID()),
-		status: text("status").notNull().default("PENDING_VERIFICATION"),
-		title: text("title").notNull(),
-		latitude: doublePrecision("latitude").notNull(),
-		longitude: doublePrecision("longitude").notNull(),
-		description: text("description"),
-		ownerId: text("owner_id")
+		pinId: text("pin_id")
 			.notNull()
-			.references(() => user.id, { onDelete: "cascade" }),
+			.references(() => pin.id, { onDelete: "cascade" }),
+		tagId: text("tag_id")
+			.notNull()
+			.references(() => tag.id, { onDelete: "cascade" }),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
 		updatedAt: timestamp("updated_at")
 			.defaultNow()
-			.$onUpdate(() => new Date())
+			.$onUpdate(() => /* @__PURE__ */ new Date())
 			.notNull(),
-	}
-)
+	},
+	(table) => [primaryKey({ columns: [table.pinId, table.tagId] })],
+);
+
+export const pinImages = pgTable("pin_images", {
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
+	pinId: text("pin_id")
+		.notNull()
+		.references(() => pin.id, { onDelete: "cascade" }),
+	url: text("url").notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const pin = pgTable("pin", {
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
+	status: text("status").notNull().default("PENDING_VERIFICATION"),
+	title: text("title").notNull(),
+	latitude: doublePrecision("latitude").notNull(),
+	longitude: doublePrecision("longitude").notNull(),
+	description: text("description"),
+	ownerId: text("owner_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at")
+		.defaultNow()
+		.$onUpdate(() => new Date())
+		.notNull(),
+});
 
 export const userRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
@@ -126,9 +166,24 @@ export const accountRelations = relations(account, ({ one }) => ({
 	}),
 }));
 
-export const pinRelations = relations(pins, ({ one }) => ({
-    owner: one(user, {
-        fields: [pins.ownerId],
-        references: [user.id],
-    }),
+export const pinRelations = relations(pin, ({ one, many }) => ({
+	owner: one(user, {
+		fields: [pin.ownerId],
+		references: [user.id],
+	}),
+	pinTags: many(pinTags),
+	images: many(pinImages),
+}));
+
+export const tagRelations = relations(tag, ({ many }) => ({
+	pinTags: many(pinTags),
+}));
+
+export const pinTagsRelations = relations(pinTags, ({ one }) => ({
+	pin: one(pin, { fields: [pinTags.pinId], references: [pin.id] }),
+	tag: one(tag, { fields: [pinTags.tagId], references: [tag.id] }),
+}));
+
+export const pinImagesRelations = relations(pinImages, ({ one }) => ({
+	pin: one(pin, { fields: [pinImages.pinId], references: [pin.id] }),
 }));

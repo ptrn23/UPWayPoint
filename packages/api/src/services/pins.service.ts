@@ -1,48 +1,75 @@
-import type { Database, PinRepository } from "@repo/db";
+import type {
+	CreatePin,
+	Database,
+	PinImagesRepository,
+	PinRepository,
+	PinTagsRepository,
+} from "@repo/db";
 import { TRPCError } from "@trpc/server";
 
 export function makePinService(
-	_repositories_: { pin: PinRepository },
-	_db_: Database,
+	repositories: {
+		pin: PinRepository;
+		pinTags: PinTagsRepository;
+		pinImages: PinImagesRepository;
+	},
+	db: Database,
 ) {
 	async function getAll() {
-		return await _repositories_.pin.getAll();
+		return await repositories.pin.getAll();
 	}
 
-	async function getById(_id_: string) {
-		return await _repositories_.pin.getById(_id_);
+	async function getById(id: string) {
+		return await repositories.pin.getById(id);
 	}
 
-	async function getByOwnerId(_ownerId_: string) {
-		return await _repositories_.pin.getByOwnerId(_ownerId_);
+	async function getByOwnerId(ownerId: string) {
+		return await repositories.pin.getByOwnerId(ownerId);
 	}
 
-	async function getByStatus(_status_: string) {
-		return await _repositories_.pin.getByStatus(_status_);
+	async function getByStatus(status: string) {
+		return await repositories.pin.getByStatus(status);
 	}
 
-	async function create(
-		_data_: Omit<Parameters<typeof _repositories_.pin.create>[0], "id">,
-	) {
-		return await _repositories_.pin.create(_data_);
+	async function create(data: CreatePin, tags: string[], imageURLs: string[]) {
+		const res = await repositories.pin.create(data);
+
+		if (!res)
+			throw new TRPCError({
+				message: "Failed to create pin",
+				code: "BAD_REQUEST",
+			});
+
+		imageURLs.forEach(
+			async (url) => await repositories.pinImages.create(url, res.id),
+		);
+
+		tags.forEach(async (t) => {
+			await repositories.pinTags.create({
+				pinId: res.id,
+				tagId: t,
+			});
+		});
+
+		return res;
 	}
 
 	async function update(
-		_id_: string,
-		_data_: Parameters<typeof _repositories_.pin.update>[1],
+		id: string,
+		data: Parameters<typeof repositories.pin.update>[1],
 	) {
-		return await _repositories_.pin.update(_id_, _data_);
+		return await repositories.pin.update(id, data);
 	}
 
-	async function deleteById(_id_: string, userId: string) {
-		const pin = await getById(_id_);
+	async function deleteById(id: string, userId: string) {
+		const pin = await getById(id);
 		if (pin?.ownerId !== userId)
 			throw new TRPCError({
 				message: "User does not own this pin",
 				code: "FORBIDDEN",
 			});
 
-		return await _repositories_.pin.deleteById(_id_);
+		return await repositories.pin.deleteById(id);
 	}
 
 	return {

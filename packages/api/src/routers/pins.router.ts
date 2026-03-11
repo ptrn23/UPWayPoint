@@ -1,5 +1,7 @@
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { publicProcedure, router, userProcedure } from "../trpc";
 import { z } from "zod";
+import { pinCreationSchema } from "../schemas";
 
 const PinStatus = z.enum([
 	"PENDING_VERIFICATION",
@@ -32,18 +34,17 @@ export const pinRouter = router({
 		}),
 
 	create: userProcedure
-		.input(
-			z.object({
-				title: z.string().min(1),
-				description: z.string().optional(),
-				latitude: z.number().min(-90).max(90),
-				longitude: z.number().min(-180).max(180),
-				status: PinStatus.optional(),
-				ownerId: z.string(),
-			}),
-		)
+		.input(pinCreationSchema)
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.create(input);
+			return ctx.services.pin.create(
+				{
+					...input,
+					status: PinStatus.enum.PENDING_VERIFICATION,
+					ownerId: ctx.user.id,
+				},
+				input.tags,
+				input.imageURLs,
+			);
 		}),
 
 	update: userProcedure
@@ -68,3 +69,7 @@ export const pinRouter = router({
 			return ctx.services.pin.deleteById(input.id, ctx.user.id);
 		}),
 });
+
+type PinRouter = typeof pinRouter;
+export type PinRouterOutputs = inferRouterOutputs<PinRouter>;
+export type PinRouterInputs = inferRouterInputs<PinRouter>;
