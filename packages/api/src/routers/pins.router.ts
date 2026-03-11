@@ -1,5 +1,5 @@
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { publicProcedure, router, userProcedure } from "../trpc";
+import { adminProcedure, publicProcedure, router, userProcedure } from "../trpc";
 import { z } from "zod";
 import { pinCreationSchema } from "../schemas";
 
@@ -33,13 +33,27 @@ export const pinRouter = router({
 			return ctx.services.pin.getByStatus(input.status);
 		}),
 
-	create: userProcedure
+	userCreate: userProcedure
 		.input(pinCreationSchema)
 		.mutation(async ({ ctx, input }) => {
 			return ctx.services.pin.create(
 				{
 					...input,
 					status: PinStatus.enum.PENDING_VERIFICATION,
+					ownerId: ctx.user.id,
+				},
+				input.tags,
+				input.imageURLs,
+			);
+		}),
+	
+	adminCreate: adminProcedure
+		.input(pinCreationSchema)
+		.mutation(async ({ ctx, input }) => {
+			return ctx.services.pin.create(
+				{
+					...input,
+					status: PinStatus.enum.ACTIVE,
 					ownerId: ctx.user.id,
 				},
 				input.tags,
@@ -63,10 +77,16 @@ export const pinRouter = router({
 			return ctx.services.pin.update(id, data);
 		}),
 
-	delete: userProcedure
+	userDelete: userProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.deleteById(input.id, ctx.user.id);
+			return ctx.services.pin.userDeleteById(input.id, ctx.user.id);
+		}),
+	
+	adminDelete: adminProcedure
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			return ctx.services.pin.adminDeleteById(input.id);
 		}),
 });
 

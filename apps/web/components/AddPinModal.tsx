@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import z from "zod";
 import { fileSchema } from "@repo/api/schemas";
 
-type Pin = Omit<PinRouterInputs["create"], "ownerId">;
+type Pin = Omit<PinRouterInputs["userCreate"], "ownerId">;
 
 interface AddPinModalProps {
 	coords: { lat: number; lng: number };
@@ -43,7 +43,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 	type pinCreationSchemaType = z.infer<typeof pinCreationSchema>;
 
 	const utils = trpc.useUtils();
-	const createPin = trpc.pin.create.useMutation({
+	const createPin = trpc.pin.userCreate.useMutation({
 		onSuccess: (newPin) => {
 			utils.pin.getAll.invalidate(); // this forces a refresh on the main page
 			if (!newPin) return;

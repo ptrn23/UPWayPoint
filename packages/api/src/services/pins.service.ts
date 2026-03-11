@@ -61,7 +61,7 @@ export function makePinService(
 		return await repositories.pin.update(id, data);
 	}
 
-	async function deleteById(id: string, userId: string) {
+	async function userDeleteById(id: string, userId: string) {
 		const pin = await getById(id);
 		if (pin?.ownerId !== userId)
 			throw new TRPCError({
@@ -69,7 +69,11 @@ export function makePinService(
 				code: "FORBIDDEN",
 			});
 
-		return await repositories.pin.deleteById(id);
+		return await repositories.pin.userDeleteById(id);
+	}
+
+	async function adminDeleteById(id: string) {
+		return await repositories.pin.adminDeleteById(id);
 	}
 
 	return {
@@ -79,7 +83,8 @@ export function makePinService(
 		getByStatus,
 		create,
 		update,
-		deleteById,
+		userDeleteById,
+		adminDeleteById,
 	};
 }
 
