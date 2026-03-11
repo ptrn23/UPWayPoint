@@ -142,9 +142,6 @@ importers:
 
   packages/api:
     dependencies:
-      '@aws-sdk/client-s3':
-        specifier: ^3.1006.0
-        version: 3.1006.0
       '@repo/auth':
         specifier: workspace:*
         version: link:../auth
