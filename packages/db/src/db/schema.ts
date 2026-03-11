@@ -86,7 +86,7 @@ export const verification = pgTable(
 	(table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const tags = pgTable("tags", {
+export const tag = pgTable("tag", {
 	id: text("id").primaryKey(),
 	title: text("title").notNull(),
 	color: text("color").default("#ffffff"),
@@ -102,10 +102,10 @@ export const pinTags = pgTable(
 	{
 		pinId: text("pin_id")
 			.notNull()
-			.references(() => pins.id, { onDelete: "cascade" }),
+			.references(() => pin.id, { onDelete: "cascade" }),
 		tagId: text("tag_id")
 			.notNull()
-			.references(() => tags.id, { onDelete: "cascade" }),
+			.references(() => tag.id, { onDelete: "cascade" }),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
 		updatedAt: timestamp("updated_at")
 			.defaultNow()
@@ -115,7 +115,7 @@ export const pinTags = pgTable(
 	(table) => [primaryKey({ columns: [table.pinId, table.tagId] })],
 );
 
-export const pins = pgTable("pins", {
+export const pin = pgTable("pin", {
 	id: text("id")
 		.primaryKey()
 		.$defaultFn(() => randomUUID()),
@@ -153,19 +153,19 @@ export const accountRelations = relations(account, ({ one }) => ({
 	}),
 }));
 
-export const pinRelations = relations(pins, ({ one, many }) => ({
+export const pinRelations = relations(pin, ({ one, many }) => ({
 	owner: one(user, {
-		fields: [pins.ownerId],
+		fields: [pin.ownerId],
 		references: [user.id],
 	}),
 	pinTags: many(pinTags),
 }));
 
-export const tagsRelations = relations(tags, ({ many }) => ({
+export const tagRelations = relations(tag, ({ many }) => ({
 	pinTags: many(pinTags),
 }));
 
 export const pinTagsRelations = relations(pinTags, ({ one }) => ({
-	pin: one(pins, { fields: [pinTags.pinId], references: [pins.id] }),
-	tag: one(tags, { fields: [pinTags.tagId], references: [tags.id] }),
+	pin: one(pin, { fields: [pinTags.pinId], references: [pin.id] }),
+	tag: one(tag, { fields: [pinTags.tagId], references: [tag.id] }),
 }));

@@ -28,7 +28,7 @@ export function PinDetailsCard({
 				<div>
 					<h2>{pin?.title}</h2>
 					<span className="badge" style={{ color: color }}>
-						{/* {pin.type} */}
+						yo
 					</span>
 				</div>
 
