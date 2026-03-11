@@ -6,12 +6,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import z from "zod";
-
 const pinCreationSchema = z.object({
 	title: z.string().min(1),
 	description: z.string().optional(),
 	latitude: z.number().min(-90).max(90),
 	longitude: z.number().min(-180).max(180),
+	tags: z.array(z.string()),
 });
 
 type pinCreationSchemaType = z.infer<typeof pinCreationSchema>;
@@ -33,8 +33,12 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 			onSave(newPin.id);
 		},
 	});
+	const { data: tagsData } = trpc.tag.getAll.useQuery();
 
-	const formMethods = useForm({ resolver: zodResolver(pinCreationSchema) });
+	const formMethods = useForm({
+		defaultValues: { tags: [] },
+		resolver: zodResolver(pinCreationSchema),
+	});
 
 	const onSubmit = (data: pinCreationSchemaType) => {
 		const newPin: Pin = {
@@ -42,8 +46,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 			description: data.description?.trim(),
 			latitude: coords.lat,
 			longitude: coords.lng,
-			// type: type,
-			// icon: title.trim().charAt(0).toUpperCase() || iconMap[type],
+			tags: data.tags,
 		};
 
 		createPin.mutate(newPin);
@@ -54,6 +57,8 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 		formMethods.reset();
 		onCancel();
 	};
+
+	const tags = formMethods.watch("tags");
 
 	useEffect(() => {
 		formMethods.setValue("latitude", coords.lat);
@@ -103,21 +108,30 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 						/>
 					</div>
 
-					{/* <div className="input-group">
-						<span>PIN TYPE</span>
+					<div className="input-group">
+						<span>PIN TYPES (select all that apply)</span>
 						<div className="type-selector">
-							{(["academic", "food", "social", "utility"] as const).map((t) => (
+							{tagsData?.map((t) => (
 								<button
-									key={t}
+									key={t.id}
 									type="button"
-									className={`type-btn ${type === t ? "active" : ""}`}
-									onClick={() => setType(t)}
+									className={`type-btn ${tags.includes(t.id) ? "active" : ""}`}
+									onClick={() => {
+										if (tags.includes(t.id)) {
+											formMethods.setValue(
+												"tags",
+												tags.filter((tag) => tag !== t.id),
+											);
+										} else {
+											formMethods.setValue("tags", [...tags, t.id]);
+										}
+									}}
 								>
-									{t.toUpperCase()}
+									{t.title.toUpperCase()}
 								</button>
 							))}
 						</div>
-					</div> */}
+					</div>
 
 					<div className="action-row">
 						<button type="button" className="cancel-btn" onClick={handleCancel}>

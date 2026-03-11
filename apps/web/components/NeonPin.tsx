@@ -1,6 +1,6 @@
 import type { PinRouterOutputs } from "@repo/api";
 import { getFilterColor } from "./TopBar";
-type Pin = PinRouterOutputs["getById"];
+type Pin = PinRouterOutputs["getAll"][number];
 
 interface NeonPinProps {
 	pin: Pin;
@@ -17,7 +17,7 @@ export function NeonPin({
 	isVisible,
 	onClick,
 }: NeonPinProps) {
-	const color = getFilterColor("academic");
+	const color = getFilterColor(pin?.pinTags[0]?.tag.title || "");
 	const baseScale = isVisible ? (isSelected ? 1.2 : 1) : 0;
 	const opacity = isVisible ? 1 : 0;
 

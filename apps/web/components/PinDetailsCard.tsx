@@ -18,8 +18,8 @@ export function PinDetailsCard({
 	onClose,
 	onExpand,
 }: PinDetailsCardProps) {
-	const color = getFilterColor("academic");
 	const { data: pin } = trpc.pin.getById.useQuery({ id: pinId });
+	const color = getFilterColor(pin?.pinTags[0]?.tag.title || "");
 
 	return (
 		<div className="details-card">
@@ -28,7 +28,7 @@ export function PinDetailsCard({
 				<div>
 					<h2>{pin?.title}</h2>
 					<span className="badge" style={{ color: color }}>
-						yo
+						{pin?.pinTags.map((pt) => pt.tag.title).join(", ")}
 					</span>
 				</div>
 
