@@ -96,7 +96,10 @@ export function HeadsUpDisplay({
 				{selectedPinId && isExpanded && (
 					<ExpandedPinView
 						pinId={selectedPinId}
-						onClose={() => setIsExpanded(false)}
+						onClose={() => {
+							setIsExpanded(false);
+							onClearSelection?.();
+						}}
 					/>
 				)}
 			</div>

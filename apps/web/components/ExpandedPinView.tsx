@@ -1,6 +1,7 @@
 "use client";
 
 import { getFilterColor } from "@/components/TopBar";
+import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -139,10 +140,41 @@ const CommentNode = ({
 };
 
 export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
+	const utils = trpc.useUtils();
+	const { data: sessionData } = useSession();
 	const { data: pin } = trpc.pin.getById.useQuery(
 		{ id: pinId },
 		{ refetchOnWindowFocus: false },
 	);
+
+	const createComment = trpc.comment.create.useMutation({
+		onSuccess(output) {
+			utils.pin.getById.invalidate();
+			setIsReplying(false);
+		},
+	});
+	const deletePin = trpc.pin.userDelete.useMutation({
+		onSuccess(output) {
+			utils.pin.getAll.invalidate();
+			onClose();
+		},
+	});
+
+	const formMethods = useForm({ resolver: zodResolver(commentSchema) });
+	const [isReplying, setIsReplying] = useState(false);
+
+	function onSubmit(data: commentSchemaType) {
+		createComment.mutate({
+			message: data.message,
+			pinId: pinId,
+		});
+	}
+
+	const [isDeleting, setIsDeleting] = useState(false);
+
+	function onDelete() {
+		deletePin.mutate({ id: pinId });
+	}
 
 	const color = getFilterColor(
 		pin?.pinTags ? pin.pinTags[0]?.tag.title || "" : "",
@@ -240,10 +272,10 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							</div>
 
 							{/* RATING */}
-							<div className="meta-item">
+							{/* <div className="meta-item">
 								<span className="meta-label">AVG RATING</span>
 								<span className="meta-value text-neon-yellow">★ 5.0 / 5.0</span>
-							</div>
+							</div> */}
 
 							{/* TIMESTAMPS */}
 							<div className="meta-item">
@@ -268,8 +300,52 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							</div>
 						</div>
 
+						{!isDeleting && sessionData?.user.id === pin?.ownerId && (
+							<button type="button" onClick={() => setIsDeleting(true)}>
+								delete pin
+							</button>
+						)}
+
+						{isDeleting && (
+							<div>
+								Are you sure you want to delete?
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "row",
+										alignItems: "center",
+										width: "full",
+									}}
+								>
+									<button type="button" onClick={onDelete}>
+										delete
+									</button>
+									<button type="button" onClick={() => setIsDeleting(false)}>
+										cancel
+									</button>
+								</div>
+							</div>
+						)}
+
 						<div className="forum-section">
 							<h3 className="section-title">FORUM</h3>
+							{!isReplying ? (
+								<button
+									type="button"
+									className="action-btn"
+									onClick={() => setIsReplying(true)}
+								>
+									COMMENT
+								</button>
+							) : (
+								<form onSubmit={formMethods.handleSubmit(onSubmit)}>
+									<input {...formMethods.register("message")} />
+									<button type="submit">Send</button>
+									<button type="button" onClick={() => setIsReplying(false)}>
+										Cancel
+									</button>
+								</form>
+							)}
 							<div className="forum-threads">
 								{pin?.comments?.map((thread) => (
 									<CommentNode key={thread.id} comment={thread} depth={0} />

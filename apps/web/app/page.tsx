@@ -113,7 +113,11 @@ export default function Home() {
 								?.toLowerCase()
 								.includes(searchQuery.toLowerCase());
 
-						const isVisible = !!(matchesCategory && matchesSearch);
+						const isVisible = !!(
+							matchesCategory &&
+							matchesSearch &&
+							pinData.status !== "DELETED"
+						);
 
 						return (
 							<AdvancedMarker
