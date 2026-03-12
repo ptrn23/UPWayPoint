@@ -40,6 +40,7 @@ const CommentNode = ({
 	comment: Comment;
 	depth: number;
 }) => {
+	const { data: sessionData } = useSession();
 	const utils = trpc.useUtils();
 	const createComment = trpc.comment.create.useMutation({
 		onSuccess(output) {
@@ -90,6 +91,7 @@ const CommentNode = ({
 					{comment.upvotes}
 				</button> */}
 				{!isReplying ? (
+					sessionData &&
 					depth < 3 && (
 						<button
 							type="button"
@@ -330,13 +332,15 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 						<div className="forum-section">
 							<h3 className="section-title">FORUM</h3>
 							{!isReplying ? (
-								<button
-									type="button"
-									className="action-btn"
-									onClick={() => setIsReplying(true)}
-								>
-									COMMENT
-								</button>
+								sessionData && (
+									<button
+										type="button"
+										className="action-btn"
+										onClick={() => setIsReplying(true)}
+									>
+										COMMENT
+									</button>
+								)
 							) : (
 								<form onSubmit={formMethods.handleSubmit(onSubmit)}>
 									<input {...formMethods.register("message")} />
