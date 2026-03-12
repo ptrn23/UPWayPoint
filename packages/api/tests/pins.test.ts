@@ -33,13 +33,13 @@ test("[AUTH TEST]: non-existent (no account) user should not be able to create p
 
 	// try create a pin with the userId in the session
 	await expect(
-		caller.pin.create({
+		caller.pin.userCreate({
 			title: "pin",
 			latitude: 1.0,
 			longitude: 1.0,
-			ownerId: "non-existent_user",
 			description: "",
-			status: "PENDING_VERIFICATION",
+			tags: [],
+			imageURLs: [],
 		}),
 	).rejects.toMatchObject({
 		code: "UNAUTHORIZED",
@@ -47,13 +47,13 @@ test("[AUTH TEST]: non-existent (no account) user should not be able to create p
 
 	// try create a pin with random userId
 	await expect(
-		caller.pin.create({
+		caller.pin.userCreate({
 			title: "pin",
 			latitude: 1.0,
 			longitude: 1.0,
-			ownerId: "some-other-id",
 			description: "",
-			status: "PENDING_VERIFICATION",
+			tags: [],
+			imageURLs: [],
 		}),
 	).rejects.toMatchObject({
 		code: "UNAUTHORIZED",
@@ -61,11 +61,12 @@ test("[AUTH TEST]: non-existent (no account) user should not be able to create p
 
 	// try create a pin with random userId and missing info
 	await expect(
-		caller.pin.create({
+		caller.pin.userCreate({
 			title: "pin",
 			latitude: 1.0,
 			longitude: 1.0,
-			ownerId: "missing-pin-info",
+			tags: [],
+			imageURLs: [],
 		}),
 	).rejects.toMatchObject({
 		code: "UNAUTHORIZED",
@@ -101,7 +102,9 @@ test("[AUTH TEST]: non-existent (no account) user should not be able to delete p
 	const caller = await setupTestCaller();
 
 	// try to delete pin
-	await expect(caller.pin.delete({ id: "no-pin-id" })).rejects.toMatchObject({
+	await expect(
+		caller.pin.userDelete({ id: "no-pin-id" }),
+	).rejects.toMatchObject({
 		code: "UNAUTHORIZED",
 	});
 });
