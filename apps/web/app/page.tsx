@@ -12,6 +12,8 @@ import { TopBar, type FilterType } from "@/components/TopBar";
 import { AddPinModal } from "@/components/AddPinModal";
 import { MapCursor } from "@/components/MapCursor";
 import { TargetLine } from "@/components/TargetLine";
+import { Polyline } from "@/components/Polyline";
+import { JEEPNEY_ROUTES } from "@/data/map-layers";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 
@@ -153,6 +155,15 @@ export default function Home() {
                             color="#00E5FF"
                         />
                     )}
+
+					{JEEPNEY_ROUTES.map((route) => (
+                        <Polyline 
+                            key={route.id} 
+                            path={route.path} 
+                            color={route.color} 
+                            weight={6}
+                        />
+                    ))}
 				</GoogleMap>
 
 				{/* TOP BAR */}
