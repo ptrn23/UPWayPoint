@@ -161,7 +161,8 @@ export default function Home() {
                             key={route.id} 
                             path={route.path} 
                             color={route.color} 
-                            weight={6}
+                            weight={15}
+							animateDirection="forward"
                         />
                     ))}
 				</GoogleMap>
