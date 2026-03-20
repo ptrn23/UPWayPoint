@@ -51,7 +51,7 @@ export function NeonPin({
 					height: "100%",
 					transform: "rotate(45deg)",
 					border: `2px solid ${color}`,
-					backgroundColor: isSelected ? color : "rgba(3, 3, 4, 0.6)",
+					backgroundColor: isSelected ? color : "rgba(15, 17, 21, 0.6)",
 					boxShadow: isLocked
 						? `0 0 30px 5px ${color}`
 						: isSelected
