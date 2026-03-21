@@ -5,6 +5,14 @@ export interface TransitRoute {
   path: { lat: number; lng: number }[];
 }
 
+export interface CampusZone {
+  id: string;
+  name: string;
+  fillColor: string;
+  strokeColor: string;
+  paths: { lat: number; lng: number }[];
+}
+
 const parseGeoJson = (coords: any[]): { lat: number; lng: number }[] => {
   const isNested = Array.isArray(coords[0]) && Array.isArray(coords[0][0]);
   const activeArray = isNested ? coords[0] : coords;
@@ -37,4 +45,20 @@ export const JEEPNEY_ROUTES: TransitRoute[] = [
     color: "#8ECE63",
     path: parseGeoJson(RAW_SMNORTH_COORDS),
   },
+];
+
+export const CAMPUS_ZONES: CampusZone[] = [
+  {
+    id: "zone-sunken-garden",
+    name: "Sunken Garden",
+    fillColor: "#00FF99", // Tactical Neon Green
+    strokeColor: "#00FF99",
+    paths: [
+      { lat: 14.65640, lng: 121.06730 },
+      { lat: 14.65750, lng: 121.06820 },
+      { lat: 14.65580, lng: 121.06990 },
+      { lat: 14.65480, lng: 121.06880 },
+      { lat: 14.65640, lng: 121.06730 },
+    ]
+  }
 ];
