@@ -13,7 +13,8 @@ import { AddPinModal } from "@/components/AddPinModal";
 import { MapCursor } from "@/components/MapCursor";
 import { TargetLine } from "@/components/TargetLine";
 import { Polyline } from "@/components/Polyline";
-import { JEEPNEY_ROUTES } from "@/data/map-layers";
+import { Polygon } from "@/components/Polygon";
+import { JEEPNEY_ROUTES, CAMPUS_ZONES } from "@/data/map-layers";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 
@@ -165,6 +166,15 @@ export default function Home() {
                             color="#00E5FF"
                         />
                     )}
+
+					{CAMPUS_ZONES.map((zone) => (
+                        <Polygon 
+                            key={zone.id} 
+                            paths={zone.paths} 
+                            fillColor={zone.fillColor} 
+                            strokeColor={zone.strokeColor} 
+                        />
+                    ))}
 
 					{JEEPNEY_ROUTES.map((route) => {
                         if (!activeRoutes.includes(route.id)) return null;
