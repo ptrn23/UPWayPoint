@@ -43,24 +43,49 @@ export function TopBar({
 	return (
 		<div className="ui-layer">
 			{/* === LEFT ZONE === */}
-			<div className="zone-left">
-				<button type="button" onClick={onMenuClick} className="icon-button">
-					<svg
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2.5"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<line x1="3" y1="12" x2="21" y2="12"></line>
-						<line x1="3" y1="6" x2="21" y2="6"></line>
-						<line x1="3" y1="18" x2="21" y2="18"></line>
-					</svg>
-				</button>
-			</div>
+            <div className="zone-left">
+                <button type="button" onClick={onMenuClick} className="icon-button">
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+				
+                <button 
+                    type="button" 
+                    className="icon-button" 
+                    title="Toggle Transit Routes"
+                    style={{ marginTop: "12px" }}
+                >
+                    <svg 
+                        width="22" 
+                        height="22" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                    >
+                        <rect x="4" y="3" width="16" height="16" rx="2" ry="2"></rect>
+                        <path d="M4 11h16"></path>
+                        <path d="M8 15h.01"></path>
+                        <path d="M16 15h.01"></path>
+                        <path d="M6 19v2"></path>
+                        <path d="M18 19v2"></path>
+                    </svg>
+                </button>
+            </div>
 
 			{/* === CENTER ZONE (Search + Filters) === */}
 			<div className="zone-center">
