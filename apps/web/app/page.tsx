@@ -14,7 +14,7 @@ import { MapCursor } from "@/components/MapCursor";
 import { TargetLine } from "@/components/TargetLine";
 import { Polyline } from "@/components/Polyline";
 import { Polygon } from "@/components/Polygon";
-import { JEEPNEY_ROUTES, CAMPUS_ZONES } from "@/data/map-layers";
+import { JEEPNEY_ROUTES, CAMPUS_ZONES, ZONE_CATEGORIES } from "@/data/map-layers";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 
@@ -43,6 +43,14 @@ export default function Home() {
             prev.includes(routeId) 
                 ? prev.filter(id => id !== routeId)
                 : [...prev, routeId]
+        );
+    };
+
+	const [activeZoneCategories, setActiveZoneCategories] = useState<string[]>(["wifi", "safe", "logistics"]);
+
+    const handleToggleZoneCategory = (categoryId: string) => {
+        setActiveZoneCategories((prev) => 
+            prev.includes(categoryId) ? prev.filter(id => id !== categoryId) : [...prev, categoryId]
         );
     };
 
@@ -167,14 +175,22 @@ export default function Home() {
                         />
                     )}
 
-					{CAMPUS_ZONES.map((zone) => (
-                        <Polygon 
-                            key={zone.id} 
-                            paths={zone.paths} 
-                            fillColor={zone.fillColor} 
-                            strokeColor={zone.strokeColor} 
-                        />
-                    ))}
+					{CAMPUS_ZONES.map((zone) => {
+                        if (!activeZoneCategories.includes(zone.categoryId)) return null;
+
+                        const categoryDef = ZONE_CATEGORIES.find(c => c.id === zone.categoryId);
+                        const zoneColor = categoryDef ? categoryDef.color : "#FFFFFF";
+
+                        return (
+                            <Polygon 
+                                key={zone.id} 
+                                paths={zone.paths} 
+                                fillColor={zoneColor} 
+                                strokeColor={zoneColor}
+                                isPulsating={true} 
+                            />
+                        );
+                    })}
 
 					{JEEPNEY_ROUTES.map((route) => {
                         if (!activeRoutes.includes(route.id)) return null;
@@ -200,6 +216,8 @@ export default function Home() {
                     onSearchChange={setSearchQuery}
                     activeRoutes={activeRoutes}
                     onToggleRoute={handleToggleRoute}
+					activeZoneCategories={activeZoneCategories}
+                    onToggleZoneCategory={handleToggleZoneCategory}
                 />
 
 				{/* TARGETING CROSSHAIR (Only visible when armed) */}
