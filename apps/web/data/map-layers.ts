@@ -1,3 +1,18 @@
+export type ZoneCategoryType = "wifi" | "safe" | "logistics";
+
+export interface ZoneCategoryDef {
+  id: ZoneCategoryType;
+  label: string;
+  color: string;
+  initial: string;
+}
+
+export const ZONE_CATEGORIES: ZoneCategoryDef[] = [
+  { id: "wifi", label: "Strong WiFi Zones", color: "#00FF99", initial: "W" },
+  { id: "safe", label: "24/7 Safe Zones", color: "#00E5FF", initial: "S" },
+  { id: "logistics", label: "Logistics & Food", color: "#FF9900", initial: "L" }
+];
+
 export interface TransitRoute {
   id: string;
   name: string;
@@ -7,9 +22,8 @@ export interface TransitRoute {
 
 export interface CampusZone {
   id: string;
+  categoryId: ZoneCategoryType;
   name: string;
-  fillColor: string;
-  strokeColor: string;
   paths: { lat: number; lng: number }[];
 }
 
@@ -50,15 +64,74 @@ export const JEEPNEY_ROUTES: TransitRoute[] = [
 export const CAMPUS_ZONES: CampusZone[] = [
   {
     id: "zone-sunken-garden",
+    categoryId: "wifi",
     name: "Sunken Garden",
-    fillColor: "#00FF99", // Tactical Neon Green
-    strokeColor: "#00FF99",
     paths: [
-      { lat: 14.65640, lng: 121.06730 },
-      { lat: 14.65750, lng: 121.06820 },
-      { lat: 14.65580, lng: 121.06990 },
-      { lat: 14.65480, lng: 121.06880 },
-      { lat: 14.65640, lng: 121.06730 },
+      { lat: 14.65640, lng: 121.06730 }, 
+      { lat: 14.65750, lng: 121.06820 }, 
+      { lat: 14.65580, lng: 121.06990 }, 
+      { lat: 14.65480, lng: 121.06880 }, 
+      { lat: 14.65640, lng: 121.06730 }, 
+    ]
+  },
+  {
+    id: "zone-engg-lib",
+    categoryId: "wifi",
+    name: "Engineering Library",
+    paths: [
+      { lat: 14.65650, lng: 121.06500 },
+      { lat: 14.65700, lng: 121.06550 },
+      { lat: 14.65650, lng: 121.06600 },
+      { lat: 14.65600, lng: 121.06550 },
+      { lat: 14.65650, lng: 121.06500 },
+    ]
+  },
+  {
+    id: "zone-quezon-hall",
+    categoryId: "safe",
+    name: "Quezon Hall Plaza",
+    paths: [
+      { lat: 14.65520, lng: 121.06420 },
+      { lat: 14.65550, lng: 121.06480 },
+      { lat: 14.65450, lng: 121.06520 },
+      { lat: 14.65420, lng: 121.06460 },
+      { lat: 14.65520, lng: 121.06420 },
+    ]
+  },
+  {
+    id: "zone-chk",
+    categoryId: "safe",
+    name: "CHK Complex",
+    paths: [
+      { lat: 14.65800, lng: 121.06000 },
+      { lat: 14.65900, lng: 121.06050 },
+      { lat: 14.65850, lng: 121.06150 },
+      { lat: 14.65750, lng: 121.06100 },
+      { lat: 14.65800, lng: 121.06000 },
+    ]
+  },
+  {
+    id: "zone-area-2",
+    categoryId: "logistics",
+    name: "Area 2 Food Hub",
+    paths: [
+      { lat: 14.65300, lng: 121.07000 },
+      { lat: 14.65400, lng: 121.07050 },
+      { lat: 14.65350, lng: 121.07150 },
+      { lat: 14.65250, lng: 121.07100 },
+      { lat: 14.65300, lng: 121.07000 },
+    ]
+  },
+  {
+    id: "zone-gyud-food",
+    categoryId: "logistics",
+    name: "Gyud Food Market",
+    paths: [
+      { lat: 14.65900, lng: 121.06200 },
+      { lat: 14.65950, lng: 121.06250 },
+      { lat: 14.65850, lng: 121.06350 },
+      { lat: 14.65800, lng: 121.06300 },
+      { lat: 14.65900, lng: 121.06200 },
     ]
   }
 ];

@@ -17,7 +17,7 @@ interface PolygonProps {
 export function Polygon({
   paths,
   fillColor = "#00FF99",
-  fillOpacity = 0.15, 
+  fillOpacity = 0.05, 
   strokeColor = "#00FF99",
   strokeOpacity = 0.8,
   strokeWeight = 2,
