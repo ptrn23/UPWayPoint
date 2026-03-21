@@ -46,7 +46,7 @@ export default function Home() {
         );
     };
 
-	const [activeZoneCategories, setActiveZoneCategories] = useState<string[]>(["wifi", "safe", "logistics"]);
+	const [activeZoneCategories, setActiveZoneCategories] = useState<string[]>([]);
 
     const handleToggleZoneCategory = (categoryId: string) => {
         setActiveZoneCategories((prev) => 
