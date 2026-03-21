@@ -35,6 +35,16 @@ export default function Home() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isAddingPin, setIsAddingPin] = useState(false);
 
+	const [activeRoutes, setActiveRoutes] = useState<string[]>([]);
+
+    const handleToggleRoute = (routeId: string) => {
+        setActiveRoutes((prev) => 
+            prev.includes(routeId) 
+                ? prev.filter(id => id !== routeId)
+                : [...prev, routeId]
+        );
+    };
+
 	const [pendingPinCoords, setPendingPinCoords] = useState<{
 		lat: number;
 		lng: number;
@@ -156,25 +166,31 @@ export default function Home() {
                         />
                     )}
 
-					{JEEPNEY_ROUTES.map((route) => (
-                        <Polyline 
-                            key={route.id} 
-                            path={route.path} 
-                            color={route.color} 
-                            weight={15}
-							animateDirection="forward"
-                        />
-                    ))}
+					{JEEPNEY_ROUTES.map((route) => {
+                        if (!activeRoutes.includes(route.id)) return null;
+
+                        return (
+                            <Polyline 
+                                key={route.id} 
+                                path={route.path} 
+                                color={route.color} 
+                                weight={10}
+                                animateDirection="forward"
+                            />
+                        );
+                    })}
 				</GoogleMap>
 
 				{/* TOP BAR */}
 				<TopBar
-					onMenuClick={toggleMenu}
-					activeFilter={activeFilter}
-					onFilterChange={setActiveFilter}
-					searchQuery={searchQuery}
-					onSearchChange={setSearchQuery}
-				/>
+                    onMenuClick={toggleMenu}
+                    activeFilter={activeFilter}
+                    onFilterChange={setActiveFilter}
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    activeRoutes={activeRoutes}
+                    onToggleRoute={handleToggleRoute}
+                />
 
 				{/* TARGETING CROSSHAIR (Only visible when armed) */}
 				{isAddingPin && (
