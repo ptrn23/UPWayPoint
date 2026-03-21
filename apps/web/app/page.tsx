@@ -10,6 +10,10 @@ import { NeonPin } from "@/components/NeonPin";
 import { useWaypointState } from "@/hooks/useWaypointState";
 import { TopBar, type FilterType } from "@/components/TopBar";
 import { AddPinModal } from "@/components/AddPinModal";
+import { MapCursor } from "@/components/MapCursor";
+import { TargetLine } from "@/components/TargetLine";
+import { Polyline } from "@/components/Polyline";
+import { JEEPNEY_ROUTES } from "@/data/map-layers";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 
@@ -31,6 +35,16 @@ export default function Home() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isAddingPin, setIsAddingPin] = useState(false);
 
+	const [activeRoutes, setActiveRoutes] = useState<string[]>([]);
+
+    const handleToggleRoute = (routeId: string) => {
+        setActiveRoutes((prev) => 
+            prev.includes(routeId) 
+                ? prev.filter(id => id !== routeId)
+                : [...prev, routeId]
+        );
+    };
+
 	const [pendingPinCoords, setPendingPinCoords] = useState<{
 		lat: number;
 		lng: number;
@@ -44,6 +58,10 @@ export default function Home() {
 				.filter((p) => p.id && p.latitude && p.longitude) || []
 		);
 	}, [pins]);
+
+	const activePinObj = useMemo(() => {
+        return pinsParsed.find((p) => p.id === selectedPinId);
+    }, [pinsParsed, selectedPinId]);
 
 	useEffect(() => {
 		if (!isAddingPin) return;
@@ -135,16 +153,44 @@ export default function Home() {
 							</AdvancedMarker>
 						);
 					})}
+
+                    <AdvancedMarker position={mockUserLocation} zIndex={50}>
+                        <MapCursor heading={mockHeading} />
+                    </AdvancedMarker>
+					
+                    {activePinObj && (
+                        <TargetLine
+                            start={mockUserLocation}
+                            end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
+                            color="#00E5FF"
+                        />
+                    )}
+
+					{JEEPNEY_ROUTES.map((route) => {
+                        if (!activeRoutes.includes(route.id)) return null;
+
+                        return (
+                            <Polyline 
+                                key={route.id} 
+                                path={route.path} 
+                                color={route.color} 
+                                weight={10}
+                                animateDirection="forward"
+                            />
+                        );
+                    })}
 				</GoogleMap>
 
 				{/* TOP BAR */}
 				<TopBar
-					onMenuClick={toggleMenu}
-					activeFilter={activeFilter}
-					onFilterChange={setActiveFilter}
-					searchQuery={searchQuery}
-					onSearchChange={setSearchQuery}
-				/>
+                    onMenuClick={toggleMenu}
+                    activeFilter={activeFilter}
+                    onFilterChange={setActiveFilter}
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    activeRoutes={activeRoutes}
+                    onToggleRoute={handleToggleRoute}
+                />
 
 				{/* TARGETING CROSSHAIR (Only visible when armed) */}
 				{isAddingPin && (
