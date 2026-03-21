@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 import { useSession } from "@/lib/auth-client";
+import { JEEPNEY_ROUTES } from "@/data/map-layers";
 
 export type FilterType = "all" | "academic" | "food" | "social" | "utility";
 
@@ -12,6 +14,8 @@ interface TopBarProps {
 	onFilterChange: (filter: FilterType) => void;
 	searchQuery: string;
 	onSearchChange: (query: string) => void;
+	activeRoutes?: string[]; 
+    onToggleRoute?: (routeId: string) => void;
 }
 
 export function TopBar({
@@ -20,9 +24,12 @@ export function TopBar({
 	onFilterChange,
 	searchQuery,
 	onSearchChange,
+	activeRoutes = [],
+    onToggleRoute = () => {},
 }: TopBarProps) {
 	const router = useRouter();
 	const { data: sessionData } = useSession();
+	const [isTransitMenuOpen, setIsTransitMenuOpen] = useState(false);
 
 	const handleProfileClick = () => {
 		if (sessionData?.user) {
@@ -60,31 +67,52 @@ export function TopBar({
                         <line x1="3" y1="18" x2="21" y2="18"></line>
                     </svg>
                 </button>
-				
-                <button 
-                    type="button" 
-                    className="icon-button" 
-                    title="Toggle Transit Routes"
-                    style={{ marginTop: "12px" }}
-                >
-                    <svg 
-                        width="22" 
-                        height="22" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2.5" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
+
+                <div className="transit-system-container">
+                    <button 
+                        type="button" 
+                        className={`icon-button transit-btn ${isTransitMenuOpen ? 'active' : ''}`}
+                        title="Toggle Transit Routes"
+                        onClick={() => setIsTransitMenuOpen(!isTransitMenuOpen)}
                     >
-                        <rect x="4" y="3" width="16" height="16" rx="2" ry="2"></rect>
-                        <path d="M4 11h16"></path>
-                        <path d="M8 15h.01"></path>
-                        <path d="M16 15h.01"></path>
-                        <path d="M6 19v2"></path>
-                        <path d="M18 19v2"></path>
-                    </svg>
-                </button>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="4" y="3" width="16" height="16" rx="2" ry="2"></rect>
+                            <path d="M4 11h16"></path>
+                            <path d="M8 15h.01"></path>
+                            <path d="M16 15h.01"></path>
+                            <path d="M6 19v2"></path>
+                            <path d="M18 19v2"></path>
+                        </svg>
+                    </button>
+
+                    {/* Extruding Route Nodes */}
+                    {isTransitMenuOpen && (
+                        <div className="extruded-menu">
+                            {JEEPNEY_ROUTES.map((route) => {
+                                const isActive = activeRoutes.includes(route.id);
+                                const initial = route.name.replace("UP ", "").charAt(0).toUpperCase();
+
+                                return (
+                                    <button
+                                        key={route.id}
+                                        type="button"
+                                        onClick={() => onToggleRoute(route.id)}
+                                        className="route-node"
+                                        title={route.name}
+                                        style={{
+                                            backgroundColor: isActive ? `${route.color}20` : 'rgba(255, 255, 255, 0.05)',
+                                            color: isActive ? route.color : '#aaa',
+                                            borderColor: isActive ? route.color : 'transparent',
+                                            boxShadow: isActive ? `0 0 10px ${route.color}40` : 'none',
+                                        }}
+                                    >
+                                        {initial}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
             </div>
 
 			{/* === CENTER ZONE (Search + Filters) === */}
