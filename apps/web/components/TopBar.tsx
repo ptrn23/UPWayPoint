@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 import { useSession } from "@/lib/auth-client";
-import { JEEPNEY_ROUTES } from "@/data/map-layers";
+import { JEEPNEY_ROUTES, ZONE_CATEGORIES } from "@/data/map-layers";
 
 export type FilterType = "all" | "academic" | "food" | "social" | "utility";
 
@@ -16,6 +16,8 @@ interface TopBarProps {
 	onSearchChange: (query: string) => void;
 	activeRoutes?: string[]; 
     onToggleRoute?: (routeId: string) => void;
+	activeZoneCategories?: string[];
+    onToggleZoneCategory?: (categoryId: string) => void;
 }
 
 export function TopBar({
@@ -26,10 +28,13 @@ export function TopBar({
 	onSearchChange,
 	activeRoutes = [],
     onToggleRoute = () => {},
+	activeZoneCategories = [],
+    onToggleZoneCategory = () => {},
 }: TopBarProps) {
 	const router = useRouter();
 	const { data: sessionData } = useSession();
 	const [isTransitMenuOpen, setIsTransitMenuOpen] = useState(false);
+	const [isZoneMenuOpen, setIsZoneMenuOpen] = useState(false);
 
 	const handleProfileClick = () => {
 		if (sessionData?.user) {
@@ -107,6 +112,47 @@ export function TopBar({
                                         }}
                                     >
                                         {initial}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+
+				<div className="transit-system-container">
+                    <button 
+                        type="button" 
+                        className={`icon-button transit-btn ${isZoneMenuOpen ? 'active' : ''}`}
+                        title="Toggle Zone Layers"
+                        onClick={() => {
+                            setIsZoneMenuOpen(!isZoneMenuOpen);
+                        }}
+                    >
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
+                        </svg>
+                    </button>
+
+                    {isZoneMenuOpen && (
+                        <div className="extruded-menu">
+                            {ZONE_CATEGORIES.map((category) => {
+                                const isActive = activeZoneCategories.includes(category.id);
+
+                                return (
+                                    <button
+                                        key={category.id}
+                                        type="button"
+                                        onClick={() => onToggleZoneCategory(category.id)}
+                                        className="route-node"
+                                        title={category.label}
+                                        style={{
+                                            backgroundColor: isActive ? `${category.color}20` : 'rgba(255, 255, 255, 0.05)',
+                                            color: isActive ? category.color : '#aaa',
+                                            borderColor: isActive ? category.color : 'transparent',
+                                            boxShadow: isActive ? `0 0 10px ${category.color}40` : 'none',
+                                        }}
+                                    >
+                                        {category.initial} 
                                     </button>
                                 );
                             })}
