@@ -4,6 +4,7 @@ import {
 	APIProvider,
 	Map as GoogleMap,
 	AdvancedMarker,
+	ColorScheme,
 } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
@@ -54,6 +55,8 @@ export default function Home() {
         );
     };
 
+	const [theme, setTheme] = useState<"dark" | "light">("light");
+
 	const [pendingPinCoords, setPendingPinCoords] = useState<{
 		lat: number;
 		lng: number;
@@ -103,6 +106,7 @@ export default function Home() {
 					defaultZoom={19}
 					minZoom={17}
 					mapId={process.env.NEXT_PUBLIC_MAP_ID || "71238adec955b8c6d66f595a"}
+					colorScheme={theme === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
 					gestureHandling={"greedy"}
 					disableDefaultUI={true}
 					onClick={(e) => {
