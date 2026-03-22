@@ -323,6 +323,6 @@ export const getFilterColor = (type: string) => {
 		case "utility":
 			return "#00d1ff";
 		default:
-			return "#ffffff";
+			return "var(--text-primary)"; 
 	}
 };
