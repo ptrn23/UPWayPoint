@@ -154,7 +154,7 @@ p, .font-desc, .details-card p {
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  color: white;
+  color: var(--text-primary);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   transition: transform 0.1s;
