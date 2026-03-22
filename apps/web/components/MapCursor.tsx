@@ -41,7 +41,7 @@ export function MapCursor({ heading = 0 }: MapCursorProps) {
         .cursor-arrow {
           position: relative;
           z-index: 10;
-          filter: drop-shadow(0 0 8px var(--neon-blue, #00E5FF));
+          filter: drop-shadow(0 0 8px var(--neon-blue));
           transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
