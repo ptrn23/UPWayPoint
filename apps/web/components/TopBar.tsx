@@ -107,7 +107,7 @@ export function TopBar({
                                         className="route-node"
                                         title={route.name}
                                         style={{
-                                            backgroundColor: isActive ? `${route.color}20` : 'rgba(255, 255, 255, 0.05)',
+                                            backgroundColor: isActive ? `${route.color}20` : 'var(--bg-panel-hover)',
                                             color: isActive ? route.color : '#aaa',
                                             borderColor: isActive ? route.color : 'transparent',
                                             boxShadow: isActive ? `0 0 10px ${route.color}40` : 'none',
@@ -148,7 +148,7 @@ export function TopBar({
                                         className="route-node"
                                         title={category.label}
                                         style={{
-                                            backgroundColor: isActive ? `${category.color}20` : 'rgba(255, 255, 255, 0.05)',
+                                            backgroundColor: isActive ? `${category.color}20` : 'var(--bg-panel-hover)',
                                             color: isActive ? category.color : '#aaa',
                                             borderColor: isActive ? category.color : 'transparent',
                                             boxShadow: isActive ? `0 0 10px ${category.color}40` : 'none',
