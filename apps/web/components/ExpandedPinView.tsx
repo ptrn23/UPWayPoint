@@ -67,29 +67,11 @@ const CommentNode = ({
 				<span className="comment-time">
 					{new Date(comment.createdAt).toLocaleString("default")}
 				</span>
-				{/* {depth === 0 && comment.rating && (
-					<span className="comment-rating">
-						{"★".repeat(comment.rating)} {comment.rating}/5
-					</span>
-				)} */}
 			</div>
 
 			<p className="comment-text">{comment.message}</p>
 
 			<div className="comment-actions">
-				{/* <button type="button" className="action-btn">
-					<svg
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2.5"
-					>
-						<path d="M12 19V5M5 12l7-7 7 7" />
-					</svg>
-					{comment.upvotes}
-				</button> */}
 				{!isReplying ? (
 					sessionData &&
 					depth < 3 && (
@@ -102,10 +84,14 @@ const CommentNode = ({
 						</button>
 					)
 				) : (
-					<form onSubmit={formMethods.handleSubmit(onSubmit)}>
-						<input {...formMethods.register("message")} />
-						<button type="submit">Send</button>
-						<button type="button" onClick={() => setIsReplying(false)}>
+					<form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
+						<input 
+                            {...formMethods.register("message")} 
+                            placeholder="Write a reply..."
+                            className="reply-input"
+                        />
+						<button type="submit" className="tactical-button-primary form-btn">Send</button>
+						<button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
 							Cancel
 						</button>
 					</form>
@@ -123,19 +109,37 @@ const CommentNode = ({
 			<style jsx>{`
         .comment-node { margin-top: 16px; }
         .comment-node.is-reply {
-          margin-left: 16px; padding-left: 16px; border-left: 2px solid rgba(255, 255, 255, 0.05); margin-top: 12px;
+          margin-left: 16px; 
+          padding-left: 16px; 
+          border-left: 2px solid var(--border-color); 
+          margin-top: 12px;
         }
         .comment-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
-        .comment-author { font-family: var(--font-chakra); font-weight: 700; font-size: 13px; color: #fff; }
-        .comment-time { font-family: var(--font-nunito); font-size: 11px; color: #666; }
-        .comment-rating { color: var(--neon-yellow); font-size: 11px; margin-left: auto; letter-spacing: 0.1em; }
-        .comment-text { font-family: var(--font-nunito); font-size: 14px; color: #ccc; line-height: 1.5; margin: 4px 0; }
+        .comment-author { font-family: var(--font-chakra); font-weight: 700; font-size: 13px; color: var(--text-primary); }
+        .comment-time { font-family: var(--font-nunito); font-size: 11px; color: var(--text-secondary); }
+        
+        .comment-text { font-family: var(--font-nunito); font-size: 14px; color: var(--text-primary); line-height: 1.5; margin: 4px 0; }
         .comment-actions { display: flex; gap: 16px; align-items: center; margin-top: 8px; }
         .action-btn {
-          background: none; border: none; color: #888; font-family: var(--font-chakra); font-size: 11px;
+          background: none; border: none; color: var(--text-secondary); font-family: var(--font-chakra); font-size: 11px;
           font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0; transition: color 0.2s;
         }
-        .action-btn:hover { color: #fff; }
+        .action-btn:hover { color: var(--text-primary); }
+
+        .reply-form { display: flex; gap: 8px; width: 100%; align-items: center; margin-top: 8px; }
+        .reply-input {
+            flex: 1;
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-family: var(--font-nunito);
+            font-size: 13px;
+            outline: none;
+        }
+        .reply-input:focus { border-color: var(--neon-blue, #00E5FF); }
+        .form-btn { padding: 6px 12px; font-size: 11px; border-radius: 6px; }
       `}</style>
 		</div>
 	);
@@ -183,11 +187,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 	);
 
 	return (
-		// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
-		// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 		<div className="modal-overlay" onClick={onClose}>
-			{/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
-			{/** biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
 				<div className="scroll-area custom-vertical-scrollbar">
 					{/* HEADER */}
@@ -220,20 +220,6 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 						{pin?.images?.map((img) => (
 							<div key={img.id} className={`photo-placeholder large`}>
 								<Image alt="" src={`${img.url}`} fill objectFit="cover" />
-								{/* <svg
-									width="24"
-									height="24"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="rgba(255,255,255,0.2)"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-									<circle cx="8.5" cy="8.5" r="1.5"></circle>
-									<polyline points="21 15 16 10 5 21"></polyline>
-								</svg> */}
 							</div>
 						))}
 					</div>
@@ -273,12 +259,6 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 								</span>
 							</div>
 
-							{/* RATING */}
-							{/* <div className="meta-item">
-								<span className="meta-label">AVG RATING</span>
-								<span className="meta-value text-neon-yellow">★ 5.0 / 5.0</span>
-							</div> */}
-
 							{/* TIMESTAMPS */}
 							<div className="meta-item">
 								<span className="meta-label">CREATED AT</span>
@@ -302,28 +282,22 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							</div>
 						</div>
 
+						{/* OWNER ACTIONS */}
 						{!isDeleting && sessionData?.user.id === pin?.ownerId && (
-							<button type="button" onClick={() => setIsDeleting(true)}>
-								delete pin
+							<button type="button" className="tactical-button danger-btn" onClick={() => setIsDeleting(true)}>
+								DELETE PIN
 							</button>
 						)}
 
 						{isDeleting && (
-							<div>
-								Are you sure you want to delete?
-								<div
-									style={{
-										display: "flex",
-										flexDirection: "row",
-										alignItems: "center",
-										width: "full",
-									}}
-								>
-									<button type="button" onClick={onDelete}>
-										delete
+							<div className="delete-confirm-box">
+								<p>Are you sure you want to permanently delete this pin?</p>
+								<div className="delete-actions">
+									<button type="button" className="tactical-button-primary danger-btn-solid" onClick={onDelete}>
+										CONFIRM DELETE
 									</button>
-									<button type="button" onClick={() => setIsDeleting(false)}>
-										cancel
+									<button type="button" className="tactical-button" onClick={() => setIsDeleting(false)}>
+										CANCEL
 									</button>
 								</div>
 							</div>
@@ -338,15 +312,19 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 										className="action-btn"
 										onClick={() => setIsReplying(true)}
 									>
-										COMMENT
+										+ ADD COMMENT
 									</button>
 								)
 							) : (
-								<form onSubmit={formMethods.handleSubmit(onSubmit)}>
-									<input {...formMethods.register("message")} />
-									<button type="submit">Send</button>
-									<button type="button" onClick={() => setIsReplying(false)}>
-										Cancel
+								<form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
+									<input 
+                                        {...formMethods.register("message")} 
+                                        placeholder="Write a comment..."
+                                        className="reply-input"
+                                    />
+									<button type="submit" className="tactical-button-primary form-btn">POST</button>
+									<button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
+										CANCEL
 									</button>
 								</form>
 							)}
@@ -371,20 +349,17 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             }
 
             .modal-content {
-                background: rgba(10, 10, 12, 0.95);
-                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: var(--bg-panel);
+                border: 1px solid var(--border-color);
                 border-top: 4px solid ${color}; 
                 border-radius: 24px;
                 width: 100%; 
                 max-width: 500px; 
-                
                 height: 70vh; 
-                
                 display: flex; 
                 flex-direction: column;
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
                 animation: scalePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                
                 overflow: hidden; 
                 position: relative;
                 padding: 0; 
@@ -403,156 +378,119 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 left: 0;
                 width: 100%;
                 height: 80px;
-                /* Fades from solid background color to transparent */
-                background: linear-gradient(to top, rgba(10, 10, 12, 1) 10%, rgba(10, 10, 12, 0) 100%);
-                pointer-events: none; /* Ensures you can still click text behind the fade */
+                /* Fades to transparent seamlessly in both Light and Dark mode */
+                background: linear-gradient(to top, var(--bg-base) 10%, transparent 100%);
+                pointer-events: none; 
                 border-bottom-left-radius: 24px;
                 border-bottom-right-radius: 24px;
             }
 
-            .custom-vertical-scrollbar::-webkit-scrollbar {
-                width: 6px;
-            }
-            .custom-vertical-scrollbar::-webkit-scrollbar-track {
-                background: transparent;
-                margin-top: 24px;
-                margin-bottom: 24px;
-            }
-            .custom-vertical-scrollbar::-webkit-scrollbar-thumb {
-                background: rgba(255, 255, 255, 0.15);
-                border-radius: 10px;
-            }
-            .custom-vertical-scrollbar::-webkit-scrollbar-thumb:hover {
-                background: rgba(255, 255, 255, 0.3);
-            }
+            /* Custom Scrollbars */
+            .custom-vertical-scrollbar::-webkit-scrollbar { width: 6px; }
+            .custom-vertical-scrollbar::-webkit-scrollbar-track { background: transparent; margin: 24px 0; }
+            .custom-vertical-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+            .custom-vertical-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
+            .custom-scrollbar::-webkit-scrollbar { height: 6px; }
+            .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; transition: background 0.2s; }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+            /* Header & Images */
             .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
             .badge { font-family: var(--font-cubao-wide); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
-            h2 { font-family: var(--font-chakra); color: white; font-size: 26px; font-weight: 800; margin: 4px 0 0 0; }
+            h2 { font-family: var(--font-chakra); color: var(--text-primary); font-size: 26px; font-weight: 800; margin: 4px 0 0 0; }
 
             .close-btn {
-                background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 50%; width: 44px; height: 44px; color: white; cursor: pointer;
+                background: transparent; border: 1px solid var(--border-color);
+                border-radius: 50%; width: 44px; height: 44px; color: var(--text-primary); cursor: pointer;
                 display: flex; align-items: center; justify-content: center; transition: all 0.2s;
                 flex-shrink: 0;
             }
-            .close-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.1); }
+            .close-btn:hover { background: var(--bg-panel-hover); }
+            .close-btn:active { transform: scale(0.9); }
 
             .photo-gallery {
-                display: grid;
-                grid-template-rows: repeat(2, 90px);
-                grid-auto-flow: column;
-                gap: 12px;
-                margin-bottom: 24px;
-                overflow-x: auto;
-                overscroll-behavior-x: contain;
-                padding-bottom: 8px;
-                scroll-snap-type: x mandatory;
+                display: grid; grid-template-rows: repeat(2, 90px); grid-auto-flow: column;
+                gap: 12px; margin-bottom: 24px; overflow-x: auto; overscroll-behavior-x: contain;
+                padding-bottom: 8px; scroll-snap-type: x mandatory;
             }
             .no-scrollbar::-webkit-scrollbar { display: none; }
 
             .photo-placeholder {
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.05);
+                background: var(--bg-panel-hover);
+                border: 1px solid var(--border-color);
                 border-radius: 16px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                scroll-snap-align: start;
-                position: relative;
-                overflow: hidden;
+                display: flex; align-items: center; justify-content: center;
+                scroll-snap-align: start; position: relative; overflow: hidden;
             }
+            .photo-placeholder.large { grid-row: span 2; width: 192px; }
 
-            .photo-placeholder::after {
-                content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-                animation: shimmer 2s infinite;
-            }
-
-            .photo-placeholder.large {
-                grid-row: span 2; /* Spans both rows (192px tall including gap) */
-                width: 192px;
-            }
-
-            .photo-placeholder.small {
-                grid-row: span 1; /* Spans 1 row (90px tall) */
-                width: 140px;
-            }
-
-            .custom-scrollbar::-webkit-scrollbar {
-                height: 6px; /* Thin horizontal scrollbar */
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-                background: rgba(255, 255, 255, 0.02);
-                border-radius: 10px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-                background: rgba(255, 255, 255, 0.15);
-                border-radius: 10px;
-                transition: background 0.2s;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                background: rgba(255, 255, 255, 0.3); /* Highlights when hovered */
-            }
-
+            /* Body Data */
             .modal-body { display: flex; flex-direction: column; gap: 24px; }
-            .description { font-family: var(--font-nunito); font-size: 15px; color: #ccc; line-height: 1.5; margin: 0; }
+            .description { font-family: var(--font-nunito); font-size: 15px; color: var(--text-primary); line-height: 1.5; margin: 0; }
 
             .meta-grid {
                 display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-                background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05);
+                background: var(--bg-panel-hover); border: 1px solid var(--border-color);
                 border-radius: 16px; padding: 20px;
             }
             .meta-item { display: flex; flex-direction: column; gap: 4px; }
 
-            .forum-section {
-                margin-top: 16px;
-                border-top: 1px solid rgba(255, 255, 255, 0.05);
-                padding-top: 24px;
-            }
-
-            .section-title {
-                font-family: var(--font-chakra);
-                font-size: 12px;
-                font-weight: 900;
-                letter-spacing: 0.15em;
-                color: #666;
-                margin-bottom: 20px;
-            }
-
-            .action-btn {
-                background: none;
-                border: none;
-                color: #888;
-                font-family: var(--font-chakra);
-                font-size: 11px;
-                font-weight: 700;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-                padding: 0;
-                transition: color 0.2s;
-            }
-
-            .action-btn:hover {
-                color: #fff;
-            }
-
             .col-span-2 { grid-column: span 2; } 
-
-            .meta-label { font-family: var(--font-chakra); font-size: 10px; font-weight: 800; color: #666; letter-spacing: 0.1em; }
-            .meta-value { font-family: var(--font-nunito); font-size: 14px; font-weight: 700; color: #eee; }
+            .meta-label { font-family: var(--font-chakra); font-size: 10px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.1em; }
+            .meta-value { font-family: var(--font-nunito); font-size: 14px; font-weight: 700; color: var(--text-primary); }
 
             .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
             .font-cubao-wide { font-family: var(--font-cubao-wide); font-weight: 100; letter-spacing: 0.1em;}
-            .text-muted { color: #888; font-style: italic; }
+            .text-muted { color: var(--text-secondary); font-style: italic; }
             .text-neon-green { color: var(--neon-green, #00FF99); text-shadow: 0 0 10px rgba(0, 255, 153, 0.3); }
-            .text-neon-yellow { color: var(--neon-yellow, #FFD700); text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+
+            .danger-btn { border-color: #ff4d4d; color: #ff4d4d; padding: 12px; }
+            .danger-btn:hover { background: rgba(255, 77, 77, 0.1); transform: none;}
+            
+            .delete-confirm-box {
+                background: rgba(255, 77, 77, 0.05);
+                border: 1px solid #ff4d4d;
+                border-radius: 12px;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .delete-confirm-box p { margin: 0; color: var(--text-primary); font-family: var(--font-nunito); font-size: 14px; }
+            .delete-actions { display: flex; gap: 8px; }
+            .danger-btn-solid { background: rgba(255, 77, 77, 0.2); border-color: #ff4d4d; color: #ff4d4d; box-shadow: none; flex: 1; padding: 10px;}
+            .danger-btn-solid:hover { background: #ff4d4d; color: white; box-shadow: 0 0 15px rgba(255, 77, 77, 0.4); }
+			
+            .forum-section {
+                margin-top: 8px;
+                border-top: 1px solid var(--border-color);
+                padding-top: 24px;
+            }
+            .section-title {
+                font-family: var(--font-chakra); font-size: 12px; font-weight: 900;
+                letter-spacing: 0.15em; color: var(--text-secondary); margin-bottom: 20px;
+            }
+
+            .action-btn {
+                background: none; border: none; color: var(--text-secondary);
+                font-family: var(--font-chakra); font-size: 11px; font-weight: 700;
+                cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0; transition: color 0.2s;
+            }
+            .action-btn:hover { color: var(--text-primary); }
+
+            .reply-form { display: flex; gap: 8px; width: 100%; align-items: center; margin-bottom: 24px; }
+            .reply-input {
+                flex: 1; background: var(--bg-base); border: 1px solid var(--border-color);
+                border-radius: 6px; padding: 10px 12px; color: var(--text-primary);
+                font-family: var(--font-nunito); font-size: 13px; outline: none;
+            }
+            .reply-input:focus { border-color: var(--neon-blue, #00E5FF); }
+            .form-btn { padding: 10px 16px; font-size: 11px; border-radius: 6px; }
 
             @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
             @keyframes scalePop { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-            @keyframes shimmer { 100% { left: 200%; } }
       `}</style>
 		</div>
 	);
