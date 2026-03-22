@@ -223,8 +223,8 @@ p, .font-desc, .details-card p {
 
 .route-node:hover {
     transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
+    background: var(--bg-panel-hover) !important;
+    color: var(--text-primary) !important;
 }
 
 @keyframes extrudeRight {
