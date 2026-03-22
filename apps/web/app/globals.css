@@ -3,28 +3,33 @@
 @tailwind utilities;
 
 :root {
-  /* DARK MODE */
-  --bg-color: #0f1115;
-  --map-grid: rgba(255, 255, 255, 0.03);
-  --hud-glass: rgba(15, 17, 21, 0.85);
-  --hud-glass-solid: rgba(20, 22, 26, 0.95);
-  --hud-border: 1px solid rgba(255, 255, 255, 0.15);
+  --bg-base: #f0f2f5; 
+  --bg-panel: rgba(255, 255, 255, 0.9); 
+  --bg-panel-hover: rgba(0, 0, 0, 0.05);
+  
+  --text-primary: #121212;
+  --text-secondary: #555555;
+  
+  --border-color: rgba(0, 0, 0, 0.15);
+  --shadow-glow: rgba(0, 136, 255, 0.2);
+}
 
-  /* NEON PALETTE */
-  --neon-maroon: #FF0055;
-  --neon-green: #00FF99;
-  --neon-blue: #00E5FF;
-  --neon-yellow: #FFD700;
-  --neon-pink: #FF00FF;
-
-  --text-main: #FFFFFF;
-  --text-muted: #8899A6;
-  --shadow-hard: 0 10px 30px rgba(0, 0, 0, 0.6);
+.dark {
+  --bg-base: #0f1115; 
+  --bg-panel: rgba(10, 10, 12, 0.85); 
+  --bg-panel-hover: rgba(255, 255, 255, 0.1);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #8899A6;
+  
+  --border-color: rgba(255, 255, 255, 0.15);
+  --shadow-glow: rgba(0, 229, 255, 0.2);
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-main);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -42,6 +47,55 @@ p, .font-desc, .details-card p {
   top: 0;
   left: 0;
   z-index: 0;
+}
+
+.tactical-panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  color: var(--text-primary);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.tactical-button {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-family: var(--font-chakra), sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tactical-button:hover {
+  background: var(--bg-panel-hover);
+  transform: translateY(-2px);
+}
+
+.tactical-button:active {
+  transform: translateY(1px);
+}
+
+.tactical-button-primary {
+  background: rgba(0, 229, 255, 0.15);
+  border: 1px solid var(--neon-blue);
+  color: var(--neon-blue);
+  box-shadow: 0 0 10px var(--shadow-glow);
+  border-radius: 8px;
+  font-family: var(--font-chakra), sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tactical-button-primary:hover {
+  background: var(--neon-blue);
+  color: var(--bg-base);
+  box-shadow: 0 0 20px var(--neon-blue);
 }
 
 /* --- UI LAYER --- */
@@ -102,14 +156,13 @@ p, .font-desc, .details-card p {
 .search-input {
   width: 100%; 
   height: 44px;
-  background: rgba(10, 10, 12, 0.9);
+  background: var(--bg-panel);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   box-sizing: border-box;
   padding: 0 40px 0 14px;
-  
-  color: white; font-size: 13px; font-weight: 700;
+  color: var(--text-primary); font-size: 13px; font-weight: 700;
   font-family: var(--font-chakra);
 }
 .search-input:focus { outline: none; border-color: rgba(255, 255, 255, 0.3); }
@@ -146,11 +199,11 @@ p, .font-desc, .details-card p {
 /* --- SIDE CONTROLS --- */
 .icon-button, .control-button {
   width: 44px; height: 44px;
-  background: rgba(10, 10, 12, 0.9);
+  background: var(--bg-panel);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  color: white;
+  color: var(--text-primary);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   transition: transform 0.1s;
@@ -166,13 +219,13 @@ p, .font-desc, .details-card p {
 
 .zoom-stack {
   display: flex; flex-direction: column;
-  background: rgba(10, 10, 12, 0.9);
+  background: var(--bg-panel);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 12px; overflow: hidden;
 }
 .control-button { border: none; border-radius: 0; }
-.divider { height: 1px; background: rgba(255, 255, 255, 0.1); width: 80%; margin: 0 auto; }
+.divider { height: 1px; background: var(--border-color); width: 80%; margin: 0 auto; }
 
 .transit-system-container {
     position: relative;
@@ -193,10 +246,10 @@ p, .font-desc, .details-card p {
     margin-left: 12px;
     display: flex;
     gap: 8px;
-    background: rgba(10, 10, 12, 0.85);
+    background: var(--bg-panel);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 6px;
     animation: extrudeRight 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -219,8 +272,8 @@ p, .font-desc, .details-card p {
 
 .route-node:hover {
     transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
+    background: var(--bg-panel-hover) !important;
+    color: var(--text-primary) !important;
 }
 
 @keyframes extrudeRight {

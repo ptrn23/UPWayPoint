@@ -71,7 +71,8 @@ export function PinDetailsCard({
 					className="lock-button"
 					onClick={onLockClick}
 					style={{
-						background: isLocked ? "var(--neon-blue, #00D1FF)" : "white",
+						background: isLocked ? "var(--neon-blue)" : "var(--text-primary)",
+						color: "var(--bg-base)",
 					}}
 				>
 					{isLocked ? "TARGET LOCKED" : "LOCK TARGET"}
@@ -80,20 +81,21 @@ export function PinDetailsCard({
 
 			<style jsx>{`
         .details-card {
-          background: rgba(10, 10, 12, 0.95);
+          background: var(--bg-panel);
           backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-top: 3px solid ${color}; /* Dynamic top accent */
+          border: 1px solid var(--border-color);
+          border-top: 3px solid ${color}; 
           border-radius: 20px;
           padding: 24px;
           width: 100%;
           max-width: 400px;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+          /* Softened the shadow slightly so it looks natural in both modes */
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
           display: flex;
           flex-direction: column;
           gap: 16px;
           animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          pointer-events: auto; /* Ensure card is clickable */
+          pointer-events: auto; 
         }
 
         .card-header {
@@ -106,7 +108,7 @@ export function PinDetailsCard({
           font-size: 20px;
           font-weight: 800;
           margin: 0 0 4px 0;
-          color: white;
+          color: var(--text-primary);
           font-family: var(--font-chakra);
         }
 
@@ -120,7 +122,7 @@ export function PinDetailsCard({
         .close-btn {
           background: none;
           border: none;
-          color: #888;
+          color: var(--text-secondary);
           cursor: pointer;
           padding: 4px;
           transition: color 0.2s;
@@ -130,12 +132,12 @@ export function PinDetailsCard({
         }
 
         .close-btn:hover {
-          color: white;
+          color: var(--text-primary);
         }
 
         .card-body p {
           font-size: 14px;
-          color: #ccc;
+          color: var(--text-primary);
           margin: 0;
           line-height: 1.5;
           font-family: var(--font-nunito);
@@ -150,9 +152,9 @@ export function PinDetailsCard({
         .expand-button {
           padding: 14px 20px;
           border-radius: 12px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: white;
+          background: transparent;
+          border: 1px solid var(--border-color);
+          color: var(--text-primary);
           font-weight: 900;
           font-family: var(--font-chakra);
           font-size: 13px;
@@ -161,14 +163,20 @@ export function PinDetailsCard({
           transition: all 0.2s;
         }
 
-        .expand-button:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.1); }
+        .expand-button:hover {
+          background: var(--bg-panel-hover);
+        }
+
+        .expand-button:active { 
+          transform: scale(0.95); 
+          background: var(--border-color); 
+        }
 
         .lock-button {
           flex: 1;
           padding: 14px;
           border-radius: 12px;
           border: none;
-          color: black;
           font-weight: 900;
           font-family: var(--font-chakra);
           font-size: 13px;

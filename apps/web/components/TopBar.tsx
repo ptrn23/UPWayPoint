@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
+import { useTheme } from "@/lib/ThemeContext";
 import { useSession } from "@/lib/auth-client";
 import { JEEPNEY_ROUTES, ZONE_CATEGORIES } from "@/data/map-layers";
 
@@ -35,6 +36,7 @@ export function TopBar({
 	const { data: sessionData } = useSession();
 	const [isTransitMenuOpen, setIsTransitMenuOpen] = useState(false);
 	const [isZoneMenuOpen, setIsZoneMenuOpen] = useState(false);
+	const { theme, toggleTheme } = useTheme();
 
 	const handleProfileClick = () => {
 		if (sessionData?.user) {
@@ -105,7 +107,7 @@ export function TopBar({
                                         className="route-node"
                                         title={route.name}
                                         style={{
-                                            backgroundColor: isActive ? `${route.color}20` : 'rgba(255, 255, 255, 0.05)',
+                                            backgroundColor: isActive ? `${route.color}20` : 'var(--bg-panel-hover)',
                                             color: isActive ? route.color : '#aaa',
                                             borderColor: isActive ? route.color : 'transparent',
                                             boxShadow: isActive ? `0 0 10px ${route.color}40` : 'none',
@@ -146,7 +148,7 @@ export function TopBar({
                                         className="route-node"
                                         title={category.label}
                                         style={{
-                                            backgroundColor: isActive ? `${category.color}20` : 'rgba(255, 255, 255, 0.05)',
+                                            backgroundColor: isActive ? `${category.color}20` : 'var(--bg-panel-hover)',
                                             color: isActive ? category.color : '#aaa',
                                             borderColor: isActive ? category.color : 'transparent',
                                             boxShadow: isActive ? `0 0 10px ${category.color}40` : 'none',
@@ -199,10 +201,9 @@ export function TopBar({
 								onClick={() => onFilterChange(filter)}
 								className={`filter-chip ${isActive ? "active" : ""}`}
 								style={{
-									borderColor: isActive ? color : "rgba(255,255,255,0.15)",
-									color: isActive ? "#000" : color,
-									backgroundColor: isActive ? color : "rgba(10, 10, 12, 0.9)",
-									// The Bouncy Scale Animation
+									borderColor: isActive ? color : "var(--border-color)",
+									color: isActive ? "var(--bg-base)" : color,
+									backgroundColor: isActive ? color : "var(--bg-panel)",
 									transform: isActive ? "scale(1.1)" : "scale(1)",
 								}}
 							>
@@ -239,17 +240,24 @@ export function TopBar({
 							<circle cx="12" cy="7" r="4"></circle>
 						</svg>
 					</button>
-					<button type="button" className="icon-button theme-toggle">
-						<svg
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2.5"
-						>
-							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-						</svg>
+					<button onClick={toggleTheme} className="icon-button theme-toggle">
+						{theme === "dark" ? (
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+								<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+							</svg>
+						) : (
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+								<circle cx="12" cy="12" r="5"></circle>
+								<line x1="12" y1="1" x2="12" y2="3"></line>
+								<line x1="12" y1="21" x2="12" y2="23"></line>
+								<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+								<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+								<line x1="1" y1="12" x2="3" y2="12"></line>
+								<line x1="21" y1="12" x2="23" y2="12"></line>
+								<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+								<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+							</svg>
+						)}
 					</button>
 				</div>
 
@@ -315,6 +323,6 @@ export const getFilterColor = (type: string) => {
 		case "utility":
 			return "#00d1ff";
 		default:
-			return "#ffffff";
+			return "var(--text-primary)"; 
 	}
 };

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { getFilterColor } from "@/components/TopBar";
 import { PinDetailsCard } from "@/components/PinDetailsCard";
 import { ExpandedPinView } from "@/components/ExpandedPinView";
 import { useSession } from "@/lib/auth-client";
@@ -29,7 +28,8 @@ export function HeadsUpDisplay({
 	};
 
 	const { data: sessionData } = useSession();
-	const isLoggedIn = useMemo(() => !!sessionData?.user.id, [sessionData]);
+	const isLoggedIn = useMemo(() => !!sessionData?.user?.id, [sessionData]);
+    
 	return (
 		<div
 			style={{
@@ -113,20 +113,20 @@ export function HeadsUpDisplay({
           width: 64px;
           height: 64px;
           border-radius: 50%;
-          background: rgba(0, 229, 255, 0.1);
-          border: 2px solid var(--neon-blue, #00E5FF);
-          color: var(--neon-blue, #00E5FF);
-          box-shadow: 0 0 20px rgba(0, 229, 255, 0.2), inset 0 0 10px rgba(0, 229, 255, 0.1);
+          background: var(--bg-panel);
+          border: 2px solid var(--neon-blue);
+          color: var(--neon-blue);
+          box-shadow: 0 0 20px var(--shadow-glow), inset 0 0 10px var(--shadow-glow);
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
           animation: pulseGlow 2s infinite alternate;
         }
 
         .add-pin-btn:hover {
-          background: rgba(0, 229, 255, 0.2);
-          box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), inset 0 0 15px rgba(0, 229, 255, 0.2);
+          background: var(--neon-blue);
+          box-shadow: 0 0 30px var(--shadow-glow), inset 0 0 15px var(--shadow-glow);
           transform: scale(1.1);
-          color: #fff;
+          color: var(--bg-base); 
         }
 
         .add-pin-btn:active {
@@ -134,8 +134,8 @@ export function HeadsUpDisplay({
         }
 
         @keyframes pulseGlow {
-          0% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.2), inset 0 0 10px rgba(0, 229, 255, 0.1); }
-          100% { box-shadow: 0 0 25px rgba(0, 229, 255, 0.5), inset 0 0 15px rgba(0, 229, 255, 0.2); }
+          0% { box-shadow: 0 0 15px var(--shadow-glow), inset 0 0 10px var(--shadow-glow); }
+          100% { box-shadow: 0 0 25px var(--shadow-glow), inset 0 0 15px var(--shadow-glow); }
         }
       `}</style>
 		</div>

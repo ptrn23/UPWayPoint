@@ -45,7 +45,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 	const utils = trpc.useUtils();
 	const createPin = trpc.pin.userCreate.useMutation({
 		onSuccess: (newPin) => {
-			utils.pin.getAll.invalidate(); // this forces a refresh on the main page
+			utils.pin.getAll.invalidate();
 			if (!newPin) return;
 			onSave(newPin.id);
 		},
@@ -87,7 +87,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 
 	return (
 		<div className="modal-overlay">
-			<div className="modal-card">
+			<div className="modal-card tactical-panel">
 				<div className="modal-header">
 					<svg
 						width="24"
@@ -161,10 +161,10 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 					/>
 
 					<div className="action-row">
-						<button type="button" className="cancel-btn" onClick={handleCancel}>
+						<button type="button" className="tactical-button" onClick={handleCancel}>
 							CANCEL
 						</button>
-						<button type="submit" className="save-btn">
+						<button type="submit" className="tactical-button-primary save-btn">
 							CONFIRM
 						</button>
 					</div>
@@ -188,11 +188,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
         .modal-card {
           width: 100%;
           max-width: 400px;
-          background: rgba(10, 10, 12, 0.85);
-          border: 1px solid rgba(0, 229, 255, 0.3);
-          border-radius: 16px;
           padding: 24px;
-          box-shadow: 0 0 30px rgba(0, 229, 255, 0.1);
           animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -201,13 +197,13 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
           align-items: center;
           gap: 12px;
           margin-bottom: 24px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: 1px solid var(--border-color);
           padding-bottom: 16px;
         }
 
         .modal-title {
           font-family: var(--font-cubao-wide), sans-serif;
-          color: white;
+          color: var(--text-primary);
           font-size: 20px;
           margin: 0;
           letter-spacing: 0.05em;
@@ -225,7 +221,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
           gap: 8px;
         }
 
-        label {
+        .input-group span {
           font-family: var(--font-chakra), sans-serif;
           font-size: 12px;
           color: var(--neon-blue, #00E5FF);
@@ -234,11 +230,11 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
         }
 
         input, textarea {
-          background: rgba(0, 0, 0, 0.5);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: var(--bg-base);
+          border: 1px solid var(--border-color);
           border-radius: 8px;
           padding: 12px;
-          color: white;
+          color: var(--text-primary);
           font-family: var(--font-nunito), sans-serif;
           font-size: 14px;
           outline: none;
@@ -247,7 +243,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 
         input:focus, textarea:focus {
           border-color: var(--neon-blue, #00E5FF);
-          box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+          box-shadow: 0 0 10px var(--shadow-glow);
         }
 
         .type-selector {
@@ -257,9 +253,9 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
         }
 
         .type-btn {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #aaa;
+          background: transparent;
+          border: 1px solid var(--border-color);
+          color: var(--text-secondary);
           padding: 10px;
           border-radius: 6px;
           font-family: var(--font-chakra), sans-serif;
@@ -269,14 +265,15 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
         }
 
         .type-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: var(--bg-panel-hover);
+          color: var(--text-primary);
         }
 
         .type-btn.active {
           background: rgba(0, 229, 255, 0.15);
           border-color: var(--neon-blue, #00E5FF);
           color: var(--neon-blue, #00E5FF);
-          box-shadow: inset 0 0 8px rgba(0, 229, 255, 0.2);
+          box-shadow: inset 0 0 8px var(--shadow-glow);
         }
 
         .action-row {
@@ -285,39 +282,11 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
           margin-top: 12px;
         }
 
-        .cancel-btn, .save-btn {
+        .action-row button {
           flex: 1;
           padding: 14px;
-          border-radius: 8px;
-          font-family: var(--font-chakra), sans-serif;
-          font-weight: 700;
           font-size: 13px;
           letter-spacing: 0.05em;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .cancel-btn {
-          background: transparent;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          color: #aaa;
-        }
-
-        .cancel-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: white;
-        }
-
-        .save-btn {
-          background: rgba(0, 229, 255, 0.1);
-          border: 1px solid var(--neon-blue, #00E5FF);
-          color: var(--neon-blue, #00E5FF);
-        }
-
-        .save-btn:hover:not(:disabled) {
-          background: var(--neon-blue, #00E5FF);
-          color: black;
-          box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
         }
 
         .save-btn:disabled {
