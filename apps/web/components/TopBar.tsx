@@ -201,10 +201,9 @@ export function TopBar({
 								onClick={() => onFilterChange(filter)}
 								className={`filter-chip ${isActive ? "active" : ""}`}
 								style={{
-									borderColor: isActive ? color : "rgba(255,255,255,0.15)",
-									color: isActive ? "#000" : color,
-									backgroundColor: isActive ? color : "rgba(10, 10, 12, 0.9)",
-									// The Bouncy Scale Animation
+									borderColor: isActive ? color : "var(--border-color)",
+									color: isActive ? "var(--bg-base)" : color,
+									backgroundColor: isActive ? color : "var(--bg-panel)",
 									transform: isActive ? "scale(1.1)" : "scale(1)",
 								}}
 							>
