@@ -220,8 +220,10 @@ export default function Home() {
                     onSearchChange={setSearchQuery}
                     activeRoutes={activeRoutes}
                     onToggleRoute={handleToggleRoute}
-					activeZoneCategories={activeZoneCategories}
+                    activeZoneCategories={activeZoneCategories}
                     onToggleZoneCategory={handleToggleZoneCategory}
+                    theme={theme}
+                    onToggleTheme={() => setTheme(prev => prev === "dark" ? "light" : "dark")}
                 />
 
 				{/* TARGETING CROSSHAIR (Only visible when armed) */}
