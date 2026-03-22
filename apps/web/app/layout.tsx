@@ -48,7 +48,7 @@ export default function RootLayout({
     return (
         <TRPCProvider>
             <html lang="en">
-                <body className={`${chakra.variable} ${nunito.variable} ${cubaoFree.variable} ${cubaoFreeNarrow.variable} ${cubaoFreeWide.variable}`}>
+                <body suppressHydrationWarning className={`${chakra.variable} ${nunito.variable} ${cubaoFree.variable} ${cubaoFreeNarrow.variable} ${cubaoFreeWide.variable}`}>
                     <ThemeProvider>
                         {children}
                     </ThemeProvider>
