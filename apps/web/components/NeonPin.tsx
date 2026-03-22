@@ -51,7 +51,7 @@ export function NeonPin({
 					height: "100%",
 					transform: "rotate(45deg)",
 					border: `2px solid ${color}`,
-					backgroundColor: isSelected ? color : "rgba(15, 17, 21, 0.6)",
+					backgroundColor: isSelected ? color : "var(--bg-panel)",
 					boxShadow: isLocked
 						? `0 0 30px 5px ${color}`
 						: isSelected
@@ -68,7 +68,7 @@ export function NeonPin({
 					style={{
 						transform: "rotate(-45deg)",
 						fontSize: "18px",
-						color: isSelected ? "#000" : color,
+						color: isSelected ? "var(--bg-base)" : color,
 						fontFamily: "var(--font-cubao-wide), sans-serif",
 					}}
 				>
