@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
+import { useTheme } from "@/lib/ThemeContext";
 import { useSession } from "@/lib/auth-client";
 import { JEEPNEY_ROUTES, ZONE_CATEGORIES } from "@/data/map-layers";
 
@@ -18,8 +19,6 @@ interface TopBarProps {
     onToggleRoute?: (routeId: string) => void;
 	activeZoneCategories?: string[];
     onToggleZoneCategory?: (categoryId: string) => void;
-	theme?: "dark" | "light";
-    onToggleTheme?: () => void;
 }
 
 export function TopBar({
@@ -32,13 +31,12 @@ export function TopBar({
     onToggleRoute = () => {},
 	activeZoneCategories = [],
     onToggleZoneCategory = () => {},
-	theme = "dark",
-    onToggleTheme = () => {},
 }: TopBarProps) {
 	const router = useRouter();
 	const { data: sessionData } = useSession();
 	const [isTransitMenuOpen, setIsTransitMenuOpen] = useState(false);
 	const [isZoneMenuOpen, setIsZoneMenuOpen] = useState(false);
+	const { theme, toggleTheme } = useTheme();
 
 	const handleProfileClick = () => {
 		if (sessionData?.user) {
@@ -243,12 +241,7 @@ export function TopBar({
 							<circle cx="12" cy="7" r="4"></circle>
 						</svg>
 					</button>
-					<button 
-						type="button" 
-						className="icon-button theme-toggle"
-						onClick={onToggleTheme}
-						title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-					>
+					<button onClick={toggleTheme} className="icon-button theme-toggle">
 						{theme === "dark" ? (
 							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
 								<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>

@@ -3,6 +3,7 @@ import { Chakra_Petch, Nunito } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { TRPCProvider } from "@/components/TRPCProvider";
+import { ThemeProvider } from "@/lib/ThemeContext";
 
 const chakra = Chakra_Petch({
 	weight: ["300", "400", "500", "600", "700"],
@@ -40,17 +41,19 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-	children,
+    children,
 }: Readonly<{
-	children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-	return (
-		<TRPCProvider>
-			<html lang="en">
-				<body className={`${chakra.variable} ${nunito.variable} ${cubaoFree.variable} ${cubaoFreeNarrow.variable} ${cubaoFreeWide.variable}`}>
-					{children}
-				</body>
-			</html>
-		</TRPCProvider>
-	);
+    return (
+        <TRPCProvider>
+            <html lang="en">
+                <body className={`${chakra.variable} ${nunito.variable} ${cubaoFree.variable} ${cubaoFreeNarrow.variable} ${cubaoFreeWide.variable}`}>
+                    <ThemeProvider>
+                        {children}
+                    </ThemeProvider>
+                </body>
+            </html>
+        </TRPCProvider>
+    );
 }

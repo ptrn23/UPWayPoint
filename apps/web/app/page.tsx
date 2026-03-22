@@ -18,6 +18,7 @@ import { Polyline } from "@/components/Polyline";
 import { Polygon } from "@/components/Polygon";
 import { JEEPNEY_ROUTES, CAMPUS_ZONES, ZONE_CATEGORIES } from "@/data/map-layers";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useTheme } from "@/lib/ThemeContext";
 import { trpc } from "@/lib/trpc";
 
 export default function Home() {
@@ -68,7 +69,7 @@ export default function Home() {
         });
     }, []);
 
-	const [theme, setTheme] = useState<"dark" | "light">("light");
+	const { theme } = useTheme();
 
 	const [pendingPinCoords, setPendingPinCoords] = useState<{
 		lat: number;
@@ -236,8 +237,6 @@ export default function Home() {
                     onToggleRoute={handleToggleRoute}
                     activeZoneCategories={activeZoneCategories}
                     onToggleZoneCategory={handleToggleZoneCategory}
-                    theme={theme}
-                    onToggleTheme={() => setTheme(prev => prev === "dark" ? "light" : "dark")}
                 />
 
 				{/* TARGETING CROSSHAIR (Only visible when armed) */}
