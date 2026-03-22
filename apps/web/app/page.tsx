@@ -5,6 +5,7 @@ import {
 	Map as GoogleMap,
 	AdvancedMarker,
 	ColorScheme,
+	MapCameraChangedEvent,
 } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
@@ -16,7 +17,7 @@ import { TargetLine } from "@/components/TargetLine";
 import { Polyline } from "@/components/Polyline";
 import { Polygon } from "@/components/Polygon";
 import { JEEPNEY_ROUTES, CAMPUS_ZONES, ZONE_CATEGORIES } from "@/data/map-layers";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
 
 export default function Home() {
@@ -54,6 +55,18 @@ export default function Home() {
             prev.includes(categoryId) ? prev.filter(id => id !== categoryId) : [...prev, categoryId]
         );
     };
+
+	const [cameraProps, setCameraProps] = useState({
+        center: { lat: 14.6549, lng: 121.0645 },
+        zoom: 19,
+    });
+
+    const handleCameraChange = useCallback((ev: MapCameraChangedEvent) => {
+        setCameraProps({
+            center: ev.detail.center,
+            zoom: ev.detail.zoom,
+        });
+    }, []);
 
 	const [theme, setTheme] = useState<"dark" | "light">("light");
 
@@ -102,8 +115,9 @@ export default function Home() {
 			>
 				{/* MAP LAYER */}
 				<GoogleMap
-					defaultCenter={{ lat: 14.6549, lng: 121.0645 }}
-					defaultZoom={19}
+					center={cameraProps.center}
+                    zoom={cameraProps.zoom}
+                    onCameraChanged={handleCameraChange}
 					minZoom={17}
 					mapId={process.env.NEXT_PUBLIC_MAP_ID || "71238adec955b8c6d66f595a"}
 					colorScheme={theme === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
