@@ -12,6 +12,12 @@
 
   --border-color: rgba(0, 0, 0, 0.15);
   --shadow-glow: rgba(0, 136, 255, 0.2);
+
+  --pin-academic: #D91A4D;
+  --pin-food: #00995C;
+  --pin-social: #8E00E6;
+  --pin-transit: #D98200;
+  --pin-utility: #0088CC;
 }
 
 .dark {
@@ -24,6 +30,12 @@
 
   --border-color: rgba(255, 255, 255, 0.15);
   --shadow-glow: rgba(0, 229, 255, 0.2);
+  
+  --pin-academic: #FF3366;
+  --pin-food: #00FF99;
+  --pin-social: #B026FF;
+  --pin-transit: #FFD700;
+  --pin-utility: #00E5FF;
 }
 
 body {
