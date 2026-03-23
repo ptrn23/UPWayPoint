@@ -440,11 +440,25 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 display: flex; 
                 flex-direction: column; 
                 gap: 4px; 
-                min-width: 0; /* Prevents long text from blowing out the flex/grid columns */
+                min-width: 0; 
+                /* 1. Turn the container into a measurable query zone */
+                container-type: inline-size; 
+                /* 2. Hide the overflow from bleeding into other columns */
+                overflow: hidden; 
             }
 
             .col-span-2 { grid-column: span 2; } 
             .meta-label { font-family: var(--font-chakra); font-size: 10px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.1em; }
+            
+            .meta-value { 
+                font-family: var(--font-nunito); 
+                font-size: 14px; 
+                font-weight: 700; 
+                color: var(--text-primary); 
+                white-space: nowrap;
+                width: max-content;
+                animation: autoPan 6s ease-in-out infinite alternate;
+            }
             
             .meta-value { 
                 font-family: var(--font-nunito); 
@@ -509,6 +523,14 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
             @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
             @keyframes scalePop { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+			@keyframes autoPan {
+                0%, 20% { 
+                    transform: translateX(0); 
+                }
+                80%, 100% {
+                    transform: translateX(min(0px, calc(100cqw - 100%))); 
+                }
+            }
       `}</style>
         </div>
     );
