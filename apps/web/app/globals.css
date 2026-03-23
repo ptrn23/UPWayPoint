@@ -308,7 +308,23 @@ p, .font-desc, .details-card p {
 }
 .lock-button:active { transform: scale(0.95); }
 
-@media (max-width: 768px) { .profile-btn, .theme-toggle { display: none; } }
+@media (max-width: 768px) {
+  .profile-btn, .theme-toggle { 
+      display: none; 
+  }
+
+  .zone-left {
+      top: auto;
+      bottom: 24px;
+      display: flex;
+      flex-direction: column-reverse; 
+      gap: 12px;
+  }
+
+  .zone-left .transit-system-container {
+      margin-top: 0;
+  }
+}
 
 @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
