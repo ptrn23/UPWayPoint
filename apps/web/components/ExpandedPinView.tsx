@@ -186,6 +186,59 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
         pin?.pinTags ? pin.pinTags[0]?.tag.title || "" : "",
     );
 
+    const getStatusDisplay = (status: string | undefined) => {
+        switch (status) {
+            case "VERIFIED":
+                return {
+                    text: "VERIFIED",
+                    // color: "var(--neon-green, #00FF99)",
+                    icon: (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    )
+                };
+            case "PENDING_VERIFICATION":
+                return {
+                    text: "PENDING",
+                    // color: "var(--neon-yellow, #FFD700)",
+                    icon: (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    )
+                };
+            case "REJECTED":
+                return {
+                    text: "REJECTED",
+                    // color: "#ff4d4d",
+                    icon: (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                    )
+                };
+            default:
+                return {
+                    text: status || "UNKNOWN",
+                    color: "var(--text-secondary)",
+                    icon: (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    )
+                };
+        }
+    };
+
+    const statusData = getStatusDisplay(pin?.status);
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -276,8 +329,15 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                             {/* STATUS */}
                             <div className="meta-item">
                                 <span className="meta-label">STATUS</span>
-                                <span className="meta-value text-neon-green font-cubao-wide">
-                                    {pin?.status}
+                                <span 
+                                    className="meta-value font-mono status-badge"
+                                    style={{ 
+                                        color: statusData.color, 
+                                        textShadow: `0 0 10px ${statusData.color}40` 
+                                    }}
+                                >
+                                    {statusData.icon}
+                                    {statusData.text}
                                 </span>
                             </div>
 
@@ -510,6 +570,13 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             }
             .meta-value::-webkit-scrollbar { 
                 display: none; /* Safari and Chrome */
+            }
+
+			.status-badge {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 14px;
             }
 
             .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
