@@ -239,6 +239,7 @@ export default function Home() {
                     activeZoneCategories={activeZoneCategories}
                     onToggleZoneCategory={handleToggleZoneCategory}
                     userLocation={mockUserLocation}
+					hideControls={!!selectedPinId}
                 />
 
 				{/* TARGETING CROSSHAIR (Only visible when armed) */}

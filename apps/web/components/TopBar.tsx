@@ -21,6 +21,7 @@ interface TopBarProps {
 	activeZoneCategories?: string[];
     onToggleZoneCategory?: (categoryId: string) => void;
 	userLocation?: { lat: number; lng: number };
+    hideControls?: boolean;
 }
 
 export function TopBar({
@@ -34,6 +35,7 @@ export function TopBar({
 	activeZoneCategories = [],
     onToggleZoneCategory = () => {},
 	userLocation = { lat: 14.6549, lng: 121.0645 },
+    hideControls = false,
 }: TopBarProps) {
 	const router = useRouter();
 	const { data: sessionData } = useSession();
@@ -84,7 +86,14 @@ export function TopBar({
 	return (
 		<div className="ui-layer">
 			{/* === LEFT ZONE === */}
-            <div className="zone-left">
+            <div 
+                className="zone-left"
+                style={{
+                    opacity: hideControls ? 0 : 1,
+                    pointerEvents: hideControls ? "none" : "auto",
+                    transition: "opacity 0.3s ease",
+                }}
+            >
                 <button type="button" onClick={onMenuClick} className="icon-button">
                     <svg
                         width="24"
@@ -289,7 +298,14 @@ export function TopBar({
 				</div>
 
 				{/* Bottom Group */}
-				<div className="tool-group bottom-align">
+				<div
+                    className="tool-group bottom-align"
+                    style={{
+                        opacity: hideControls ? 0 : 1,
+                        pointerEvents: hideControls ? "none" : "auto",
+                        transition: "opacity 0.3s ease",
+                    }}
+                >
                     <button 
                         type="button" 
                         className="icon-button gps-btn"
