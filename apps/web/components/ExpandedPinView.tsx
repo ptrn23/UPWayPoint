@@ -1,6 +1,6 @@
 "use client";
 
-import { getFilterColor } from "@/components/TopBar";
+import { getPinColor } from "@/data/pin-categories";
 import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -182,7 +182,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
         deletePin.mutate({ id: pinId });
     }
 
-    const color = getFilterColor(
+    const color = getPinColor(
         pin?.pinTags ? pin.pinTags[0]?.tag.title || "" : "",
     );
 
@@ -514,7 +514,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
             .badge { font-family: var(--font-cubao-wide); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
             h2 { font-family: var(--font-chakra); color: var(--text-primary); font-size: 26px; font-weight: 800; margin: 4px 0 0 0; }
-			
+
             .close-btn, .edit-btn {
                 background: transparent; 
                 border: 1px solid var(--border-color);
