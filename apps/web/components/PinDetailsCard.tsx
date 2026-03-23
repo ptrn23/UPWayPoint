@@ -1,6 +1,6 @@
 "use client";
 
-import { getFilterColor } from "@/components/TopBar";
+import { getPinColor } from "@/data/pin-categories";
 import { trpc } from "@/lib/trpc";
 
 interface PinDetailsCardProps {
@@ -22,9 +22,9 @@ export function PinDetailsCard({
 		{ id: pinId },
 		{ refetchOnWindowFocus: false },
 	);
-	const color = getFilterColor(
-		pin?.pinTags ? pin?.pinTags[0]?.tag.title || "" : "",
-	);
+	const color = getPinColor(
+      pin?.pinTags ? pin?.pinTags[0]?.tag.title || "" : "",
+  );
 
 	return (
 		<div className="details-card">
