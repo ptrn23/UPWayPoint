@@ -10,103 +10,103 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 
 interface ExpandedPinViewProps {
-	pinId: string;
-	onClose: () => void;
+    pinId: string;
+    onClose: () => void;
 }
 
 type Comment = {
-	id: string;
-	createdAt: string;
-	updatedAt: string;
-	ownerId: string;
-	pinId: string;
-	message: string;
-	parentId: string | null;
-	deletedAt: string | null;
-	replies: Comment[];
-	authorName: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    ownerId: string;
+    pinId: string;
+    message: string;
+    parentId: string | null;
+    deletedAt: string | null;
+    replies: Comment[];
+    authorName: string;
 };
 
 const commentSchema = z.object({
-	message: z.string(),
+    message: z.string(),
 });
 
 type commentSchemaType = z.infer<typeof commentSchema>;
 
 const CommentNode = ({
-	comment,
-	depth = 0,
+    comment,
+    depth = 0,
 }: {
-	comment: Comment;
-	depth: number;
+    comment: Comment;
+    depth: number;
 }) => {
-	const { data: sessionData } = useSession();
-	const utils = trpc.useUtils();
-	const createComment = trpc.comment.create.useMutation({
-		onSuccess(output) {
-			utils.pin.getById.invalidate();
-			setIsReplying(false);
-		},
-	});
-	const formMethods = useForm({ resolver: zodResolver(commentSchema) });
-	const [isReplying, setIsReplying] = useState(false);
-	if (depth > 3) return null;
+    const { data: sessionData } = useSession();
+    const utils = trpc.useUtils();
+    const createComment = trpc.comment.create.useMutation({
+        onSuccess(output) {
+            utils.pin.getById.invalidate();
+            setIsReplying(false);
+        },
+    });
+    const formMethods = useForm({ resolver: zodResolver(commentSchema) });
+    const [isReplying, setIsReplying] = useState(false);
+    if (depth > 3) return null;
 
-	function onSubmit(data: commentSchemaType) {
-		createComment.mutate({
-			message: data.message,
-			pinId: comment.pinId,
-			parentId: comment.id,
-		});
-	}
+    function onSubmit(data: commentSchemaType) {
+        createComment.mutate({
+            message: data.message,
+            pinId: comment.pinId,
+            parentId: comment.id,
+        });
+    }
 
-	return (
-		<div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
-			<div className="comment-header">
-				<span className="comment-author">{comment.authorName}</span>
-				<span className="comment-time">
-					{new Date(comment.createdAt).toLocaleString("default")}
-				</span>
-			</div>
+    return (
+        <div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
+            <div className="comment-header">
+                <span className="comment-author">{comment.authorName}</span>
+                <span className="comment-time">
+                    {new Date(comment.createdAt).toLocaleString("default")}
+                </span>
+            </div>
 
-			<p className="comment-text">{comment.message}</p>
+            <p className="comment-text">{comment.message}</p>
 
-			<div className="comment-actions">
-				{!isReplying ? (
-					sessionData &&
-					depth < 3 && (
-						<button
-							type="button"
-							className="action-btn"
-							onClick={() => setIsReplying(true)}
-						>
-							REPLY
-						</button>
-					)
-				) : (
-					<form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
-						<input 
+            <div className="comment-actions">
+                {!isReplying ? (
+                    sessionData &&
+                    depth < 3 && (
+                        <button
+                            type="button"
+                            className="action-btn"
+                            onClick={() => setIsReplying(true)}
+                        >
+                            REPLY
+                        </button>
+                    )
+                ) : (
+                    <form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
+                        <input 
                             {...formMethods.register("message")} 
                             placeholder="Write a reply..."
                             className="reply-input"
                         />
-						<button type="submit" className="tactical-button-primary form-btn">Send</button>
-						<button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
-							Cancel
-						</button>
-					</form>
-				)}
-			</div>
+                        <button type="submit" className="tactical-button-primary form-btn">Send</button>
+                        <button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
+                            Cancel
+                        </button>
+                    </form>
+                )}
+            </div>
 
-			{comment.replies && comment.replies.length > 0 && (
-				<div className="replies-container">
-					{comment.replies.map((reply) => (
-						<CommentNode key={reply.id} comment={reply} depth={depth + 1} />
-					))}
-				</div>
-			)}
+            {comment.replies && comment.replies.length > 0 && (
+                <div className="replies-container">
+                    {comment.replies.map((reply) => (
+                        <CommentNode key={reply.id} comment={reply} depth={depth + 1} />
+                    ))}
+                </div>
+            )}
 
-			<style jsx>{`
+            <style jsx>{`
         .comment-node { margin-top: 16px; }
         .comment-node.is-reply {
           margin-left: 16px; 
@@ -141,206 +141,206 @@ const CommentNode = ({
         .reply-input:focus { border-color: var(--neon-blue, #00E5FF); }
         .form-btn { padding: 6px 12px; font-size: 11px; border-radius: 6px; }
       `}</style>
-		</div>
-	);
+        </div>
+    );
 };
 
 export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
-	const utils = trpc.useUtils();
-	const { data: sessionData } = useSession();
-	const { data: pin } = trpc.pin.getById.useQuery(
-		{ id: pinId },
-		{ refetchOnWindowFocus: false },
-	);
+    const utils = trpc.useUtils();
+    const { data: sessionData } = useSession();
+    const { data: pin } = trpc.pin.getById.useQuery(
+        { id: pinId },
+        { refetchOnWindowFocus: false },
+    );
 
-	const createComment = trpc.comment.create.useMutation({
-		onSuccess(output) {
-			utils.pin.getById.invalidate();
-			setIsReplying(false);
-		},
-	});
-	const deletePin = trpc.pin.userDelete.useMutation({
-		onSuccess(output) {
-			utils.pin.getAll.invalidate();
-			onClose();
-		},
-	});
+    const createComment = trpc.comment.create.useMutation({
+        onSuccess(output) {
+            utils.pin.getById.invalidate();
+            setIsReplying(false);
+        },
+    });
+    const deletePin = trpc.pin.userDelete.useMutation({
+        onSuccess(output) {
+            utils.pin.getAll.invalidate();
+            onClose();
+        },
+    });
 
-	const formMethods = useForm({ resolver: zodResolver(commentSchema) });
-	const [isReplying, setIsReplying] = useState(false);
+    const formMethods = useForm({ resolver: zodResolver(commentSchema) });
+    const [isReplying, setIsReplying] = useState(false);
 
-	function onSubmit(data: commentSchemaType) {
-		createComment.mutate({
-			message: data.message,
-			pinId: pinId,
-		});
-	}
+    function onSubmit(data: commentSchemaType) {
+        createComment.mutate({
+            message: data.message,
+            pinId: pinId,
+        });
+    }
 
-	const [isDeleting, setIsDeleting] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
-	function onDelete() {
-		deletePin.mutate({ id: pinId });
-	}
+    function onDelete() {
+        deletePin.mutate({ id: pinId });
+    }
 
-	const color = getFilterColor(
-		pin?.pinTags ? pin.pinTags[0]?.tag.title || "" : "",
-	);
+    const color = getFilterColor(
+        pin?.pinTags ? pin.pinTags[0]?.tag.title || "" : "",
+    );
 
-	return (
-		<div className="modal-overlay" onClick={onClose}>
-			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
-				<div className="scroll-area custom-vertical-scrollbar">
-					{/* HEADER */}
-					<div className="modal-header">
-						<div>
-							<span className="badge" style={{ color }}>
-								{pin?.pinTags?.map((pt) => pt.tag.title).join(", ")}
-							</span>
-							<h2>{pin?.title}</h2>
-						</div>
-						<button type="button" className="close-btn" onClick={onClose}>
-							<svg
-								width="28"
-								height="28"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2.5"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<line x1="18" y1="6" x2="6" y2="18"></line>
-								<line x1="6" y1="6" x2="18" y2="18"></line>
-							</svg>
-						</button>
-					</div>
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="scroll-area custom-vertical-scrollbar">
+                    {/* HEADER */}
+                    <div className="modal-header">
+                        <div>
+                            <span className="badge" style={{ color }}>
+                                {pin?.pinTags?.map((pt) => pt.tag.title).join(", ")}
+                            </span>
+                            <h2>{pin?.title}</h2>
+                        </div>
+                        <button type="button" className="close-btn" onClick={onClose}>
+                            <svg
+                                width="28"
+                                height="28"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
 
-					{/* HORIZONTAL BENTO GALLERY */}
-					<div className="photo-gallery custom-scrollbar">
-						{pin?.images?.map((img) => (
-							<div key={img.id} className={`photo-placeholder large`}>
-								<Image alt="" src={`${img.url}`} fill objectFit="cover" />
-							</div>
-						))}
-					</div>
+                    {/* HORIZONTAL BENTO GALLERY */}
+                    <div className="photo-gallery custom-scrollbar">
+                        {pin?.images?.map((img) => (
+                            <div key={img.id} className={`photo-placeholder large`}>
+                                <Image alt="" src={`${img.url}`} fill objectFit="cover" />
+                            </div>
+                        ))}
+                    </div>
 
-					{/* BODY: INTEL DASHBOARD */}
-					<div className="modal-body">
-						<p className="description">{pin?.description}</p>
+                    {/* BODY: INTEL DASHBOARD */}
+                    <div className="modal-body">
+                        <p className="description">{pin?.description}</p>
 
-						<div className="meta-grid">
-							{/* PIN ID */}
-							<div className="meta-item">
-								<span className="meta-label">PIN ID</span>
-								<span className="meta-value font-mono">
-									{pin?.id?.padStart(7, "0")}
-								</span>
-							</div>
+                        <div className="meta-grid">
+                            {/* PIN ID */}
+                            <div className="meta-item">
+                                <span className="meta-label">PIN ID</span>
+                                <span className="meta-value font-mono">
+                                    {pin?.id?.padStart(7, "0")}
+                                </span>
+                            </div>
 
-							{/* OWNER */}
-							<div className="meta-item">
-								<span className="meta-label">OWNED BY</span>
-								<span className="meta-value text-muted">{pin?.ownerId}</span>
-							</div>
+                            {/* OWNER */}
+                            <div className="meta-item">
+                                <span className="meta-label">OWNED BY</span>
+                                <span className="meta-value text-muted">{pin?.ownerId}</span>
+                            </div>
 
-							{/* COORDINATES */}
-							<div className="meta-item col-span-2">
-								<span className="meta-label">COORDINATES (LAT, LNG)</span>
-								<span className="meta-value font-mono">
-									{pin?.latitude?.toFixed(6)}, {pin?.longitude?.toFixed(6)}
-								</span>
-							</div>
+                            {/* COORDINATES */}
+                            <div className="meta-item col-span-2">
+                                <span className="meta-label">COORDINATES (LAT, LNG)</span>
+                                <span className="meta-value font-mono">
+                                    {pin?.latitude?.toFixed(6)}, {pin?.longitude?.toFixed(6)}
+                                </span>
+                            </div>
 
-							{/* STATUS */}
-							<div className="meta-item">
-								<span className="meta-label">STATUS</span>
-								<span className="meta-value text-neon-green font-cubao-wide">
-									{pin?.status}
-								</span>
-							</div>
+                            {/* STATUS */}
+                            <div className="meta-item">
+                                <span className="meta-label">STATUS</span>
+                                <span className="meta-value text-neon-green font-cubao-wide">
+                                    {pin?.status}
+                                </span>
+                            </div>
 
-							{/* TIMESTAMPS */}
-							<div className="meta-item">
-								<span className="meta-label">CREATED AT</span>
-								<span className="meta-value">
-									{new Date(pin?.createdAt || "").toLocaleString("default", {
-										month: "long",
-										year: "numeric",
-										day: "2-digit",
-									})}
-								</span>
-							</div>
-							<div className="meta-item">
-								<span className="meta-label">LAST UPDATED</span>
-								<span className="meta-value">
-									{new Date(pin?.updatedAt || "").toLocaleString("default", {
-										month: "long",
-										year: "numeric",
-										day: "2-digit",
-									})}
-								</span>
-							</div>
-						</div>
+                            {/* TIMESTAMPS */}
+                            <div className="meta-item">
+                                <span className="meta-label">CREATED AT</span>
+                                <span className="meta-value">
+                                    {new Date(pin?.createdAt || "").toLocaleString("default", {
+                                        month: "long",
+                                        year: "numeric",
+                                        day: "2-digit",
+                                    })}
+                                </span>
+                            </div>
+                            <div className="meta-item">
+                                <span className="meta-label">LAST UPDATED</span>
+                                <span className="meta-value">
+                                    {new Date(pin?.updatedAt || "").toLocaleString("default", {
+                                        month: "long",
+                                        year: "numeric",
+                                        day: "2-digit",
+                                    })}
+                                </span>
+                            </div>
+                        </div>
 
-						{/* OWNER ACTIONS */}
-						{!isDeleting && sessionData?.user.id === pin?.ownerId && (
-							<button type="button" className="tactical-button danger-btn" onClick={() => setIsDeleting(true)}>
-								DELETE PIN
-							</button>
-						)}
+                        {/* OWNER ACTIONS */}
+                        {!isDeleting && sessionData?.user.id === pin?.ownerId && (
+                            <button type="button" className="tactical-button danger-btn" onClick={() => setIsDeleting(true)}>
+                                DELETE PIN
+                            </button>
+                        )}
 
-						{isDeleting && (
-							<div className="delete-confirm-box">
-								<p>Are you sure you want to permanently delete this pin?</p>
-								<div className="delete-actions">
-									<button type="button" className="tactical-button-primary danger-btn-solid" onClick={onDelete}>
-										CONFIRM DELETE
-									</button>
-									<button type="button" className="tactical-button" onClick={() => setIsDeleting(false)}>
-										CANCEL
-									</button>
-								</div>
-							</div>
-						)}
+                        {isDeleting && (
+                            <div className="delete-confirm-box">
+                                <p>Are you sure you want to permanently delete this pin?</p>
+                                <div className="delete-actions">
+                                    <button type="button" className="tactical-button-primary danger-btn-solid" onClick={onDelete}>
+                                        CONFIRM DELETE
+                                    </button>
+                                    <button type="button" className="tactical-button" onClick={() => setIsDeleting(false)}>
+                                        CANCEL
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
-						<div className="forum-section">
-							<h3 className="section-title">FORUM</h3>
-							{!isReplying ? (
-								sessionData && (
-									<button
-										type="button"
-										className="action-btn"
-										onClick={() => setIsReplying(true)}
-									>
-										+ ADD COMMENT
-									</button>
-								)
-							) : (
-								<form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
-									<input 
+                        <div className="forum-section">
+                            <h3 className="section-title">FORUM</h3>
+                            {!isReplying ? (
+                                sessionData && (
+                                    <button
+                                        type="button"
+                                        className="action-btn"
+                                        onClick={() => setIsReplying(true)}
+                                    >
+                                        + ADD COMMENT
+                                    </button>
+                                )
+                            ) : (
+                                <form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
+                                    <input 
                                         {...formMethods.register("message")} 
                                         placeholder="Write a comment..."
                                         className="reply-input"
                                     />
-									<button type="submit" className="tactical-button-primary form-btn">POST</button>
-									<button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
-										CANCEL
-									</button>
-								</form>
-							)}
-							<div className="forum-threads">
-								{pin?.comments?.map((thread) => (
-									<CommentNode key={thread.id} comment={thread} depth={0} />
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
+                                    <button type="submit" className="tactical-button-primary form-btn">POST</button>
+                                    <button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
+                                        CANCEL
+                                    </button>
+                                </form>
+                            )}
+                            <div className="forum-threads">
+                                {pin?.comments?.map((thread) => (
+                                    <CommentNode key={thread.id} comment={thread} depth={0} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<div className="bottom-fade"></div>
-			</div>
+                <div className="bottom-fade"></div>
+            </div>
 
-			<style jsx>{`
+            <style jsx>{`
             .modal-overlay {
                 position: fixed; inset: 0; 
                 background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
@@ -435,11 +435,29 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 background: var(--bg-panel-hover); border: 1px solid var(--border-color);
                 border-radius: 16px; padding: 20px;
             }
-            .meta-item { display: flex; flex-direction: column; gap: 4px; }
+            
+            .meta-item { 
+                display: flex; 
+                flex-direction: column; 
+                gap: 4px; 
+                min-width: 0; /* Prevents long text from blowing out the flex/grid columns */
+            }
 
             .col-span-2 { grid-column: span 2; } 
             .meta-label { font-family: var(--font-chakra); font-size: 10px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.1em; }
-            .meta-value { font-family: var(--font-nunito); font-size: 14px; font-weight: 700; color: var(--text-primary); }
+            
+            .meta-value { 
+                font-family: var(--font-nunito); 
+                font-size: 14px; 
+                font-weight: 700; 
+                color: var(--text-primary); 
+                white-space: nowrap;
+                overflow-x: auto;
+                scrollbar-width: none; /* Firefox */
+            }
+            .meta-value::-webkit-scrollbar { 
+                display: none; /* Safari and Chrome */
+            }
 
             .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
             .font-cubao-wide { font-family: var(--font-cubao-wide); font-weight: 100; letter-spacing: 0.1em;}
@@ -462,7 +480,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             .delete-actions { display: flex; gap: 8px; }
             .danger-btn-solid { background: rgba(255, 77, 77, 0.2); border-color: #ff4d4d; color: #ff4d4d; box-shadow: none; flex: 1; padding: 10px;}
             .danger-btn-solid:hover { background: #ff4d4d; color: white; box-shadow: 0 0 15px rgba(255, 77, 77, 0.4); }
-			
+            
             .forum-section {
                 margin-top: 8px;
                 border-top: 1px solid var(--border-color);
@@ -492,6 +510,6 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
             @keyframes scalePop { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
       `}</style>
-		</div>
-	);
+        </div>
+    );
 }
