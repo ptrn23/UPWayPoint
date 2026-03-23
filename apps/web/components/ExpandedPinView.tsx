@@ -215,14 +215,36 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                         </button>
                     </div>
 
-                    {/* HORIZONTAL BENTO GALLERY */}
-                    <div className="photo-gallery custom-scrollbar">
-                        {pin?.images?.map((img) => (
-                            <div key={img.id} className={`photo-placeholder large`}>
-                                <Image alt="" src={`${img.url}`} fill objectFit="cover" />
-                            </div>
-                        ))}
-                    </div>
+                    {/* HORIZONTAL BENTO GALLERY OR FALLBACK */}
+                    {pin?.images && pin.images.length > 0 ? (
+                        <div className="photo-gallery custom-scrollbar">
+                            {pin.images.map((img) => (
+                                <div key={img.id} className={`photo-placeholder large`}>
+                                    <Image alt="" src={`${img.url}`} fill objectFit="cover" />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="no-photo-placeholder">
+                            <svg 
+                                width="32" 
+                                height="32" 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                strokeWidth="1.5" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round"
+                                style={{ opacity: 0.5, marginBottom: '8px' }}
+                            >
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                                <line x1="3" y1="3" x2="21" y2="21"></line>
+                            </svg>
+                            <span>NO IMAGES AVAILABLE</span>
+                        </div>
+                    )}
 
                     {/* BODY: INTEL DASHBOARD */}
                     <div className="modal-body">
@@ -425,6 +447,23 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 scroll-snap-align: start; position: relative; overflow: hidden;
             }
             .photo-placeholder.large { grid-row: span 2; width: 192px; }
+
+			.no-photo-placeholder {
+                height: 192px;
+                margin-bottom: 24px;
+                background: var(--bg-panel-hover);
+                border: 1px dashed var(--border-color);
+                border-radius: 16px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-secondary);
+                font-family: var(--font-chakra);
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.15em;
+            }
 
             /* Body Data */
             .modal-body { display: flex; flex-direction: column; gap: 24px; }
