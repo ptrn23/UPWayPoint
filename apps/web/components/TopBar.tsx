@@ -7,8 +7,7 @@ import { useTheme } from "@/lib/ThemeContext";
 import { useSession } from "@/lib/auth-client";
 import { useMap } from "@vis.gl/react-google-maps";
 import { JEEPNEY_ROUTES, ZONE_CATEGORIES } from "@/data/map-layers";
-
-export type FilterType = "all" | "academic" | "food" | "social" | "transit" | "utility";
+import { PIN_CATEGORIES, type FilterType, getPinColor } from "@/data/pin-categories";
 
 interface TopBarProps {
 	onMenuClick: () => void;
@@ -23,6 +22,8 @@ interface TopBarProps {
 	userLocation?: { lat: number; lng: number };
     hideControls?: boolean;
 }
+
+export type { FilterType };
 
 export function TopBar({
 	onMenuClick,
@@ -74,14 +75,7 @@ export function TopBar({
 		}
 	};
 
-	const filters: FilterType[] = [
-        "all",
-        "academic",
-        "food",
-        "social",
-        "transit",
-        "utility",
-    ];
+	const filters: FilterType[] = ["all", ...PIN_CATEGORIES.map(c => c.id as FilterType)];
 
 	return (
 		<div className="ui-layer">
@@ -227,27 +221,27 @@ export function TopBar({
 				</div>
 
 				<div className="filter-row no-scrollbar">
-					{filters.map((filter) => {
-						const color = getFilterColor(filter);
-						const isActive = activeFilter === filter;
-						return (
-							<button
-								type="button"
-								key={filter}
-								onClick={() => onFilterChange(filter)}
-								className={`filter-chip ${isActive ? "active" : ""}`}
-								style={{
-									borderColor: isActive ? color : "var(--border-color)",
-									color: isActive ? "var(--bg-base)" : color,
-									backgroundColor: isActive ? color : "var(--bg-panel)",
-									transform: isActive ? "scale(1.1)" : "scale(1)",
-								}}
-							>
-								{filter.toUpperCase()}
-							</button>
-						);
-					})}
-				</div>
+                    {filters.map((filter) => {
+                        const color = getPinColor(filter);
+                        const isActive = activeFilter === filter;
+                        return (
+                            <button
+                                type="button"
+                                key={filter}
+                                onClick={() => onFilterChange(filter)}
+                                className={`filter-chip ${isActive ? "active" : ""}`}
+                                style={{
+                                    borderColor: isActive ? color : "var(--border-color)",
+                                    color: isActive ? "var(--bg-base)" : color,
+                                    backgroundColor: isActive ? color : "var(--bg-panel)",
+                                    transform: isActive ? "scale(1.1)" : "scale(1)",
+                                }}
+                            >
+                                {filter.toUpperCase()}
+                            </button>
+                        );
+                    })}
+                </div>
 			</div>
 
 			{/* === RIGHT ZONE (Full Height Tool Stack) === */}
@@ -346,20 +340,3 @@ export function TopBar({
 		</div>
 	);
 }
-
-export const getFilterColor = (type: string) => {
-    switch (type.toLowerCase()) {
-        case "academic":
-            return "#FF3366";
-        case "food":
-            return "#00FF99";
-        case "social":
-            return "#B026FF";
-        case "transit":
-            return "#FFD700";
-        case "utility":
-            return "#00E5FF";
-        default:
-            return "var(--text-primary)";
-    }
-};
