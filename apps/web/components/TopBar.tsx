@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 import { useTheme } from "@/lib/ThemeContext";
 import { useSession } from "@/lib/auth-client";
+import { useMap } from "@vis.gl/react-google-maps";
 import { JEEPNEY_ROUTES, ZONE_CATEGORIES } from "@/data/map-layers";
-
-export type FilterType = "all" | "academic" | "food" | "social" | "utility";
+import { PIN_CATEGORIES, type FilterType, getPinColor } from "@/data/pin-categories";
 
 interface TopBarProps {
 	onMenuClick: () => void;
@@ -19,7 +19,11 @@ interface TopBarProps {
     onToggleRoute?: (routeId: string) => void;
 	activeZoneCategories?: string[];
     onToggleZoneCategory?: (categoryId: string) => void;
+	userLocation?: { lat: number; lng: number };
+    hideControls?: boolean;
 }
+
+export type { FilterType };
 
 export function TopBar({
 	onMenuClick,
@@ -31,12 +35,37 @@ export function TopBar({
     onToggleRoute = () => {},
 	activeZoneCategories = [],
     onToggleZoneCategory = () => {},
+	userLocation = { lat: 14.6549, lng: 121.0645 },
+    hideControls = false,
 }: TopBarProps) {
 	const router = useRouter();
 	const { data: sessionData } = useSession();
 	const [isTransitMenuOpen, setIsTransitMenuOpen] = useState(false);
 	const [isZoneMenuOpen, setIsZoneMenuOpen] = useState(false);
 	const { theme, toggleTheme } = useTheme();
+
+	const map = useMap();
+
+    const handleCenterMap = () => {
+        if (map && userLocation) {
+            map.panTo(userLocation);
+            map.setZoom(19);
+        }
+    };
+
+    const handleZoomIn = () => {
+        if (map) {
+            const currentZoom = map.getZoom() || 19;
+            map.setZoom(currentZoom + 1);
+        }
+    };
+
+    const handleZoomOut = () => {
+        if (map) {
+            const currentZoom = map.getZoom() || 19;
+            map.setZoom(currentZoom - 1);
+        }
+    };
 
 	const handleProfileClick = () => {
 		if (sessionData?.user) {
@@ -46,18 +75,19 @@ export function TopBar({
 		}
 	};
 
-	const filters: FilterType[] = [
-		"all",
-		"academic",
-		"food",
-		"social",
-		"utility",
-	];
+	const filters: FilterType[] = ["all", ...PIN_CATEGORIES.map(c => c.id as FilterType)];
 
 	return (
 		<div className="ui-layer">
 			{/* === LEFT ZONE === */}
-            <div className="zone-left">
+            <div 
+                className="zone-left"
+                style={{
+                    opacity: hideControls ? 0 : 1,
+                    pointerEvents: hideControls ? "none" : "auto",
+                    transition: "opacity 0.3s ease",
+                }}
+            >
                 <button type="button" onClick={onMenuClick} className="icon-button">
                     <svg
                         width="24"
@@ -191,27 +221,27 @@ export function TopBar({
 				</div>
 
 				<div className="filter-row no-scrollbar">
-					{filters.map((filter) => {
-						const color = getFilterColor(filter);
-						const isActive = activeFilter === filter;
-						return (
-							<button
-								type="button"
-								key={filter}
-								onClick={() => onFilterChange(filter)}
-								className={`filter-chip ${isActive ? "active" : ""}`}
-								style={{
-									borderColor: isActive ? color : "var(--border-color)",
-									color: isActive ? "var(--bg-base)" : color,
-									backgroundColor: isActive ? color : "var(--bg-panel)",
-									transform: isActive ? "scale(1.1)" : "scale(1)",
-								}}
-							>
-								{filter.toUpperCase()}
-							</button>
-						);
-					})}
-				</div>
+                    {filters.map((filter) => {
+                        const color = getPinColor(filter);
+                        const isActive = activeFilter === filter;
+                        return (
+                            <button
+                                type="button"
+                                key={filter}
+                                onClick={() => onFilterChange(filter)}
+                                className={`filter-chip ${isActive ? "active" : ""}`}
+                                style={{
+                                    borderColor: isActive ? color : "var(--border-color)",
+                                    color: isActive ? "var(--bg-base)" : color,
+                                    backgroundColor: isActive ? color : "var(--bg-panel)",
+                                    transform: isActive ? "scale(1.1)" : "scale(1)",
+                                }}
+                            >
+                                {filter.toUpperCase()}
+                            </button>
+                        );
+                    })}
+                </div>
 			</div>
 
 			{/* === RIGHT ZONE (Full Height Tool Stack) === */}
@@ -262,67 +292,51 @@ export function TopBar({
 				</div>
 
 				{/* Bottom Group */}
-				<div className="tool-group bottom-align">
-					<button type="button" className="icon-button gps-btn">
-						<svg
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2.5"
-						>
-							<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-						</svg>
-					</button>
+				<div
+                    className="tool-group bottom-align"
+                    style={{
+                        opacity: hideControls ? 0 : 1,
+                        pointerEvents: hideControls ? "none" : "auto",
+                        transition: "opacity 0.3s ease",
+                    }}
+                >
+                    <button 
+                        type="button" 
+                        className="icon-button gps-btn"
+                        onClick={handleCenterMap}
+                        title="Center on Current Location"
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                        </svg>
+                    </button>
 
-					<div className="zoom-stack">
-						<button type="button" className="control-button zoom-in">
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="3"
-							>
-								<line x1="12" y1="5" x2="12" y2="19"></line>
-								<line x1="5" y1="12" x2="19" y2="12"></line>
-							</svg>
-						</button>
-						<div className="divider"></div>
-						<button type="button" className="control-button zoom-out">
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="3"
-							>
-								<line x1="5" y1="12" x2="19" y2="12"></line>
-							</svg>
-						</button>
-					</div>
-				</div>
+                    <div className="zoom-stack">
+                        <button 
+                            type="button" 
+                            className="control-button zoom-in"
+                            onClick={handleZoomIn}
+                            title="Zoom In"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                        <div className="divider"></div>
+                        <button 
+                            type="button" 
+                            className="control-button zoom-out"
+                            onClick={handleZoomOut}
+                            title="Zoom Out"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 			</div>
 		</div>
 	);
 }
-
-export const getFilterColor = (type: string) => {
-	switch (type) {
-		case "academic":
-			return "#ff4d4d";
-		case "food":
-			return "#00ffa3";
-		case "social":
-			return "#ff007a";
-		case "transit":
-			return "#f4ff4d";
-		case "utility":
-			return "#00d1ff";
-		default:
-			return "var(--text-primary)"; 
-	}
-};

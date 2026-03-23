@@ -1,6 +1,6 @@
 "use client";
 
-import { getFilterColor } from "@/components/TopBar";
+import { getPinColor } from "@/data/pin-categories";
 import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,103 +10,103 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 
 interface ExpandedPinViewProps {
-	pinId: string;
-	onClose: () => void;
+    pinId: string;
+    onClose: () => void;
 }
 
 type Comment = {
-	id: string;
-	createdAt: string;
-	updatedAt: string;
-	ownerId: string;
-	pinId: string;
-	message: string;
-	parentId: string | null;
-	deletedAt: string | null;
-	replies: Comment[];
-	authorName: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    ownerId: string;
+    pinId: string;
+    message: string;
+    parentId: string | null;
+    deletedAt: string | null;
+    replies: Comment[];
+    authorName: string;
 };
 
 const commentSchema = z.object({
-	message: z.string(),
+    message: z.string(),
 });
 
 type commentSchemaType = z.infer<typeof commentSchema>;
 
 const CommentNode = ({
-	comment,
-	depth = 0,
+    comment,
+    depth = 0,
 }: {
-	comment: Comment;
-	depth: number;
+    comment: Comment;
+    depth: number;
 }) => {
-	const { data: sessionData } = useSession();
-	const utils = trpc.useUtils();
-	const createComment = trpc.comment.create.useMutation({
-		onSuccess(output) {
-			utils.pin.getById.invalidate();
-			setIsReplying(false);
-		},
-	});
-	const formMethods = useForm({ resolver: zodResolver(commentSchema) });
-	const [isReplying, setIsReplying] = useState(false);
-	if (depth > 3) return null;
+    const { data: sessionData } = useSession();
+    const utils = trpc.useUtils();
+    const createComment = trpc.comment.create.useMutation({
+        onSuccess(output) {
+            utils.pin.getById.invalidate();
+            setIsReplying(false);
+        },
+    });
+    const formMethods = useForm({ resolver: zodResolver(commentSchema) });
+    const [isReplying, setIsReplying] = useState(false);
+    if (depth > 3) return null;
 
-	function onSubmit(data: commentSchemaType) {
-		createComment.mutate({
-			message: data.message,
-			pinId: comment.pinId,
-			parentId: comment.id,
-		});
-	}
+    function onSubmit(data: commentSchemaType) {
+        createComment.mutate({
+            message: data.message,
+            pinId: comment.pinId,
+            parentId: comment.id,
+        });
+    }
 
-	return (
-		<div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
-			<div className="comment-header">
-				<span className="comment-author">{comment.authorName}</span>
-				<span className="comment-time">
-					{new Date(comment.createdAt).toLocaleString("default")}
-				</span>
-			</div>
+    return (
+        <div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
+            <div className="comment-header">
+                <span className="comment-author">{comment.authorName}</span>
+                <span className="comment-time">
+                    {new Date(comment.createdAt).toLocaleString("default")}
+                </span>
+            </div>
 
-			<p className="comment-text">{comment.message}</p>
+            <p className="comment-text">{comment.message}</p>
 
-			<div className="comment-actions">
-				{!isReplying ? (
-					sessionData &&
-					depth < 3 && (
-						<button
-							type="button"
-							className="action-btn"
-							onClick={() => setIsReplying(true)}
-						>
-							REPLY
-						</button>
-					)
-				) : (
-					<form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
-						<input 
+            <div className="comment-actions">
+                {!isReplying ? (
+                    sessionData &&
+                    depth < 3 && (
+                        <button
+                            type="button"
+                            className="action-btn"
+                            onClick={() => setIsReplying(true)}
+                        >
+                            REPLY
+                        </button>
+                    )
+                ) : (
+                    <form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
+                        <input 
                             {...formMethods.register("message")} 
                             placeholder="Write a reply..."
                             className="reply-input"
                         />
-						<button type="submit" className="tactical-button-primary form-btn">Send</button>
-						<button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
-							Cancel
-						</button>
-					</form>
-				)}
-			</div>
+                        <button type="submit" className="tactical-button-primary form-btn">Send</button>
+                        <button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
+                            Cancel
+                        </button>
+                    </form>
+                )}
+            </div>
 
-			{comment.replies && comment.replies.length > 0 && (
-				<div className="replies-container">
-					{comment.replies.map((reply) => (
-						<CommentNode key={reply.id} comment={reply} depth={depth + 1} />
-					))}
-				</div>
-			)}
+            {comment.replies && comment.replies.length > 0 && (
+                <div className="replies-container">
+                    {comment.replies.map((reply) => (
+                        <CommentNode key={reply.id} comment={reply} depth={depth + 1} />
+                    ))}
+                </div>
+            )}
 
-			<style jsx>{`
+            <style jsx>{`
         .comment-node { margin-top: 16px; }
         .comment-node.is-reply {
           margin-left: 16px; 
@@ -141,206 +141,308 @@ const CommentNode = ({
         .reply-input:focus { border-color: var(--neon-blue, #00E5FF); }
         .form-btn { padding: 6px 12px; font-size: 11px; border-radius: 6px; }
       `}</style>
-		</div>
-	);
+        </div>
+    );
 };
 
 export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
-	const utils = trpc.useUtils();
-	const { data: sessionData } = useSession();
-	const { data: pin } = trpc.pin.getById.useQuery(
-		{ id: pinId },
-		{ refetchOnWindowFocus: false },
-	);
+    const utils = trpc.useUtils();
+    const { data: sessionData } = useSession();
+    const { data: pin } = trpc.pin.getById.useQuery(
+        { id: pinId },
+        { refetchOnWindowFocus: false },
+    );
 
-	const createComment = trpc.comment.create.useMutation({
-		onSuccess(output) {
-			utils.pin.getById.invalidate();
-			setIsReplying(false);
-		},
-	});
-	const deletePin = trpc.pin.userDelete.useMutation({
-		onSuccess(output) {
-			utils.pin.getAll.invalidate();
-			onClose();
-		},
-	});
+    const createComment = trpc.comment.create.useMutation({
+        onSuccess(output) {
+            utils.pin.getById.invalidate();
+            setIsReplying(false);
+        },
+    });
+    const deletePin = trpc.pin.userDelete.useMutation({
+        onSuccess(output) {
+            utils.pin.getAll.invalidate();
+            onClose();
+        },
+    });
 
-	const formMethods = useForm({ resolver: zodResolver(commentSchema) });
-	const [isReplying, setIsReplying] = useState(false);
+    const formMethods = useForm({ resolver: zodResolver(commentSchema) });
+    const [isReplying, setIsReplying] = useState(false);
 
-	function onSubmit(data: commentSchemaType) {
-		createComment.mutate({
-			message: data.message,
-			pinId: pinId,
-		});
-	}
+    function onSubmit(data: commentSchemaType) {
+        createComment.mutate({
+            message: data.message,
+            pinId: pinId,
+        });
+    }
 
-	const [isDeleting, setIsDeleting] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
-	function onDelete() {
-		deletePin.mutate({ id: pinId });
-	}
+    function onDelete() {
+        deletePin.mutate({ id: pinId });
+    }
 
-	const color = getFilterColor(
-		pin?.pinTags ? pin.pinTags[0]?.tag.title || "" : "",
-	);
+    const color = getPinColor(
+        pin?.pinTags ? pin.pinTags[0]?.tag.title || "" : "",
+    );
 
-	return (
-		<div className="modal-overlay" onClick={onClose}>
-			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
-				<div className="scroll-area custom-vertical-scrollbar">
-					{/* HEADER */}
-					<div className="modal-header">
-						<div>
-							<span className="badge" style={{ color }}>
-								{pin?.pinTags?.map((pt) => pt.tag.title).join(", ")}
-							</span>
-							<h2>{pin?.title}</h2>
-						</div>
-						<button type="button" className="close-btn" onClick={onClose}>
-							<svg
-								width="28"
-								height="28"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2.5"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<line x1="18" y1="6" x2="6" y2="18"></line>
-								<line x1="6" y1="6" x2="18" y2="18"></line>
-							</svg>
-						</button>
-					</div>
+    const getStatusDisplay = (status: string | undefined) => {
+        switch (status) {
+            case "VERIFIED":
+                return {
+                    text: "VERIFIED",
+                    // color: "var(--neon-green, #00FF99)",
+                    icon: (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    )
+                };
+            case "PENDING_VERIFICATION":
+                return {
+                    text: "PENDING",
+                    // color: "var(--neon-yellow, #FFD700)",
+                    icon: (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    )
+                };
+            case "REJECTED":
+                return {
+                    text: "REJECTED",
+                    // color: "#ff4d4d",
+                    icon: (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                    )
+                };
+            default:
+                return {
+                    text: status || "UNKNOWN",
+                    color: "var(--text-secondary)",
+                    icon: (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    )
+                };
+        }
+    };
 
-					{/* HORIZONTAL BENTO GALLERY */}
-					<div className="photo-gallery custom-scrollbar">
-						{pin?.images?.map((img) => (
-							<div key={img.id} className={`photo-placeholder large`}>
-								<Image alt="" src={`${img.url}`} fill objectFit="cover" />
-							</div>
-						))}
-					</div>
+    const statusData = getStatusDisplay(pin?.status);
 
-					{/* BODY: INTEL DASHBOARD */}
-					<div className="modal-body">
-						<p className="description">{pin?.description}</p>
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="scroll-area custom-vertical-scrollbar">
+                    {/* HEADER */}
+                    <div className="modal-header">
+                        <div>
+                            <span className="badge" style={{ color }}>
+                                {pin?.pinTags?.map((pt) => pt.tag.title).join(", ")}
+                            </span>
+                            <h2>{pin?.title}</h2>
+                        </div>
+                        
+                        <div className="header-actions">
+                            {sessionData?.user?.id === pin?.ownerId && (
+                                <button 
+                                    type="button" 
+                                    className="edit-btn" 
+                                    onClick={() => {
+                                        // TODO: Wire up to Edit Form Modal
+                                        console.log("Edit Pin:", pinId);
+                                    }}
+                                    title="Edit Waypoint"
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                </button>
+                            )}
+                            
+                            <button type="button" className="close-btn" onClick={onClose} title="Close Terminal">
+                                <svg
+                                    width="28"
+                                    height="28"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
 
-						<div className="meta-grid">
-							{/* PIN ID */}
-							<div className="meta-item">
-								<span className="meta-label">PIN ID</span>
-								<span className="meta-value font-mono">
-									{pin?.id?.padStart(7, "0")}
-								</span>
-							</div>
+                    {/* HORIZONTAL BENTO GALLERY OR FALLBACK */}
+                    {pin?.images && pin.images.length > 0 ? (
+                        <div className="photo-gallery custom-scrollbar">
+                            {pin.images.map((img) => (
+                                <div key={img.id} className={`photo-placeholder large`}>
+                                    <Image alt="" src={`${img.url}`} fill objectFit="cover" />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="no-photo-placeholder">
+                            <svg 
+                                width="32" 
+                                height="32" 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                strokeWidth="1.5" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round"
+                                style={{ opacity: 0.5, marginBottom: '8px' }}
+                            >
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                                <line x1="3" y1="3" x2="21" y2="21"></line>
+                            </svg>
+                            <span>NO IMAGES AVAILABLE</span>
+                        </div>
+                    )}
 
-							{/* OWNER */}
-							<div className="meta-item">
-								<span className="meta-label">OWNED BY</span>
-								<span className="meta-value text-muted">{pin?.ownerId}</span>
-							</div>
+                    {/* BODY: INTEL DASHBOARD */}
+                    <div className="modal-body">
+                        <p className="description">{pin?.description}</p>
 
-							{/* COORDINATES */}
-							<div className="meta-item col-span-2">
-								<span className="meta-label">COORDINATES (LAT, LNG)</span>
-								<span className="meta-value font-mono">
-									{pin?.latitude?.toFixed(6)}, {pin?.longitude?.toFixed(6)}
-								</span>
-							</div>
+                        <div className="meta-grid">
+                            {/* PIN ID */}
+                            <div className="meta-item">
+                                <span className="meta-label">PIN ID</span>
+                                <span className="meta-value font-mono">
+                                    {pin?.id?.padStart(7, "0")}
+                                </span>
+                            </div>
 
-							{/* STATUS */}
-							<div className="meta-item">
-								<span className="meta-label">STATUS</span>
-								<span className="meta-value text-neon-green font-cubao-wide">
-									{pin?.status}
-								</span>
-							</div>
+                            {/* OWNER */}
+                            <div className="meta-item">
+                                <span className="meta-label">OWNED BY</span>
+                                <span className="meta-value text-muted">{pin?.ownerId}</span>
+                            </div>
 
-							{/* TIMESTAMPS */}
-							<div className="meta-item">
-								<span className="meta-label">CREATED AT</span>
-								<span className="meta-value">
-									{new Date(pin?.createdAt || "").toLocaleString("default", {
-										month: "long",
-										year: "numeric",
-										day: "2-digit",
-									})}
-								</span>
-							</div>
-							<div className="meta-item">
-								<span className="meta-label">LAST UPDATED</span>
-								<span className="meta-value">
-									{new Date(pin?.updatedAt || "").toLocaleString("default", {
-										month: "long",
-										year: "numeric",
-										day: "2-digit",
-									})}
-								</span>
-							</div>
-						</div>
+                            {/* COORDINATES */}
+                            <div className="meta-item col-span-2">
+                                <span className="meta-label">COORDINATES (LAT, LNG)</span>
+                                <span className="meta-value font-mono">
+                                    {pin?.latitude?.toFixed(6)}, {pin?.longitude?.toFixed(6)}
+                                </span>
+                            </div>
 
-						{/* OWNER ACTIONS */}
-						{!isDeleting && sessionData?.user.id === pin?.ownerId && (
-							<button type="button" className="tactical-button danger-btn" onClick={() => setIsDeleting(true)}>
-								DELETE PIN
-							</button>
-						)}
+                            {/* STATUS */}
+                            <div className="meta-item">
+                                <span className="meta-label">STATUS</span>
+                                <span 
+                                    className="meta-value font-mono status-badge"
+                                    style={{ 
+                                        color: statusData.color, 
+                                        textShadow: `0 0 10px ${statusData.color}40` 
+                                    }}
+                                >
+                                    {statusData.icon}
+                                    {statusData.text}
+                                </span>
+                            </div>
 
-						{isDeleting && (
-							<div className="delete-confirm-box">
-								<p>Are you sure you want to permanently delete this pin?</p>
-								<div className="delete-actions">
-									<button type="button" className="tactical-button-primary danger-btn-solid" onClick={onDelete}>
-										CONFIRM DELETE
-									</button>
-									<button type="button" className="tactical-button" onClick={() => setIsDeleting(false)}>
-										CANCEL
-									</button>
-								</div>
-							</div>
-						)}
+                            {/* TIMESTAMPS */}
+                            <div className="meta-item">
+                                <span className="meta-label">CREATED AT</span>
+                                <span className="meta-value">
+                                    {new Date(pin?.createdAt || "").toLocaleString("default", {
+                                        month: "long",
+                                        year: "numeric",
+                                        day: "2-digit",
+                                    })}
+                                </span>
+                            </div>
+                            <div className="meta-item">
+                                <span className="meta-label">LAST UPDATED</span>
+                                <span className="meta-value">
+                                    {new Date(pin?.updatedAt || "").toLocaleString("default", {
+                                        month: "long",
+                                        year: "numeric",
+                                        day: "2-digit",
+                                    })}
+                                </span>
+                            </div>
+                        </div>
 
-						<div className="forum-section">
-							<h3 className="section-title">FORUM</h3>
-							{!isReplying ? (
-								sessionData && (
-									<button
-										type="button"
-										className="action-btn"
-										onClick={() => setIsReplying(true)}
-									>
-										+ ADD COMMENT
-									</button>
-								)
-							) : (
-								<form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
-									<input 
+                        {/* OWNER ACTIONS */}
+                        {!isDeleting && sessionData?.user.id === pin?.ownerId && (
+                            <button type="button" className="tactical-button danger-btn" onClick={() => setIsDeleting(true)}>
+                                DELETE PIN
+                            </button>
+                        )}
+
+                        {isDeleting && (
+                            <div className="delete-confirm-box">
+                                <p>Are you sure you want to permanently delete this pin?</p>
+                                <div className="delete-actions">
+                                    <button type="button" className="tactical-button-primary danger-btn-solid" onClick={onDelete}>
+                                        CONFIRM DELETE
+                                    </button>
+                                    <button type="button" className="tactical-button" onClick={() => setIsDeleting(false)}>
+                                        CANCEL
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="forum-section">
+                            <h3 className="section-title">FORUM</h3>
+                            {!isReplying ? (
+                                sessionData && (
+                                    <button
+                                        type="button"
+                                        className="action-btn"
+                                        onClick={() => setIsReplying(true)}
+                                    >
+                                        + ADD COMMENT
+                                    </button>
+                                )
+                            ) : (
+                                <form onSubmit={formMethods.handleSubmit(onSubmit)} className="reply-form">
+                                    <input 
                                         {...formMethods.register("message")} 
                                         placeholder="Write a comment..."
                                         className="reply-input"
                                     />
-									<button type="submit" className="tactical-button-primary form-btn">POST</button>
-									<button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
-										CANCEL
-									</button>
-								</form>
-							)}
-							<div className="forum-threads">
-								{pin?.comments?.map((thread) => (
-									<CommentNode key={thread.id} comment={thread} depth={0} />
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
+                                    <button type="submit" className="tactical-button-primary form-btn">POST</button>
+                                    <button type="button" className="tactical-button form-btn" onClick={() => setIsReplying(false)}>
+                                        CANCEL
+                                    </button>
+                                </form>
+                            )}
+                            <div className="forum-threads">
+                                {pin?.comments?.map((thread) => (
+                                    <CommentNode key={thread.id} comment={thread} depth={0} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<div className="bottom-fade"></div>
-			</div>
+                <div className="bottom-fade"></div>
+            </div>
 
-			<style jsx>{`
+            <style jsx>{`
             .modal-overlay {
                 position: fixed; inset: 0; 
                 background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
@@ -396,19 +498,39 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; transition: background 0.2s; }
             .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
-            /* Header & Images */
-            .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+            /* Header & Actions */
+            .modal-header { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: flex-start; 
+                margin-bottom: 20px; 
+            }
+            
+            .header-actions {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
             .badge { font-family: var(--font-cubao-wide); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
             h2 { font-family: var(--font-chakra); color: var(--text-primary); font-size: 26px; font-weight: 800; margin: 4px 0 0 0; }
 
-            .close-btn {
-                background: transparent; border: 1px solid var(--border-color);
-                border-radius: 50%; width: 44px; height: 44px; color: var(--text-primary); cursor: pointer;
-                display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+            .close-btn, .edit-btn {
+                background: transparent; 
+                border: 1px solid var(--border-color);
+                border-radius: 50%; 
+                width: 44px; 
+                height: 44px; 
+                color: var(--text-primary); 
+                cursor: pointer;
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                transition: all 0.2s;
                 flex-shrink: 0;
             }
-            .close-btn:hover { background: var(--bg-panel-hover); }
-            .close-btn:active { transform: scale(0.9); }
+            .close-btn:hover, .edit-btn:hover { background: var(--bg-panel-hover); }
+            .close-btn:active, .edit-btn:active { transform: scale(0.9); }
 
             .photo-gallery {
                 display: grid; grid-template-rows: repeat(2, 90px); grid-auto-flow: column;
@@ -426,6 +548,23 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             }
             .photo-placeholder.large { grid-row: span 2; width: 192px; }
 
+			.no-photo-placeholder {
+                height: 192px;
+                margin-bottom: 24px;
+                background: var(--bg-panel-hover);
+                border: 1px dashed var(--border-color);
+                border-radius: 16px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-secondary);
+                font-family: var(--font-chakra);
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.15em;
+            }
+
             /* Body Data */
             .modal-body { display: flex; flex-direction: column; gap: 24px; }
             .description { font-family: var(--font-nunito); font-size: 15px; color: var(--text-primary); line-height: 1.5; margin: 0; }
@@ -435,11 +574,50 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 background: var(--bg-panel-hover); border: 1px solid var(--border-color);
                 border-radius: 16px; padding: 20px;
             }
-            .meta-item { display: flex; flex-direction: column; gap: 4px; }
+            
+            .meta-item { 
+                display: flex; 
+                flex-direction: column; 
+                gap: 4px; 
+                min-width: 0; 
+                /* 1. Turn the container into a measurable query zone */
+                container-type: inline-size; 
+                /* 2. Hide the overflow from bleeding into other columns */
+                overflow: hidden; 
+            }
 
             .col-span-2 { grid-column: span 2; } 
             .meta-label { font-family: var(--font-chakra); font-size: 10px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.1em; }
-            .meta-value { font-family: var(--font-nunito); font-size: 14px; font-weight: 700; color: var(--text-primary); }
+            
+            .meta-value { 
+                font-family: var(--font-nunito); 
+                font-size: 14px; 
+                font-weight: 700; 
+                color: var(--text-primary); 
+                white-space: nowrap;
+                width: max-content;
+                animation: autoPan 6s ease-in-out infinite alternate;
+            }
+            
+            .meta-value { 
+                font-family: var(--font-nunito); 
+                font-size: 14px; 
+                font-weight: 700; 
+                color: var(--text-primary); 
+                white-space: nowrap;
+                overflow-x: auto;
+                scrollbar-width: none; /* Firefox */
+            }
+            .meta-value::-webkit-scrollbar { 
+                display: none; /* Safari and Chrome */
+            }
+
+			.status-badge {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 14px;
+            }
 
             .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
             .font-cubao-wide { font-family: var(--font-cubao-wide); font-weight: 100; letter-spacing: 0.1em;}
@@ -462,7 +640,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             .delete-actions { display: flex; gap: 8px; }
             .danger-btn-solid { background: rgba(255, 77, 77, 0.2); border-color: #ff4d4d; color: #ff4d4d; box-shadow: none; flex: 1; padding: 10px;}
             .danger-btn-solid:hover { background: #ff4d4d; color: white; box-shadow: 0 0 15px rgba(255, 77, 77, 0.4); }
-			
+            
             .forum-section {
                 margin-top: 8px;
                 border-top: 1px solid var(--border-color);
@@ -491,7 +669,15 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
             @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
             @keyframes scalePop { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+			@keyframes autoPan {
+                0%, 20% { 
+                    transform: translateX(0); 
+                }
+                80%, 100% {
+                    transform: translateX(min(0px, calc(100cqw - 100%))); 
+                }
+            }
       `}</style>
-		</div>
-	);
+        </div>
+    );
 }

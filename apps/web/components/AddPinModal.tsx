@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import z from "zod";
 import { fileSchema } from "@repo/api/schemas";
+import { getPinColor } from "@/data/pin-categories";
 
 type Pin = Omit<PinRouterInputs["userCreate"], "ownerId">;
 
@@ -129,29 +130,40 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 					</div>
 
 					<div className="input-group">
-						<span>PIN TYPES (select all that apply)</span>
-						<div className="type-selector">
-							{tagsData?.map((t) => (
-								<button
-									key={t.id}
-									type="button"
-									className={`type-btn ${tags.includes(t.id) ? "active" : ""}`}
-									onClick={() => {
-										if (tags.includes(t.id)) {
-											formMethods.setValue(
-												"tags",
-												tags.filter((tag) => tag !== t.id),
-											);
-										} else {
-											formMethods.setValue("tags", [...tags, t.id]);
-										}
-									}}
-								>
-									{t.title.toUpperCase()}
-								</button>
-							))}
-						</div>
-					</div>
+                        <span>PIN TYPES (select all that apply)</span>
+                        <div className="type-selector">
+                            {tagsData?.map((t) => {
+                                const isActive = tags.includes(t.id);
+                                const tagColor = getPinColor(t.title);
+
+                                return (
+                                    <button
+                                        key={t.id}
+                                        type="button"
+                                        className="type-btn"
+                                        onClick={() => {
+                                            if (isActive) {
+                                                formMethods.setValue(
+                                                    "tags",
+                                                    tags.filter((tag) => tag !== t.id),
+                                                );
+                                            } else {
+                                                formMethods.setValue("tags", [...tags, t.id]);
+                                            }
+                                        }}
+                                        style={isActive ? {
+                                            backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`, 
+                                            borderColor: tagColor,
+                                            color: tagColor,
+                                            boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`
+                                        } : {}}
+                                    >
+                                        {t.title.toUpperCase()}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
 
 					<input
 						type="file"
@@ -267,13 +279,6 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
         .type-btn:hover {
           background: var(--bg-panel-hover);
           color: var(--text-primary);
-        }
-
-        .type-btn.active {
-          background: rgba(0, 229, 255, 0.15);
-          border-color: var(--neon-blue, #00E5FF);
-          color: var(--neon-blue, #00E5FF);
-          box-shadow: inset 0 0 8px var(--shadow-glow);
         }
 
         .action-row {
