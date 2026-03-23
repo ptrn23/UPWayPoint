@@ -251,21 +251,41 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                             </span>
                             <h2>{pin?.title}</h2>
                         </div>
-                        <button type="button" className="close-btn" onClick={onClose}>
-                            <svg
-                                width="28"
-                                height="28"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
+                        
+                        <div className="header-actions">
+                            {sessionData?.user?.id === pin?.ownerId && (
+                                <button 
+                                    type="button" 
+                                    className="edit-btn" 
+                                    onClick={() => {
+                                        // TODO: Wire up to Edit Form Modal
+                                        console.log("Edit Pin:", pinId);
+                                    }}
+                                    title="Edit Waypoint"
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                </button>
+                            )}
+                            
+                            <button type="button" className="close-btn" onClick={onClose} title="Close Terminal">
+                                <svg
+                                    width="28"
+                                    height="28"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                     {/* HORIZONTAL BENTO GALLERY OR FALLBACK */}
@@ -478,19 +498,39 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; transition: background 0.2s; }
             .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
-            /* Header & Images */
-            .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+            /* Header & Actions */
+            .modal-header { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: flex-start; 
+                margin-bottom: 20px; 
+            }
+            
+            .header-actions {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
             .badge { font-family: var(--font-cubao-wide); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
             h2 { font-family: var(--font-chakra); color: var(--text-primary); font-size: 26px; font-weight: 800; margin: 4px 0 0 0; }
-
-            .close-btn {
-                background: transparent; border: 1px solid var(--border-color);
-                border-radius: 50%; width: 44px; height: 44px; color: var(--text-primary); cursor: pointer;
-                display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+			
+            .close-btn, .edit-btn {
+                background: transparent; 
+                border: 1px solid var(--border-color);
+                border-radius: 50%; 
+                width: 44px; 
+                height: 44px; 
+                color: var(--text-primary); 
+                cursor: pointer;
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                transition: all 0.2s;
                 flex-shrink: 0;
             }
-            .close-btn:hover { background: var(--bg-panel-hover); }
-            .close-btn:active { transform: scale(0.9); }
+            .close-btn:hover, .edit-btn:hover { background: var(--bg-panel-hover); }
+            .close-btn:active, .edit-btn:active { transform: scale(0.9); }
 
             .photo-gallery {
                 display: grid; grid-template-rows: repeat(2, 90px); grid-auto-flow: column;
