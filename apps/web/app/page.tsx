@@ -16,6 +16,7 @@ import { MapCursor } from "@/components/MapCursor";
 import { TargetLine } from "@/components/TargetLine";
 import { Polyline } from "@/components/Polyline";
 import { Polygon } from "@/components/Polygon";
+import { Sidebar } from "@/components/Sidebar";
 import { JEEPNEY_ROUTES, CAMPUS_ZONES, ZONE_CATEGORIES } from "@/data/map-layers";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useTheme } from "@/lib/ThemeContext";
@@ -290,6 +291,11 @@ export default function Home() {
 						setIsAddingPin(true);
 					}}
 				/>
+
+				<Sidebar 
+                    isOpen={mode === "MENU"} 
+                    onClose={toggleMenu} 
+                />
 
 				{pendingPinCoords && (
 					<AddPinModal
