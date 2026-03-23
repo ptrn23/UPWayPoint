@@ -152,10 +152,10 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
                                             }
                                         }}
                                         style={isActive ? {
-                                            backgroundColor: `${tagColor}25`,
+                                            backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`, 
                                             borderColor: tagColor,
                                             color: tagColor,
-                                            boxShadow: `inset 0 0 10px ${tagColor}40`
+                                            boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`
                                         } : {}}
                                     >
                                         {t.title.toUpperCase()}
