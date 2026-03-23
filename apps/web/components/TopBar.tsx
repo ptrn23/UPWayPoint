@@ -8,7 +8,7 @@ import { useSession } from "@/lib/auth-client";
 import { useMap } from "@vis.gl/react-google-maps";
 import { JEEPNEY_ROUTES, ZONE_CATEGORIES } from "@/data/map-layers";
 
-export type FilterType = "all" | "academic" | "food" | "social" | "utility";
+export type FilterType = "all" | "academic" | "food" | "social" | "transit" | "utility";
 
 interface TopBarProps {
 	onMenuClick: () => void;
@@ -73,12 +73,13 @@ export function TopBar({
 	};
 
 	const filters: FilterType[] = [
-		"all",
-		"academic",
-		"food",
-		"social",
-		"utility",
-	];
+        "all",
+        "academic",
+        "food",
+        "social",
+        "transit",
+        "utility",
+    ];
 
 	return (
 		<div className="ui-layer">
@@ -331,18 +332,18 @@ export function TopBar({
 }
 
 export const getFilterColor = (type: string) => {
-	switch (type) {
-		case "academic":
-			return "#ff4d4d";
-		case "food":
-			return "#00ffa3";
-		case "social":
-			return "#ff007a";
-		case "transit":
-			return "#f4ff4d";
-		case "utility":
-			return "#00d1ff";
-		default:
-			return "var(--text-primary)"; 
-	}
+    switch (type.toLowerCase()) {
+        case "academic":
+            return "#FF3366";
+        case "food":
+            return "#00FF99";
+        case "social":
+            return "#B026FF";
+        case "transit":
+            return "#FFD700";
+        case "utility":
+            return "#00E5FF";
+        default:
+            return "var(--text-primary)";
+    }
 };
