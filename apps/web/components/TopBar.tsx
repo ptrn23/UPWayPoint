@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 import { useTheme } from "@/lib/ThemeContext";
 import { useSession } from "@/lib/auth-client";
+import { useMap } from "@vis.gl/react-google-maps";
 import { JEEPNEY_ROUTES, ZONE_CATEGORIES } from "@/data/map-layers";
 
 export type FilterType = "all" | "academic" | "food" | "social" | "utility";
@@ -19,9 +20,7 @@ interface TopBarProps {
     onToggleRoute?: (routeId: string) => void;
 	activeZoneCategories?: string[];
     onToggleZoneCategory?: (categoryId: string) => void;
-	onCenterMap?: () => void;
-    onZoomIn?: () => void;
-    onZoomOut?: () => void;
+	userLocation?: { lat: number; lng: number };
 }
 
 export function TopBar({
@@ -34,15 +33,36 @@ export function TopBar({
     onToggleRoute = () => {},
 	activeZoneCategories = [],
     onToggleZoneCategory = () => {},
-	onCenterMap = () => {},
-    onZoomIn = () => {},
-    onZoomOut = () => {},
+	userLocation = { lat: 14.6549, lng: 121.0645 },
 }: TopBarProps) {
 	const router = useRouter();
 	const { data: sessionData } = useSession();
 	const [isTransitMenuOpen, setIsTransitMenuOpen] = useState(false);
 	const [isZoneMenuOpen, setIsZoneMenuOpen] = useState(false);
 	const { theme, toggleTheme } = useTheme();
+
+	const map = useMap();
+
+    const handleCenterMap = () => {
+        if (map && userLocation) {
+            map.panTo(userLocation);
+            map.setZoom(19);
+        }
+    };
+
+    const handleZoomIn = () => {
+        if (map) {
+            const currentZoom = map.getZoom() || 19;
+            map.setZoom(currentZoom + 1);
+        }
+    };
+
+    const handleZoomOut = () => {
+        if (map) {
+            const currentZoom = map.getZoom() || 19;
+            map.setZoom(currentZoom - 1);
+        }
+    };
 
 	const handleProfileClick = () => {
 		if (sessionData?.user) {
@@ -272,7 +292,7 @@ export function TopBar({
                     <button 
                         type="button" 
                         className="icon-button gps-btn"
-                        onClick={onCenterMap}
+                        onClick={handleCenterMap}
                         title="Center on Current Location"
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -284,7 +304,7 @@ export function TopBar({
                         <button 
                             type="button" 
                             className="control-button zoom-in"
-                            onClick={onZoomIn}
+                            onClick={handleZoomIn}
                             title="Zoom In"
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
@@ -296,7 +316,7 @@ export function TopBar({
                         <button 
                             type="button" 
                             className="control-button zoom-out"
-                            onClick={onZoomOut}
+                            onClick={handleZoomOut}
                             title="Zoom Out"
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
