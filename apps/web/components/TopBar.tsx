@@ -19,6 +19,9 @@ interface TopBarProps {
     onToggleRoute?: (routeId: string) => void;
 	activeZoneCategories?: string[];
     onToggleZoneCategory?: (categoryId: string) => void;
+	onCenterMap?: () => void;
+    onZoomIn?: () => void;
+    onZoomOut?: () => void;
 }
 
 export function TopBar({
@@ -31,6 +34,9 @@ export function TopBar({
     onToggleRoute = () => {},
 	activeZoneCategories = [],
     onToggleZoneCategory = () => {},
+	onCenterMap = () => {},
+    onZoomIn = () => {},
+    onZoomOut = () => {},
 }: TopBarProps) {
 	const router = useRouter();
 	const { data: sessionData } = useSession();
@@ -263,48 +269,42 @@ export function TopBar({
 
 				{/* Bottom Group */}
 				<div className="tool-group bottom-align">
-					<button type="button" className="icon-button gps-btn">
-						<svg
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2.5"
-						>
-							<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-						</svg>
-					</button>
+                    <button 
+                        type="button" 
+                        className="icon-button gps-btn"
+                        onClick={onCenterMap}
+                        title="Center on Current Location"
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                        </svg>
+                    </button>
 
-					<div className="zoom-stack">
-						<button type="button" className="control-button zoom-in">
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="3"
-							>
-								<line x1="12" y1="5" x2="12" y2="19"></line>
-								<line x1="5" y1="12" x2="19" y2="12"></line>
-							</svg>
-						</button>
-						<div className="divider"></div>
-						<button type="button" className="control-button zoom-out">
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="3"
-							>
-								<line x1="5" y1="12" x2="19" y2="12"></line>
-							</svg>
-						</button>
-					</div>
-				</div>
+                    <div className="zoom-stack">
+                        <button 
+                            type="button" 
+                            className="control-button zoom-in"
+                            onClick={onZoomIn}
+                            title="Zoom In"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                        <div className="divider"></div>
+                        <button 
+                            type="button" 
+                            className="control-button zoom-out"
+                            onClick={onZoomOut}
+                            title="Zoom Out"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 			</div>
 		</div>
 	);

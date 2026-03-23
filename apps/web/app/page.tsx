@@ -69,6 +69,30 @@ export default function Home() {
         });
     }, []);
 
+	const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
+	const mockHeading = 45;
+
+	const handleCenterMap = useCallback(() => {
+        setCameraProps({
+            center: mockUserLocation,
+            zoom: 19,
+        });
+    }, [mockUserLocation]);
+
+    const handleZoomIn = useCallback(() => {
+        setCameraProps((prev) => ({
+            ...prev,
+            zoom: Math.min(prev.zoom + 1, 22)
+        }));
+    }, []);
+
+    const handleZoomOut = useCallback(() => {
+        setCameraProps((prev) => ({
+            ...prev,
+            zoom: Math.max(prev.zoom - 1, 17)
+        }));
+    }, []);
+
 	const { theme } = useTheme();
 
 	const [pendingPinCoords, setPendingPinCoords] = useState<{
@@ -101,9 +125,6 @@ export default function Home() {
 
 		return () => window.removeEventListener("mousemove", handleMouseMove);
 	}, [isAddingPin]);
-
-	const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
-	const mockHeading = 45;
 
 	return (
 		<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
@@ -237,6 +258,9 @@ export default function Home() {
                     onToggleRoute={handleToggleRoute}
                     activeZoneCategories={activeZoneCategories}
                     onToggleZoneCategory={handleToggleZoneCategory}
+                    onCenterMap={handleCenterMap}
+                    onZoomIn={handleZoomIn}
+                    onZoomOut={handleZoomOut}
                 />
 
 				{/* TARGETING CROSSHAIR (Only visible when armed) */}
