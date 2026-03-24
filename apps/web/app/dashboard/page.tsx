@@ -35,6 +35,10 @@ export default function Dashboard() {
       { id: "p1", title: "Quezon Hall", lat: 14.6549, lng: 121.0645, type: "academic" },
       { id: "p2", title: "Area 2", lat: 14.6532, lng: 121.0681, type: "food" },
       { id: "p3", title: "Sunken Garden", lat: 14.6544, lng: 121.0673, type: "social" },
+    ],
+    recentList: [
+      { id: "r1", title: "CS Library", lat: 14.6538, lng: 121.0694, type: "academic" },
+      { id: "r2", title: "TOKI Jeepney Stop", lat: 14.6551, lng: 121.0621, type: "transit" },
     ]
   };
 
@@ -610,7 +614,7 @@ export default function Dashboard() {
           align-items: center;
           gap: 16px;
         }
-          
+
         .list-diamond {
           width: 32px;
           height: 32px;
