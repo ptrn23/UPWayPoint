@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
+import { PIN_CATEGORIES } from "@/data/pin-categories";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -16,6 +17,23 @@ export default function Dashboard() {
     await signOut();
     router.refresh();
   };
+
+  const mockStats = {
+    totalPins: 42,
+    verifiedPins: 38,
+    pendingPins: 3,
+    rejectedPins: 1,
+    comments: 128,
+    categoryBreakdown: {
+      academic: 12,
+      food: 15,
+      social: 5,
+      transit: 8,
+      utility: 2,
+    }
+  };
+  
+  const verificationRate = Math.round((mockStats.verifiedPins / mockStats.totalPins) * 100) || 0;
 
   return (
     <div className="dashboard-layout">
@@ -76,8 +94,63 @@ export default function Dashboard() {
               <p className="greeting-subtitle">You made it!</p>
             </div>
             
-            <div className="placeholder-content">
-               <p>Data will be displayed here.</p>
+            {/* --- DASHBOARD GRID --- */}
+            <div className="dashboard-grid">
+              
+              <div className="module-card operator-card">
+                <div className="card-header">
+                  <h3>USER PROFILE</h3>
+                  <span className="status-badge">ONLINE</span>
+                </div>
+                <div className="card-body">
+                  <div className="dummy-avatar"></div>
+                  <div className="dummy-lines">
+                    <div className="line short"></div>
+                    <div className="line long"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="module-card telemetry-card">
+                <div className="card-header">
+                  <h3>PIN STATISTICS</h3>
+                </div>
+                <div className="card-body">
+                  <div className="dummy-stats">
+                    <div className="stat-box"></div>
+                    <div className="stat-box"></div>
+                    <div className="stat-box"></div>
+                    <div className="stat-box"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="module-card pending-card">
+                <div className="card-header">
+                  <h3>PENDING PINS</h3>
+                  <span className="count-badge">3</span>
+                </div>
+                <div className="card-body">
+                  <div className="dummy-list">
+                    <div className="list-item"></div>
+                    <div className="list-item"></div>
+                    <div className="list-item"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="module-card recent-card">
+                <div className="card-header">
+                  <h3>RECENT PINS</h3>
+                </div>
+                <div className="card-body">
+                  <div className="dummy-list">
+                    <div className="list-item"></div>
+                    <div className="list-item"></div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </main>
@@ -272,6 +345,102 @@ export default function Dashboard() {
           margin: 0;
         }
 
+        /* --- DASHBOARD GRID & CARDS --- */
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px;
+        }
+
+        .module-card {
+          background: var(--bg-panel);
+          border: 1px solid var(--border-color);
+          border-radius: 16px;
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Card Headers */
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid var(--border-color);
+          padding-bottom: 12px;
+        }
+
+        .card-header h3 {
+          font-family: var(--font-chakra);
+          font-size: 14px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.15em;
+          margin: 0;
+        }
+
+        /* Badges */
+        .status-badge {
+          background: color-mix(in srgb, var(--neon-green) 15%, transparent);
+          color: var(--neon-green);
+          border: 1px solid var(--neon-green);
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+
+        .count-badge {
+          background: color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent);
+          color: var(--neon-yellow, #FFD700);
+          border: 1px solid var(--neon-yellow, #FFD700);
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-family: var(--font-nunito);
+          font-weight: 800;
+          font-size: 12px;
+        }
+        
+        .card-body {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .dummy-avatar {
+          width: 64px; height: 64px;
+          border-radius: 50%;
+          background: var(--bg-panel-hover);
+          margin-bottom: 16px;
+        }
+        
+        .dummy-lines { display: flex; flex-direction: column; gap: 8px; }
+        .line { height: 12px; background: var(--bg-panel-hover); border-radius: 4px; }
+        .line.short { width: 40%; }
+        .line.long { width: 80%; }
+
+        .dummy-stats {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+        .stat-box {
+          height: 60px;
+          background: var(--bg-panel-hover);
+          border-radius: 8px;
+        }
+
+        .dummy-list { display: flex; flex-direction: column; gap: 12px; }
+        .list-item {
+          height: 48px;
+          background: var(--bg-panel-hover);
+          border-radius: 8px;
+        }
+
         .placeholder-content {
           height: 300px;
           border: 1px dashed var(--border-color);
@@ -317,6 +486,10 @@ export default function Dashboard() {
 
           .dashboard-header {
             padding: 0 16px;
+          }
+
+          .dashboard-grid {
+            grid-template-columns: 1fr;
           }
 
           .content-area {
