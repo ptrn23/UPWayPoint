@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
 import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
+import { useTheme } from "@/lib/ThemeContext";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function Dashboard() {
 
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioInput, setBioInput] = useState("");
+  const { theme, toggleTheme } = useTheme();
 
   const handleSaveBio = () => {
     // TODO: Hook this up to trpc.user.updateBio.useMutation()
@@ -74,6 +76,41 @@ export default function Dashboard() {
             <span className="nav-label">MAIN</span>
             <button className="nav-item active">OVERVIEW</button>
             <button className="nav-item" onClick={goToMap}>RETURN TO MAP</button>
+          </div>
+          <div className="nav-group" style={{ marginTop: '24px' }}>
+            <span className="nav-label">DISPLAY SETTINGS</span>
+            
+            <button 
+              className="nav-item theme-toggle-btn" 
+              onClick={toggleTheme}
+            >
+              <span>UI THEME</span>
+              <div className="theme-status">
+                {theme === "dark" ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pin-transit)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="5"></circle>
+                      <line x1="12" y1="1" x2="12" y2="3"></line>
+                      <line x1="12" y1="21" x2="12" y2="23"></line>
+                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                      <line x1="1" y1="12" x2="3" y2="12"></line>
+                      <line x1="21" y1="12" x2="23" y2="12"></line>
+                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <span style={{ color: "var(--pin-transit)" }}>DAY</span>
+                  </>
+                )}
+              </div>
+            </button>
           </div>
         </nav>
 
@@ -442,6 +479,21 @@ export default function Dashboard() {
           color: var(--neon-blue);
           border-left: 3px solid var(--neon-blue);
           border-radius: 0 8px 8px 0;
+        }
+
+        .theme-toggle-btn {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .theme-status {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-family: var(--font-chakra);
+          font-size: 11px;
+          font-weight: 800;
         }
 
         .sidebar-footer {
