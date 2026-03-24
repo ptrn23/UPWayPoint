@@ -1019,8 +1019,8 @@ export default function Dashboard() {
 
         .progress-fill {
           height: 100%;
-          background: var(--neon-green);
-          box-shadow: 0 0 10px color-mix(in srgb, var(--neon-green) 50%, transparent);
+          background: var(--pin-food);
+          box-shadow: 0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent);
           border-radius: 3px;
           transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
