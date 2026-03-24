@@ -11,6 +11,15 @@ export default function Dashboard() {
   const { data, isLoading } = trpc.user.getCurrent.useQuery();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [bioInput, setBioInput] = useState("");
+
+  const handleSaveBio = () => {
+    // TODO: Hook this up to trpc.user.updateBio.useMutation()
+    console.log("Saving new bio:", bioInput);
+    setIsEditingBio(false);
+  };
+
   const goToMap = () => router.push("/");
   
   const handleSignOut = async () => {
@@ -239,11 +248,48 @@ export default function Dashboard() {
               <div className="module-card recent-card">
                 <div className="card-header">
                   <h3>RECENT PINS</h3>
+                  <span className="count-badge" style={{ color: 'var(--text-secondary)', borderColor: 'var(--border-color)', background: 'transparent' }}>
+                    {mockStats.recentList.length}
+                  </span>
                 </div>
                 <div className="card-body">
-                  <div className="dummy-list">
-                    <div className="list-item"></div>
-                    <div className="list-item"></div>
+                  <div className="pin-list">
+                    {mockStats.recentList.map((pin) => {
+                      const color = getPinColor(pin.type);
+                      return (
+                        <div key={pin.id} className="pin-list-item">
+                          <div className="pin-info-group">
+                            <div 
+                              className="list-diamond" 
+                              style={{ 
+                                borderColor: color, 
+                                backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` 
+                              }}
+                            >
+                              <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
+                            </div>
+                            
+                            <div className="pin-text">
+                              <span className="pin-title">{pin.title}</span>
+                              <span className="pin-coords">
+                                {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
+                              </span>
+                            </div>
+                          </div>
+
+                          <button 
+                            type="button" 
+                            className="locate-btn"
+                            title="Locate on Map"
+                            onClick={() => console.log("Locate pin:", pin.id)}
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                            </svg>
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
