@@ -30,7 +30,12 @@ export default function Dashboard() {
       social: 5,
       transit: 8,
       utility: 2,
-    }
+    },
+    pendingList: [
+      { id: "p1", title: "Quezon Hall", lat: 14.6549, lng: 121.0645, type: "academic" },
+      { id: "p2", title: "Area 2", lat: 14.6532, lng: 121.0681, type: "food" },
+      { id: "p3", title: "Sunken Garden", lat: 14.6544, lng: 121.0673, type: "social" },
+    ]
   };
 
   const verificationRate = Math.round((mockStats.verifiedPins / mockStats.totalPins) * 100) || 0;
@@ -369,6 +374,7 @@ export default function Dashboard() {
           flex: 1;
           padding: 32px;
           background-color: var(--bg-base);
+          overflow-y: auto;
         }
 
         .content-container {
