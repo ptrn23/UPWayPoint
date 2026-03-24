@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
-import { PIN_CATEGORIES } from "@/data/pin-categories";
+import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -188,13 +188,46 @@ export default function Dashboard() {
               <div className="module-card pending-card">
                 <div className="card-header">
                   <h3>PENDING PINS</h3>
-                  <span className="count-badge">3</span>
+                  <span className="count-badge">{mockStats.pendingList.length}</span>
                 </div>
                 <div className="card-body">
-                  <div className="dummy-list">
-                    <div className="list-item"></div>
-                    <div className="list-item"></div>
-                    <div className="list-item"></div>
+                  <div className="pin-list">
+                    {mockStats.pendingList.map((pin) => {
+                      const color = getPinColor(pin.type);
+                      return (
+                        <div key={pin.id} className="pin-list-item">
+                          <div className="pin-info-group">
+                            <div 
+                              className="list-diamond" 
+                              style={{ 
+                                borderColor: color, 
+                                backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` 
+                              }}
+                            >
+                              <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
+                            </div>
+                            
+                            <div className="pin-text">
+                              <span className="pin-title">{pin.title}</span>
+                              <span className="pin-coords">
+                                {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
+                              </span>
+                            </div>
+                          </div>
+
+                          <button 
+                            type="button" 
+                            className="locate-btn"
+                            title="Locate on Map"
+                            onClick={() => console.log("Locate pin:", pin.id)}
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                            </svg>
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -547,6 +580,102 @@ export default function Dashboard() {
           font-size: 32px;
           color: var(--text-primary);
           letter-spacing: 0.05em;
+        }
+
+        /* --- PIN LIST STYLES --- */
+        .pin-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .pin-list-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: var(--bg-panel-hover);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          padding: 12px 16px;
+          transition: all 0.2s ease;
+        }
+
+        .pin-list-item:hover {
+          border-color: color-mix(in srgb, var(--text-secondary) 50%, transparent);
+          background: color-mix(in srgb, var(--bg-panel-hover) 80%, var(--border-color));
+        }
+
+        .pin-info-group {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+          
+        .list-diamond {
+          width: 32px;
+          height: 32px;
+          transform: rotate(45deg);
+          border: 1.5px solid;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .list-diamond span {
+          transform: rotate(-45deg);
+          font-family: var(--font-cubao-wide);
+          font-size: 14px;
+        }
+
+        /* Text Block */
+        .pin-text {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .pin-title {
+          font-family: var(--font-chakra);
+          font-size: 14px;
+          font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: 0.05em;
+        }
+
+        .pin-coords {
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+          font-size: 11px;
+          color: var(--text-secondary);
+          letter-spacing: 0.05em;
+        }
+
+        /* Locate Button */
+        .locate-btn {
+          background: transparent;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-secondary);
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          flex-shrink: 0;
+        }
+
+        .locate-btn:hover {
+          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
+          border-color: var(--neon-blue);
+          color: var(--neon-blue);
+          transform: scale(1.05);
+        }
+
+        .locate-btn:active {
+          transform: scale(0.95);
         }
 
         /* Verification Integrity */
