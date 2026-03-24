@@ -32,7 +32,7 @@ export default function Dashboard() {
       utility: 2,
     }
   };
-  
+
   const verificationRate = Math.round((mockStats.verifiedPins / mockStats.totalPins) * 100) || 0;
 
   return (
@@ -113,14 +113,69 @@ export default function Dashboard() {
 
               <div className="module-card telemetry-card">
                 <div className="card-header">
-                  <h3>PIN STATISTICS</h3>
+                  <h3>USER STATISTICS</h3>
+                  <span className="status-badge" style={{ borderColor: 'var(--neon-blue)', color: 'var(--neon-blue)', background: 'color-mix(in srgb, var(--neon-blue) 15%, transparent)' }}>
+                    SYNCED
+                  </span>
                 </div>
-                <div className="card-body">
-                  <div className="dummy-stats">
-                    <div className="stat-box"></div>
-                    <div className="stat-box"></div>
-                    <div className="stat-box"></div>
-                    <div className="stat-box"></div>
+                
+                <div className="card-body telemetry-body">
+                  {/* Top Stats Grid */}
+                  <div className="telemetry-top-grid">
+                    <div className="stat-block">
+                      <span className="stat-label">TOTAL PINS ADDED</span>
+                      <span className="stat-value">{mockStats.totalPins}</span>
+                    </div>
+                    <div className="stat-block">
+                      <span className="stat-label">TOTAL COMMENTS</span>
+                      <span className="stat-value">{mockStats.comments}</span>
+                    </div>
+                  </div>
+
+                  {/* Verification Integrity Bar */}
+                  <div className="integrity-section">
+                    <div className="integrity-header">
+                      <span className="stat-label">VERIFICATIONS</span>
+                      <span className="integrity-percent">{verificationRate}%</span>
+                    </div>
+                    <div className="progress-track">
+                      <div className="progress-fill" style={{ width: `${verificationRate}%` }}></div>
+                    </div>
+                    <div className="integrity-details">
+                      <span className="detail-item verified">{mockStats.verifiedPins} VERIFIED</span>
+                      <span className="detail-item pending">{mockStats.pendingPins} PENDING</span>
+                      <span className="detail-item rejected">{mockStats.rejectedPins} REJECTED</span>
+                    </div>
+                  </div>
+
+                  {/* Category Distribution */}
+                  <div className="distribution-section">
+                    <span className="stat-label">CATEGORY DISTRIBUTION</span>
+                    <div className="category-list">
+                      {PIN_CATEGORIES.map((category) => {
+                        const count = mockStats.categoryBreakdown[category.id as keyof typeof mockStats.categoryBreakdown] || 0;
+                        const percentage = mockStats.totalPins > 0 ? (count / mockStats.totalPins) * 100 : 0;
+                        
+                        return (
+                          <div key={category.id} className="category-row">
+                            <div className="cat-info">
+                              <span className="cat-name" style={{ color: category.color }}>{category.label}</span>
+                              <span className="cat-count">{count}</span>
+                            </div>
+                            <div className="cat-track">
+                              <div 
+                                className="cat-fill" 
+                                style={{ 
+                                  width: `${percentage}%`, 
+                                  backgroundColor: category.color,
+                                  boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -450,6 +505,136 @@ export default function Dashboard() {
           justify-content: center;
           color: var(--text-secondary);
           font-family: var(--font-chakra);
+        }
+
+        /* --- TELEMETRY MODULE STYLES --- */
+        .telemetry-body {
+          gap: 24px;
+        }
+
+        .stat-label {
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.15em;
+        }
+
+        .telemetry-top-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+
+        .stat-block {
+          background: var(--bg-panel-hover);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .stat-value {
+          font-family: var(--font-cubao-wide);
+          font-size: 32px;
+          color: var(--text-primary);
+          letter-spacing: 0.05em;
+        }
+
+        /* Verification Integrity */
+        .integrity-section {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .integrity-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+        }
+
+        .integrity-percent {
+          font-family: var(--font-chakra);
+          font-size: 14px;
+          font-weight: 800;
+          color: var(--neon-green);
+        }
+
+        .progress-track {
+          height: 6px;
+          background: var(--bg-panel-hover);
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          background: var(--neon-green);
+          box-shadow: 0 0 10px color-mix(in srgb, var(--neon-green) 50%, transparent);
+          border-radius: 3px;
+          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .integrity-details {
+          display: flex;
+          gap: 12px;
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+        }
+
+        .detail-item.verified { color: var(--neon-green); }
+        .detail-item.pending { color: var(--neon-yellow, #FFD700); }
+        .detail-item.rejected { color: #ff4d4d; }
+
+        /* Category Distribution */
+        .distribution-section {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .category-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .category-row {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .cat-info {
+          display: flex;
+          justify-content: space-between;
+          font-family: var(--font-chakra);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+
+        .cat-count {
+          color: var(--text-primary);
+          font-family: var(--font-nunito);
+        }
+
+        .cat-track {
+          height: 4px;
+          background: var(--bg-panel-hover);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+
+        .cat-fill {
+          height: 100%;
+          border-radius: 2px;
+          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         /* Custom Scrollbar */
