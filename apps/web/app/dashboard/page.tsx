@@ -118,13 +118,71 @@ export default function Dashboard() {
               <div className="module-card operator-card">
                 <div className="card-header">
                   <h3>USER PROFILE</h3>
-                  <span className="status-badge">ONLINE</span>
+                  <span 
+                    className="status-badge" 
+                    style={{ 
+                      borderColor: 'var(--neon-green)', 
+                      color: 'var(--neon-green)', 
+                      background: 'color-mix(in srgb, var(--neon-green) 15%, transparent)' 
+                    }}
+                  >
+                    {(data as any)?.role === "ADMIN" ? "ADMIN" : "REGULAR USER"}
+                  </span>
                 </div>
-                <div className="card-body">
-                  <div className="dummy-avatar"></div>
-                  <div className="dummy-lines">
-                    <div className="line short"></div>
-                    <div className="line long"></div>
+                
+                <div className="card-body operator-body">
+                  <div className="operator-profile">
+                    <div className="avatar-container">
+                      <div className="avatar-fallback">
+                        {data?.name ? data.name.charAt(0).toUpperCase() : "O"}
+                      </div>
+                    </div>
+                    <div className="operator-details">
+                      <span className="operator-name">{data?.name || "UNKNOWN NAME"}</span>
+                      <span className="operator-email">{(data as any)?.email || "UNKNOWN EMAIL"}</span>
+                    </div>
+                  </div>
+
+                  <div className="bio-section">
+                    <div className="bio-header">
+                      <span className="bio-label">BIO</span>
+                      {!isEditingBio && (
+                        <button 
+                          className="edit-bio-btn" 
+                          onClick={() => { 
+                            setBioInput((data as any)?.bio || ""); 
+                            setIsEditingBio(true); 
+                          }}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                          </svg>
+                          EDIT
+                        </button>
+                      )}
+                    </div>
+
+                    {isEditingBio ? (
+                      <div className="bio-edit-mode">
+                        <textarea
+                          className="bio-input custom-vertical-scrollbar"
+                          value={bioInput}
+                          onChange={(e) => setBioInput(e.target.value)}
+                          maxLength={150}
+                          rows={3}
+                          placeholder="Enter your bio here..."
+                        />
+                        <div className="bio-actions">
+                          <button className="tactical-button-primary small-btn" onClick={handleSaveBio}>SAVE</button>
+                          <button className="tactical-button small-btn" onClick={() => setIsEditingBio(false)}>CANCEL</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="bio-text">
+                        {(data as any)?.bio || "No bio here. Click EDIT to add a short bio about yourself!"}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -594,6 +652,158 @@ export default function Dashboard() {
           justify-content: center;
           color: var(--text-secondary);
           font-family: var(--font-chakra);
+        }
+
+        /* --- OPERATOR IDENTITY MODULE --- */
+        .operator-body {
+          gap: 24px;
+        }
+
+        .operator-profile {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .avatar-container {
+          width: 72px;
+          height: 72px;
+          border-radius: 50%;
+          border: 2px solid color-mix(in srgb, var(--neon-blue) 50%, transparent);
+          padding: 4px;
+          position: relative;
+        }
+
+        .avatar-container::after {
+          content: '';
+          position: absolute;
+          inset: -6px;
+          border-radius: 50%;
+          border: 1px dashed color-mix(in srgb, var(--neon-blue) 30%, transparent);
+          animation: spin 20s linear infinite;
+        }
+
+        .avatar-img, .avatar-fallback {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .avatar-fallback {
+          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
+          color: var(--neon-blue);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: var(--font-cubao-wide);
+          font-size: 28px;
+        }
+
+        .operator-details {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .operator-name {
+          font-family: var(--font-chakra);
+          font-size: 20px;
+          font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: 0.05em;
+        }
+
+        .operator-email {
+          font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+          font-size: 12px;
+          color: var(--text-secondary);
+        }
+
+        /* Service Bio Section */
+        .bio-section {
+          background: var(--bg-panel-hover);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .bio-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .bio-label {
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.15em;
+        }
+
+        .edit-bio-btn {
+          background: transparent;
+          border: none;
+          color: var(--text-secondary);
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+
+        .edit-bio-btn:hover {
+          color: var(--neon-blue);
+        }
+
+        .bio-text {
+          font-family: var(--font-nunito);
+          font-size: 14px;
+          color: var(--text-primary);
+          line-height: 1.5;
+          margin: 0;
+        }
+
+        .bio-edit-mode {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .bio-input {
+          background: var(--bg-base);
+          border: 1px solid var(--neon-blue);
+          border-radius: 8px;
+          padding: 12px;
+          color: var(--text-primary);
+          font-family: var(--font-nunito);
+          font-size: 14px;
+          resize: none;
+          outline: none;
+          box-shadow: inset 0 0 10px color-mix(in srgb, var(--neon-blue) 10%, transparent);
+        }
+
+        .bio-actions {
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+        }
+
+        .small-btn {
+          padding: 8px 16px;
+          font-size: 11px;
+        }
+
+        @keyframes spin {
+          100% { transform: rotate(360deg); }
         }
 
         /* --- TELEMETRY MODULE STYLES --- */
