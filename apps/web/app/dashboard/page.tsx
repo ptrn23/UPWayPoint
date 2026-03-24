@@ -117,7 +117,7 @@ export default function Dashboard() {
               
               <div className="module-card operator-card">
                 <div className="card-header">
-                  <h3>USER PROFILE</h3>
+                  <h3>YOUR PROFILE</h3>
                   <span 
                     className="status-badge" 
                     style={{ 
@@ -189,7 +189,7 @@ export default function Dashboard() {
 
               <div className="module-card telemetry-card">
                 <div className="card-header">
-                  <h3>USER STATISTICS</h3>
+                  <h3>YOUR STATISTICS</h3>
                   <span className="status-badge" style={{ borderColor: 'var(--neon-blue)', color: 'var(--neon-blue)', background: 'color-mix(in srgb, var(--neon-blue) 15%, transparent)' }}>
                     SYNCED
                   </span>
@@ -258,7 +258,7 @@ export default function Dashboard() {
 
               <div className="module-card pending-card">
                 <div className="card-header">
-                  <h3>PENDING PINS</h3>
+                  <h3>YOUR PENDING PINS</h3>
                   <span className="count-badge">{mockStats.pendingList.length}</span>
                 </div>
                 <div className="card-body">
@@ -305,7 +305,7 @@ export default function Dashboard() {
 
               <div className="module-card recent-card">
                 <div className="card-header">
-                  <h3>RECENT PINS</h3>
+                  <h3>YOUR RECENT PINS</h3>
                   <span className="count-badge" style={{ color: 'var(--text-secondary)', borderColor: 'var(--border-color)', background: 'transparent' }}>
                     {mockStats.recentList.length}
                   </span>
