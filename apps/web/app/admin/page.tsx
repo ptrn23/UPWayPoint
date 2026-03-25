@@ -140,9 +140,75 @@ export default function AdminDashboard() {
                                 <div className="card-header">
                                     <h3>OVERALL PIN STATISTICS</h3>
                                 </div>
-                                <div className="card-body">
-                                    <div className="placeholder-content">
-                                        Overall Pin Statistics Go Here
+                                <div className="card-body telemetry-body">
+
+                                    {/* Top Stats Grid */}
+                                    <div className="telemetry-top-grid">
+                                        <div className="stat-block">
+                                            <span className="stat-label">TOTAL PINS IN MAP</span>
+                                            <span className="stat-value">{globalPinStats.totalPins}</span>
+                                        </div>
+                                        <div className="stat-block">
+                                            <span className="stat-label">AWAITING ACTION</span>
+                                            <span className="stat-value" style={{ color: 'var(--neon-yellow, #FFD700)' }}>
+                                                {globalPinStats.pendingPins}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Verification Integrity Bar */}
+                                    <div className="integrity-section">
+                                        <div className="integrity-header">
+                                            <span className="stat-label">GLOBAL VERIFICATION</span>
+                                            <span className="integrity-percent" style={{ color: 'var(--pin-food)' }}>
+                                                {globalVerificationRate}%
+                                            </span>
+                                        </div>
+                                        <div className="progress-track">
+                                            <div
+                                                className="progress-fill"
+                                                style={{
+                                                    width: `${globalVerificationRate}%`,
+                                                    background: 'var(--pin-food)',
+                                                    boxShadow: '0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent)'
+                                                }}
+                                            ></div>
+                                        </div>
+                                        <div className="integrity-details">
+                                            <span className="detail-item verified">{globalPinStats.verifiedPins} VERIFIED</span>
+                                            <span className="detail-item pending">{globalPinStats.pendingPins} PENDING</span>
+                                            <span className="detail-item rejected">{globalPinStats.rejectedPins} REJECTED</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Category Distribution */}
+                                    <div className="distribution-section">
+                                        <span className="stat-label">CATEGORY BREAKDOWN</span>
+                                        <div className="category-list">
+                                            {PIN_CATEGORIES.map((category) => {
+                                                const count = globalPinStats.categoryBreakdown[category.id as keyof typeof globalPinStats.categoryBreakdown] || 0;
+                                                const percentage = globalPinStats.totalPins > 0 ? (count / globalPinStats.totalPins) * 100 : 0;
+
+                                                return (
+                                                    <div key={category.id} className="category-row">
+                                                        <div className="cat-info">
+                                                            <span className="cat-name" style={{ color: category.color }}>{category.label}</span>
+                                                            <span className="cat-count">{count}</span>
+                                                        </div>
+                                                        <div className="cat-track">
+                                                            <div
+                                                                className="cat-fill"
+                                                                style={{
+                                                                    width: `${percentage}%`,
+                                                                    backgroundColor: category.color,
+                                                                    boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`
+                                                                }}
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -506,6 +572,134 @@ export default function AdminDashboard() {
 
         .locate-btn { background: transparent; border: 1px solid var(--border-color); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
         .locate-btn:hover { background: color-mix(in srgb, var(--neon-blue) 15%, transparent); border-color: var(--neon-blue); color: var(--neon-blue); transform: scale(1.05); }
+
+        .telemetry-body {
+          gap: 24px;
+        }
+
+        .stat-label {
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.15em;
+        }
+
+        .telemetry-top-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+
+        .stat-block {
+          background: var(--bg-panel-hover);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .stat-value {
+          font-family: var(--font-cubao-wide);
+          font-size: 32px;
+          color: var(--text-primary);
+          letter-spacing: 0.05em;
+        }
+        
+        .integrity-section {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .integrity-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+        }
+
+        .integrity-percent {
+          font-family: var(--font-chakra);
+          font-size: 14px;
+          font-weight: 800;
+          color: var(--neon-green);
+        }
+        
+        .progress-track {
+          height: 6px;
+          background: var(--bg-panel-hover);
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          background: var(--pin-food);
+          box-shadow: 0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent);
+          border-radius: 3px;
+          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .integrity-details {
+          display: flex;
+          gap: 12px;
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+        }
+
+        .detail-item.verified { color: var(--neon-green); }
+        .detail-item.pending { color: var(--neon-yellow, #FFD700); }
+        .detail-item.rejected { color: #ff4d4d; }
+
+        /* Category Distribution */
+        .distribution-section {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .category-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .category-row {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .cat-info {
+          display: flex;
+          justify-content: space-between;
+          font-family: var(--font-chakra);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+
+        .cat-count {
+          color: var(--text-primary);
+          font-family: var(--font-nunito);
+        }
+
+        .cat-track {
+          height: 4px;
+          background: var(--bg-panel-hover);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+
+        .cat-fill {
+          height: 100%;
+          border-radius: 2px;
+          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
         /* Custom Scrollbar */
         .custom-vertical-scrollbar::-webkit-scrollbar { width: 8px; }
