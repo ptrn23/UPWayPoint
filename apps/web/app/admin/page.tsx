@@ -53,6 +53,12 @@ export default function AdminDashboard() {
         { id: "gp3", title: "Gyud Food", lat: 14.6542, lng: 121.0665, type: "food", submittedBy: "u3" },
     ];
 
+    const globalVerifiedPins = [
+        { id: "v1", title: "Main Library", lat: 14.6540, lng: 121.0660, type: "academic", submittedBy: "Operator_09" },
+        { id: "v2", title: "Area 2 Kiosk 4", lat: 14.6530, lng: 121.0685, type: "food", submittedBy: "Nav_Echo" },
+        { id: "v3", title: "AS Parking", lat: 14.6538, lng: 121.0688, type: "utility", submittedBy: "Agent_Smith" },
+    ];
+
     return (
         <div className="dashboard-layout">
             {/* --- MOBILE OVERLAY --- */}
