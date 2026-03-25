@@ -38,6 +38,15 @@ export default function AdminDashboard() {
 
     const globalVerificationRate = Math.round((globalPinStats.verifiedPins / globalPinStats.totalPins) * 100) || 0;
 
+    const globalUserStats = {
+        totalUsers: 342,
+        totalComments: 1840,
+        avgPins: 3.6,
+        avgComments: 5.3,
+        newUsers7Days: 14,
+        newUsers30Days: 45,
+    };
+
     return (
         <div className="dashboard-layout">
             {/* --- MOBILE OVERLAY --- */}
