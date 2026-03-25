@@ -36,9 +36,17 @@ export default function AdminDashboard() {
 		},
 	});
 
+	const deletePin = trpc.pin.adminDelete.useMutation({
+		onSuccess: (output) => {
+			utils.pin.getAllAdmin.invalidate();
+		},
+	});
+
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 	const { theme, toggleTheme } = useTheme();
 	const [activeSection, setActiveSection] = useState("overview");
+
+	const [isDeletingPin, setIsDeletingPin] = useState(false);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
@@ -634,7 +642,10 @@ export default function AdminDashboard() {
 																</div>
 															</div>
 
-															<div className="pin-actions">
+															<div
+																className="pin-actions"
+																style={{ display: "flex", gap: "8px" }}
+															>
 																<Link
 																	className="locate-btn"
 																	style={{
@@ -665,6 +676,72 @@ export default function AdminDashboard() {
 																		<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
 																	</svg>
 																</Link>
+																{isDeletingPin ? (
+																	<>
+																		<button
+																			type="button"
+																			className="reject-btn"
+																			title="Reject Pin"
+																			onClick={() => setIsDeletingPin(false)}
+																		>
+																			<svg
+																				width="18"
+																				height="18"
+																				viewBox="0 0 24 24"
+																				fill="none"
+																				stroke="currentColor"
+																				strokeWidth="2.5"
+																				strokeLinecap="round"
+																				strokeLinejoin="round"
+																			>
+																				<line
+																					x1="18"
+																					y1="6"
+																					x2="6"
+																					y2="18"
+																				></line>
+																				<line
+																					x1="6"
+																					y1="6"
+																					x2="18"
+																					y2="18"
+																				></line>
+																			</svg>
+																		</button>
+
+																		<button
+																			type="button"
+																			className="approve-btn"
+																			title="Verify & Approve Pin"
+																			onClick={() =>
+																				deletePin.mutate({ id: pin.id })
+																			}
+																		>
+																			<svg
+																				width="18"
+																				height="18"
+																				viewBox="0 0 24 24"
+																				fill="none"
+																				stroke="currentColor"
+																				strokeWidth="2.5"
+																				strokeLinecap="round"
+																				strokeLinejoin="round"
+																			>
+																				<polyline points="20 6 9 17 4 12"></polyline>
+																			</svg>
+																		</button>
+																	</>
+																) : (
+																	<button
+																		type="button"
+																		className="reject-btn"
+																		onClick={() => {
+																			setIsDeletingPin(true);
+																		}}
+																	>
+																		DELETE
+																	</button>
+																)}
 															</div>
 														</div>
 													);
