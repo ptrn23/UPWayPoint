@@ -226,9 +226,33 @@ export default function AdminDashboard() {
                                 <div className="card-header">
                                     <h3>OVERALL USER STATISTICS</h3>
                                 </div>
-                                <div className="card-body">
-                                    <div className="placeholder-content">
-                                        Overall User Statistics Go Here
+
+                                <div className="card-body telemetry-body">
+                                    <div className="telemetry-top-grid">
+                                        <div className="stat-block">
+                                            <span className="stat-label">TOTAL USERS</span>
+                                            <span className="stat-value">{globalUserStats.totalUsers}</span>
+                                        </div>
+                                        <div className="stat-block">
+                                            <span className="stat-label">TOTAL COMMENTS</span>
+                                            <span className="stat-value">{globalUserStats.totalComments}</span>
+                                        </div>
+                                        <div className="stat-block">
+                                            <span className="stat-label">AVERAGE PINS / USER</span>
+                                            <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgPins}</span>
+                                        </div>
+                                        <div className="stat-block">
+                                            <span className="stat-label">AVERAGE COMMENTS / USER</span>
+                                            <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgComments}</span>
+                                        </div>
+                                        <div className="stat-block">
+                                            <span className="stat-label">NEW USERS FOR THE LAST 7 DAYS</span>
+                                            <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers7Days}</span>
+                                        </div>
+                                        <div className="stat-block">
+                                            <span className="stat-label">NEW USERS FOR THE LAST 30 DAYS</span>
+                                            <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers30Days}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
