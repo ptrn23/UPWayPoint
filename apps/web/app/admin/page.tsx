@@ -22,6 +22,22 @@ export default function AdminDashboard() {
         router.refresh();
     };
 
+    const globalPinStats = {
+        totalPins: 1240,
+        verifiedPins: 1105,
+        pendingPins: 85,
+        rejectedPins: 50,
+        categoryBreakdown: {
+            academic: 450,
+            food: 320,
+            social: 150,
+            transit: 200,
+            utility: 120,
+        }
+    };
+
+    const globalVerificationRate = Math.round((globalPinStats.verifiedPins / globalPinStats.totalPins) * 100) || 0;
+
     return (
         <div className="dashboard-layout">
             {/* --- MOBILE OVERLAY --- */}
