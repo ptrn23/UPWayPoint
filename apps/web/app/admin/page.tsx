@@ -8,190 +8,190 @@ import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
 import { useTheme } from "@/lib/ThemeContext";
 
 export default function AdminDashboard() {
-  const router = useRouter();
+    const router = useRouter();
 
-  const { data, isLoading } = trpc.user.getCurrent.useQuery();
-  
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+    const { data, isLoading } = trpc.user.getCurrent.useQuery();
 
-  const goToMap = () => router.push("/");
-  
-  const handleSignOut = async () => {
-    await signOut();
-    router.refresh();
-  };
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { theme, toggleTheme } = useTheme();
 
-  return (
-    <div className="dashboard-layout">
-      {/* --- MOBILE OVERLAY --- */}
-      {isSidebarOpen && (
-        <div 
-            className="mobile-overlay" 
-            onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+    const goToMap = () => router.push("/");
 
-      {/* --- SIDEBAR --- */}
-      <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
-        <div className="sidebar-header">
-          <h2 className="brand">UP WAYPOINT</h2>
-        </div>
-        
-        <nav className="sidebar-nav custom-vertical-scrollbar">
-          <div className="nav-group">
-            <span className="nav-label">COMMAND CENTER</span>
-            <button className="nav-item active">SYSTEM OVERVIEW</button>
-            <button className="nav-item">VERIFICATION QUEUE</button>
-            <button className="nav-item">USER MANAGEMENT</button>
-            <button className="nav-item" onClick={goToMap}>RETURN TO MAP</button>
-          </div>
-          
-          <div className="nav-group" style={{ marginTop: '24px' }}>
-            <span className="nav-label">DISPLAY SETTINGS</span>
-            <button 
-              className="nav-item theme-toggle-btn" 
-              onClick={toggleTheme}
-            >
-              <span>UI THEME</span>
-              <div className="theme-status">
-                {theme === "dark" ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pin-transit)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="5"></circle>
-                      <line x1="12" y1="1" x2="12" y2="3"></line>
-                      <line x1="12" y1="21" x2="12" y2="23"></line>
-                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                      <line x1="1" y1="12" x2="3" y2="12"></line>
-                      <line x1="21" y1="12" x2="23" y2="12"></line>
-                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                    <span style={{ color: "var(--pin-transit)" }}>DAY</span>
-                  </>
-                )}
-              </div>
-            </button>
-          </div>
-        </nav>
+    const handleSignOut = async () => {
+        await signOut();
+        router.refresh();
+    };
 
-        <div className="sidebar-footer">
-          <button className="sign-out-btn" onClick={handleSignOut}>
-            SIGN OUT
-          </button>
-        </div>
-      </aside>
+    return (
+        <div className="dashboard-layout">
+            {/* --- MOBILE OVERLAY --- */}
+            {isSidebarOpen && (
+                <div
+                    className="mobile-overlay"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
 
-      <div className="main-wrapper">
-        {/* --- HEADER --- */}
-        <header className="dashboard-header">
-          <div className="header-left">
-            <button 
-              className="hamburger-btn" 
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            </button>
-            <h1 className="header-title" style={{ color: '#ff4d4d' }}>Admin Dashboard</h1>
-          </div>
-        </header>
+            {/* --- SIDEBAR --- */}
+            <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+                <div className="sidebar-header">
+                    <h2 className="brand">UP WAYPOINT</h2>
+                </div>
 
-        {/* --- MAIN --- */}
-        <main className="content-area custom-vertical-scrollbar">
-          <div className="content-container">
-            <div className="greeting-section">
-              <h2 className="greeting-title">
-                {isLoading ? "LOADING..." : `Welcome, ${data?.name ? data.name.toUpperCase() : "ADMIN"}!`}
-              </h2>
-              <p className="greeting-subtitle">You have accessed the restricted area. 🚨</p>
+                <nav className="sidebar-nav custom-vertical-scrollbar">
+                    <div className="nav-group">
+                        <span className="nav-label">COMMAND CENTER</span>
+                        <button className="nav-item active">SYSTEM OVERVIEW</button>
+                        <button className="nav-item">VERIFICATION QUEUE</button>
+                        <button className="nav-item">USER MANAGEMENT</button>
+                        <button className="nav-item" onClick={goToMap}>RETURN TO MAP</button>
+                    </div>
+
+                    <div className="nav-group" style={{ marginTop: '24px' }}>
+                        <span className="nav-label">DISPLAY SETTINGS</span>
+                        <button
+                            className="nav-item theme-toggle-btn"
+                            onClick={toggleTheme}
+                        >
+                            <span>UI THEME</span>
+                            <div className="theme-status">
+                                {theme === "dark" ? (
+                                    <>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                        </svg>
+                                        <span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pin-transit)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="5"></circle>
+                                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                        </svg>
+                                        <span style={{ color: "var(--pin-transit)" }}>DAY</span>
+                                    </>
+                                )}
+                            </div>
+                        </button>
+                    </div>
+                </nav>
+
+                <div className="sidebar-footer">
+                    <button className="sign-out-btn" onClick={handleSignOut}>
+                        SIGN OUT
+                    </button>
+                </div>
+            </aside>
+
+            <div className="main-wrapper">
+                {/* --- HEADER --- */}
+                <header className="dashboard-header">
+                    <div className="header-left">
+                        <button
+                            className="hamburger-btn"
+                            onClick={() => setIsSidebarOpen(true)}
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
+                            </svg>
+                        </button>
+                        <h1 className="header-title" style={{ color: '#ff4d4d' }}>Admin Dashboard</h1>
+                    </div>
+                </header>
+
+                {/* --- MAIN --- */}
+                <main className="content-area custom-vertical-scrollbar">
+                    <div className="content-container">
+                        <div className="greeting-section">
+                            <h2 className="greeting-title">
+                                {isLoading ? "LOADING..." : `Welcome, ${data?.name ? data.name.toUpperCase() : "ADMIN"}!`}
+                            </h2>
+                            <p className="greeting-subtitle">You have accessed the restricted area. 🚨</p>
+                        </div>
+
+                        {/* --- DASHBOARD GRID --- */}
+                        <div className="dashboard-grid">
+                            <div className="module-card">
+                                <div className="card-header">
+                                    <h3>OVERALL PIN STATISTICS</h3>
+                                </div>
+                                <div className="card-body">
+                                    <div className="placeholder-content">
+                                        Overall Pin Statistics Go Here
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="module-card">
+                                <div className="card-header">
+                                    <h3>OVERALL USER STATISTICS</h3>
+                                </div>
+                                <div className="card-body">
+                                    <div className="placeholder-content">
+                                        Overall User Statistics Go Here
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="module-card">
+                                <div className="card-header">
+                                    <h3>PENDING PIN VERIFICATIONS</h3>
+                                </div>
+                                <div className="card-body">
+                                    <div className="placeholder-content">
+                                        Pending Pins Queue Go Here
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="module-card">
+                                <div className="card-header">
+                                    <h3>RECENTLY VERIFIED PINS</h3>
+                                </div>
+                                <div className="card-body">
+                                    <div className="placeholder-content">
+                                        Newly Verified Pins Go Here
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="module-card">
+                                <div className="card-header">
+                                    <h3>NEWEST REGISTRATIONS</h3>
+                                </div>
+                                <div className="card-body">
+                                    <div className="placeholder-content">
+                                        Newest Accounts List Go Here
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="module-card">
+                                <div className="card-header">
+                                    <h3>TOP USERS</h3>
+                                </div>
+                                <div className="card-body">
+                                    <div className="placeholder-content">
+                                        Top Users (Leaderboard) Go Here
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </main>
             </div>
-            
-            {/* --- DASHBOARD GRID --- */}
-            <div className="dashboard-grid">
-              <div className="module-card">
-                <div className="card-header">
-                  <h3>OVERALL PIN STATISTICS</h3>
-                </div>
-                <div className="card-body">
-                  <div className="placeholder-content">
-                    Overall Pin Statistics Go Here
-                  </div>
-                </div>
-              </div>
 
-              <div className="module-card">
-                <div className="card-header">
-                  <h3>OVERALL USER STATISTICS</h3>
-                </div>
-                <div className="card-body">
-                  <div className="placeholder-content">
-                    Overall User Statistics Go Here
-                  </div>
-                </div>
-              </div>
-
-              <div className="module-card">
-                <div className="card-header">
-                  <h3>PENDING PIN VERIFICATIONS</h3>
-                </div>
-                <div className="card-body">
-                  <div className="placeholder-content">
-                    Pending Pins Queue Go Here
-                  </div>
-                </div>
-              </div>
-
-              <div className="module-card">
-                <div className="card-header">
-                  <h3>RECENTLY VERIFIED PINS</h3>
-                </div>
-                <div className="card-body">
-                  <div className="placeholder-content">
-                    Newly Verified Pins Go Here
-                  </div>
-                </div>
-              </div>
-
-              <div className="module-card">
-                <div className="card-header">
-                  <h3>NEWEST REGISTRATIONS</h3>
-                </div>
-                <div className="card-body">
-                  <div className="placeholder-content">
-                    Newest Accounts List Go Here
-                  </div>
-                </div>
-              </div>
-
-              <div className="module-card">
-                <div className="card-header">
-                  <h3>TOP USERS</h3>
-                </div>
-                <div className="card-body">
-                  <div className="placeholder-content">
-                    Top Users (Leaderboard) Go Here
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </main>
-      </div>
-
-      <style jsx>{`
+            <style jsx>{`
         /* --- LAYOUT SHELL --- */
         .dashboard-layout {
           display: flex;
@@ -507,6 +507,6 @@ export default function AdminDashboard() {
           .content-area { padding: 24px 16px; }
         }
       `}</style>
-    </div>
-  );
+        </div>
+    );
 }
