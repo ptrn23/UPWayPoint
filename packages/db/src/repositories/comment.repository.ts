@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { Database } from "../db/database";
 import type { Comment, CreateComment } from "../db/types";
 import { comment } from "../db/schema";
@@ -7,6 +7,14 @@ export function makeCommentRepository(db: Database) {
 	async function create(data: CreateComment) {
 		const [c] = await db.insert(comment).values(data).returning();
 		return c;
+	}
+
+	async function getByUserId(id: string) {
+		const query = await db.query.comment.findMany({
+			where: eq(comment.ownerId, id),
+		});
+
+		return query;
 	}
 
 	async function getByPinId(
@@ -62,6 +70,7 @@ export function makeCommentRepository(db: Database) {
 	return {
 		create,
 		getByPinId,
+		getByUserId,
 	};
 }
 

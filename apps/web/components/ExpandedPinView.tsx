@@ -289,6 +289,8 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
 	if (isPinLoading || !pin)
 		return (
+			// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
+			// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 			<div className="modal-overlay" onClick={onClose}>
 				<div
 					className="modal-content"
@@ -328,7 +330,11 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 		);
 
 	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
+		// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 		<div className="modal-overlay" onClick={onClose}>
+			{/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
+			{/** biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
 				{isEditing && (
 					<EditPinModal

@@ -41,9 +41,14 @@ export function makeCommentService(
 		return await repositories.comment.create(data);
 	}
 
+	async function getByUserId(id: string) {
+		return await repositories.comment.getByUserId(id);
+	}
+
 	return {
 		create,
 		getByPinId,
+		getByUserId,
 	};
 }
 

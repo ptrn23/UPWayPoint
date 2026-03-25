@@ -8,6 +8,8 @@ import type {
 	PinDetails,
 	UpdatePin,
 	PinDetailsSimple,
+	PinTags,
+	Tag,
 } from "../db/types";
 
 export type PinStatus =
@@ -72,12 +74,20 @@ export function makePinRepository(db: Database) {
 		return query;
 	}
 
-	async function getByOwnerId(ownerId: string): Promise<Pin[]> {
-		const query = await db
-			.select()
-			.from(pin)
-			.where(eq(pin.ownerId, ownerId))
-			.orderBy(desc(pin.createdAt));
+	async function getByOwnerId(
+		ownerId: string,
+	): Promise<(Pin & { pinTags: (PinTags & { tag: Tag })[] })[]> {
+		const query = await db.query.pin.findMany({
+			where: eq(pin.ownerId, ownerId),
+			orderBy: desc(pin.createdAt),
+			with: {
+				pinTags: {
+					with: {
+						tag: true,
+					},
+				},
+			},
+		});
 		return query;
 	}
 

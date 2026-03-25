@@ -17,6 +17,9 @@ export const commentRouter = router({
 				ownerId: ctx.user.id,
 			});
 		}),
+	getCurrentUsersComments: userProcedure.query(async ({ ctx }) => {
+		return ctx.services.comment.getByUserId(ctx.user.id);
+	}),
 });
 
 type CommentRouter = typeof commentRouter;

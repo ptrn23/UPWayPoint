@@ -1,4 +1,4 @@
-import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import { inferRouterInputs, inferRouterOutputs, TRPCError } from "@trpc/server";
 import {
 	adminProcedure,
 	publicProcedure,
@@ -46,11 +46,9 @@ export const pinRouter = router({
 			return ctx.services.pin.getSimpleById(input.id);
 		}),
 
-	getByOwnerId: publicProcedure
-		.input(z.object({ ownerId: z.string() }))
-		.query(async ({ ctx, input }) => {
-			return ctx.services.pin.getByOwnerId(input.ownerId);
-		}),
+	getCurrentUsersPins: userProcedure.query(async ({ ctx }) => {
+		return ctx.services.pin.getByOwnerId(ctx.user.id);
+	}),
 
 	getByStatus: publicProcedure
 		.input(z.object({ status: PinStatus }))
