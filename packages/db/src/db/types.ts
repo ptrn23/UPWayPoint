@@ -60,7 +60,11 @@ export type PinWithTags =
 	| undefined;
 
 export type PinDetails =
-	| (Pin & { pinTags: (PinTags & { tag: Tag })[]; images: PinImages[] })
+	| (Pin & {
+			pinTags: (PinTags & { tag: Tag })[];
+			images: PinImages[];
+			owner: string;
+	  })
 	| undefined;
 export type PinDetailsSimple = Pin & { pinTags: (PinTags & { tag: Tag })[] };
 export type CreatePinTags = InferInsertModel<typeof pinTags>;

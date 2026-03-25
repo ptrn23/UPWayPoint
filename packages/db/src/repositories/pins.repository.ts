@@ -46,10 +46,13 @@ export function makePinRepository(db: Database) {
 					},
 				},
 				images: true,
+				owner: true,
 			},
 		});
 
-		return query;
+		if (!query) return;
+
+		return { ...query, owner: query?.owner.name ?? "Unknown" };
 	}
 
 	async function getSimpleById(
@@ -179,27 +182,6 @@ export function makePinRepository(db: Database) {
 		return result;
 	}
 
-	async function getByIdWithOwner(
-		id: string,
-	): Promise<(Pin & { ownerName: string }) | undefined> {
-		const query = await db.query.pin.findFirst({
-			where: eq(pin.id, id),
-			with: {
-				pinTags: {
-					with: {
-						tag: true,
-					},
-				},
-				images: true,
-				owner: true,
-			},
-		});
-
-		if (!query) return undefined;
-
-		return { ...query, ownerName: query.owner.name ?? "Unknown" };
-	}
-
 	return {
 		getAll,
 		getById,
@@ -212,7 +194,6 @@ export function makePinRepository(db: Database) {
 		getAllAdmin,
 		getCount,
 		getStatusCounts,
-		getByIdWithOwner,
 		getSimpleById,
 	};
 }

@@ -23,6 +23,21 @@ export function makeModificationRepository(db: Database) {
 		});
 	}
 
+	async function getByPinId(id: string) {
+		const query = await db.query.modification.findMany({
+			where: and(eq(modification.pinId, id)),
+			orderBy: desc(modification.createdAt),
+			with: {
+				user: true,
+				reviewer: true,
+			},
+		});
+
+		return query.map((q) => {
+			return { ...q, owner: q.user.name, reviewer: q.reviewer?.name };
+		});
+	}
+
 	async function getByUserPinId(userId: string, pinId: string) {
 		return await db.query.modification.findFirst({
 			where: and(
@@ -54,6 +69,7 @@ export function makeModificationRepository(db: Database) {
 		applyModification,
 		rejectModification,
 		getByUserPinId,
+		getByPinId,
 	};
 }
 

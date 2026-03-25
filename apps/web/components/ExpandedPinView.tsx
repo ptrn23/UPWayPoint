@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { EditPinModal } from "./EditPinModal";
 
 interface ExpandedPinViewProps {
 	pinId: string;
@@ -284,7 +285,9 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
 	const statusData = getStatusDisplay(pin?.status);
 
-	if (isPinLoading)
+	const [isEditing, setIsEditing] = useState(false);
+
+	if (isPinLoading || !pin)
 		return (
 			<div className="modal-overlay" onClick={onClose}>
 				<div
@@ -327,6 +330,17 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 	return (
 		<div className="modal-overlay" onClick={onClose}>
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
+				{isEditing && (
+					<EditPinModal
+						onSave={() => {
+							setIsEditing(false);
+						}}
+						onCancel={() => {
+							setIsEditing(false);
+						}}
+						pin={pin}
+					/>
+				)}
 				<div className="scroll-area custom-vertical-scrollbar">
 					{/* HEADER */}
 					<div className="modal-header">
@@ -343,8 +357,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 									type="button"
 									className="edit-btn"
 									onClick={() => {
-										// TODO: Wire up to Edit Form Modal
-										console.log("Edit Pin:", pinId);
+										setIsEditing(true);
 									}}
 									title="Edit Waypoint"
 								>
@@ -430,13 +443,11 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 									{pin?.id?.padStart(7, "0")}
 								</span>
 							</div>
-
 							{/* OWNER */}
 							<div className="meta-item">
-								<span className="meta-label">OWNED BY</span>
-								<span className="meta-value text-muted">{pin?.ownerId}</span>
+								<span className="meta-label">CREATED BY</span>
+								<span className="meta-value">{pin?.owner}</span>
 							</div>
-
 							{/* COORDINATES */}
 							<div className="meta-item col-span-2">
 								<span className="meta-label">COORDINATES (LAT, LNG)</span>
@@ -444,7 +455,6 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 									{pin?.latitude?.toFixed(6)}, {pin?.longitude?.toFixed(6)}
 								</span>
 							</div>
-
 							{/* STATUS */}
 							<div className="meta-item">
 								<span className="meta-label">STATUS</span>
@@ -459,7 +469,6 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 									{statusData.text}
 								</span>
 							</div>
-
 							{/* TIMESTAMPS */}
 							<div className="meta-item">
 								<span className="meta-label">CREATED AT</span>
@@ -471,16 +480,22 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 									})}
 								</span>
 							</div>
-							<div className="meta-item">
-								<span className="meta-label">LAST UPDATED</span>
-								<span className="meta-value">
-									{new Date(pin?.updatedAt || "").toLocaleString("default", {
-										month: "long",
-										year: "numeric",
-										day: "2-digit",
-									})}
-								</span>
-							</div>
+
+							{pin.modifications.filter((m) => m.status === "APPLIED").length >
+								0 && (
+								<div className="meta-item">
+									<span className="meta-label">LAST UPDATED</span>
+
+									<span className="meta-value">
+										{new Date(pin?.updatedAt || "").toLocaleString("default", {
+											month: "long",
+											year: "numeric",
+											day: "2-digit",
+										})}{" "}
+										by {pin.modifications[0]?.user.name}
+									</span>
+								</div>
+							)}
 						</div>
 
 						{/* OWNER ACTIONS */}
@@ -567,11 +582,17 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
 			<style jsx>{`
             .modal-overlay {
-                position: fixed; inset: 0; 
-                background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
-                z-index: 200; display: flex; align-items: center; justify-content: center;
-                padding: 24px; animation: fadeIn 0.2s ease-out; pointer-events: auto;
-            }
+							position: fixed;
+							top: 0; left: 0; width: 100vw; height: 100vh;
+							background: rgba(0, 0, 0, 0.7);
+							backdrop-filter: blur(8px);
+							-webkit-backdrop-filter: blur(8px);
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							z-index: 200;
+							padding: 20px;
+						}
 
             .modal-content {
                 background: var(--bg-panel);

@@ -29,7 +29,8 @@ export function makePinService(
 	async function getById(id: string) {
 		const pin = await repositories.pin.getById(id);
 		const comments = await services.comment.getByPinId(id);
-		return { ...pin, comments: comments };
+		const modifications = await repositories.modification.getByPinId(id);
+		return { ...pin, comments: comments, modifications: modifications };
 	}
 
 	async function getSimpleById(id: string) {
@@ -57,7 +58,7 @@ export function makePinService(
 		await repositories.modification.create({
 			userId: data.ownerId,
 			pinId: res.id,
-			after: data,
+			after: { data: data, tags: tags },
 			status: data.status === "ACTIVE" ? "APPLIED" : "PENDING",
 		});
 
@@ -89,14 +90,19 @@ export function makePinService(
 		await repositories.modification.create({
 			pinId: id,
 			userId,
-			after: data,
+			after: { data: data },
 			status: "APPLIED",
 		});
 
 		return updatedPin;
 	}
 
-	async function requestUpdate(id: string, userId: string, data: UpdatePin) {
+	async function requestUpdate(
+		id: string,
+		userId: string,
+		data: UpdatePin,
+		tags: string[],
+	) {
 		const exists = await repositories.pin.getById(id);
 
 		if (!exists)
@@ -108,23 +114,28 @@ export function makePinService(
 		return await repositories.modification.create({
 			pinId: id,
 			userId,
-			after: data,
+			after: { data: data, tags: tags },
 		});
 	}
 
 	async function applyUpdate(id: string, adminId: string) {
 		const pendingModification = await repositories.modification.getById(id);
-
 		if (!pendingModification)
 			throw new TRPCError({
 				message: "Modification does not exist",
 				code: "NOT_FOUND",
 			});
+		const after = pendingModification.after as {
+			data: UpdatePin;
+			tags: string[];
+		};
 
-		const updatedPin = await repositories.pin.update(
-			id,
-			pendingModification.after as UpdatePin,
-		);
+		const updatedPin = await repositories.pin.update(id, after.data);
+
+		if (after.tags.length > 0) {
+			await repositories.pinTags.deleteTagByPinId(id);
+			await repositories.pinTags.create({ pinId: id, tagId: after.tags[0]! }); // change this to handle multiple tags in the future
+		}
 
 		await repositories.modification.applyModification(id, adminId);
 
@@ -168,10 +179,6 @@ export function makePinService(
 
 	async function getStatusCounts() {
 		return await repositories.pin.getStatusCounts();
-	}
-
-	async function getByIdWithOwner(id: string) {
-		return await repositories.pin.getByIdWithOwner(id);
 	}
 
 	async function approvePin(id: string, adminId: string) {
@@ -229,7 +236,6 @@ export function makePinService(
 		getAllAdmin,
 		getCount,
 		getStatusCounts,
-		getByIdWithOwner,
 		approvePin,
 		rejectPin,
 		getSimpleById,

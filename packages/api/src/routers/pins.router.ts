@@ -92,14 +92,12 @@ export const pinRouter = router({
 				id: z.string(),
 				title: z.string().min(1).optional(),
 				description: z.string().optional(),
-				latitude: z.number().min(-90).max(90).optional(),
-				longitude: z.number().min(-180).max(180).optional(),
-				status: PinStatus.optional(),
+				tags: z.array(z.string()),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const { id, ...data } = input;
-			return ctx.services.pin.requestUpdate(id, ctx.user.id, data);
+			const { id, tags, ...data } = input;
+			return ctx.services.pin.requestUpdate(id, ctx.user.id, data, tags);
 		}),
 
 	applyUpdate: adminProcedure
@@ -160,12 +158,6 @@ export const pinRouter = router({
 	getStatusCounts: adminProcedure.query(async ({ ctx }) => {
 		return ctx.services.pin.getStatusCounts();
 	}),
-
-	getByIdAdmin: adminProcedure
-		.input(z.object({ id: z.string() }))
-		.query(async ({ ctx, input }) => {
-			return ctx.services.pin.getByIdWithOwner(input.id);
-		}),
 
 	approve: adminProcedure
 		.input(z.object({ id: z.string() }))
