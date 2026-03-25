@@ -19,6 +19,11 @@ export default function AdminDashboard() {
 	const { data: pendingPins } = trpc.pin.getAllAdmin.useQuery({
 		status: "PENDING_VERIFICATION",
 	});
+
+	const { data: activePins } = trpc.pin.getAllAdmin.useQuery({
+		status: "ACTIVE",
+		limit: 5,
+	});
 	const utils = trpc.useUtils();
 	const rejectPin = trpc.pin.reject.useMutation({
 		onSuccess: (output) => {
@@ -101,60 +106,6 @@ export default function AdminDashboard() {
 		// newUsers30Days: 45,
 	};
 
-	const globalPendingPins = [
-		{
-			id: "gp1",
-			title: "Palma Hall Annex",
-			lat: 14.6534,
-			lng: 121.0691,
-			type: "academic",
-			submittedBy: "u1",
-		},
-		{
-			id: "gp2",
-			title: "KNL Tricycle Terminal",
-			lat: 14.6552,
-			lng: 121.0621,
-			type: "transit",
-			submittedBy: "u2",
-		},
-		{
-			id: "gp3",
-			title: "Gyud Food",
-			lat: 14.6542,
-			lng: 121.0665,
-			type: "food",
-			submittedBy: "u3",
-		},
-	];
-
-	const globalVerifiedPins = [
-		{
-			id: "v1",
-			title: "Main Library",
-			lat: 14.654,
-			lng: 121.066,
-			type: "academic",
-			submittedBy: "u1",
-		},
-		{
-			id: "v2",
-			title: "Area 2 Kiosk 4",
-			lat: 14.653,
-			lng: 121.0685,
-			type: "food",
-			submittedBy: "u2",
-		},
-		{
-			id: "v3",
-			title: "AS Parking",
-			lat: 14.6538,
-			lng: 121.0688,
-			type: "utility",
-			submittedBy: "u3",
-		},
-	];
-
 	const recentUsers = [
 		{
 			id: "u1",
@@ -227,13 +178,13 @@ export default function AdminDashboard() {
 							PIN MANAGEMENT
 						</button>
 
-						<button
+						{/* <button
 							type="button"
 							className={`nav-item ${activeSection === "user-management" ? "active" : ""}`}
 							onClick={() => scrollToSection("user-management")}
 						>
 							USER MANAGEMENT
-						</button>
+						</button> */}
 
 						<button type="button" className="nav-item" onClick={goToMap}>
 							RETURN TO MAP
@@ -581,7 +532,6 @@ export default function AdminDashboard() {
 																		transition: "all 0.2s",
 																		flexShrink: "0",
 																	}}
-																	title="Locate on Map"
 																	href={`/?pin=${pin.id}`}
 																	target="_blank"
 																>
@@ -656,8 +606,10 @@ export default function AdminDashboard() {
 
 										<div className="card-body">
 											<div className="pin-list">
-												{globalVerifiedPins.map((pin) => {
-													const color = getPinColor(pin.type);
+												{activePins?.map((pin) => {
+													const color = getPinColor(
+														pin.pinTags?.[0]?.tag.title || "",
+													);
 													return (
 														<div key={pin.id} className="pin-list-item">
 															<div className="pin-info-group">
@@ -676,20 +628,31 @@ export default function AdminDashboard() {
 																<div className="pin-text">
 																	<span className="pin-title">{pin.title}</span>
 																	<span className="pin-coords">
-																		By {pin.submittedBy} • {pin.lat.toFixed(4)},{" "}
-																		{pin.lng.toFixed(4)}
+																		By {pin.owner} • {pin.latitude.toFixed(4)},{" "}
+																		{pin.longitude.toFixed(4)}
 																	</span>
 																</div>
 															</div>
 
 															<div className="pin-actions">
-																<button
-																	type="button"
+																<Link
 																	className="locate-btn"
-																	title="Locate on Map"
-																	onClick={() =>
-																		console.log("Locate verified pin:", pin.id)
-																	}
+																	style={{
+																		background: "transparent",
+																		border: "1px solid var(--border-color)",
+																		borderRadius: "8px",
+																		width: "36px",
+																		height: "36px",
+																		display: "flex",
+																		alignItems: "center",
+																		justifyContent: "center",
+																		color: "var(--text-secondary)",
+																		cursor: "pointer",
+																		transition: "all 0.2s",
+																		flexShrink: "0",
+																	}}
+																	href={`/?pin=${pin.id}`}
+																	target="_blank"
 																>
 																	<svg
 																		width="18"
@@ -701,7 +664,7 @@ export default function AdminDashboard() {
 																	>
 																		<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
 																	</svg>
-																</button>
+																</Link>
 															</div>
 														</div>
 													);
@@ -712,7 +675,7 @@ export default function AdminDashboard() {
 								</div>
 							</section>
 
-							<section id="user-management" className="dashboard-section">
+							{/* <section id="user-management" className="dashboard-section">
 								<h2 className="section-title">USER MANAGEMENT</h2>
 								<div className="dashboard-grid">
 									<div className="module-card">
@@ -817,7 +780,7 @@ export default function AdminDashboard() {
 										</div>
 									</div>
 								</div>
-							</section>
+							</section> */}
 						</div>
 					</div>
 				</main>
