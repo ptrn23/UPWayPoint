@@ -5,8 +5,9 @@ import {
 	makeTagRepository,
 	makePinImagesRepository,
 	makeCommentRepository,
+	makeModificationRepository,
+	makePinTagsRepository,
 } from "./repositories";
-import { makePinTagsRepository } from "./repositories/pinTags.repository";
 
 export const repositories = {
 	user: makeUserRepository(db),
@@ -15,6 +16,7 @@ export const repositories = {
 	tag: makeTagRepository(db),
 	pinImages: makePinImagesRepository(db),
 	comment: makeCommentRepository(db),
+	modification: makeModificationRepository(db),
 };
 
 export * from "./db/database";

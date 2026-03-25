@@ -8,9 +8,9 @@ import {
 	index,
 	doublePrecision,
 	primaryKey,
-	integer,
 } from "drizzle-orm/pg-core";
 import { randomUUID } from "crypto";
+import { jsonb } from "drizzle-orm/pg-core";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
@@ -168,11 +168,29 @@ export const comment = pgTable("comment", {
 	deletedAt: timestamp("deleted_at"),
 });
 
+export const modification = pgTable("modification", {
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
+	pinId: text("pin_id")
+		.notNull()
+		.references(() => pin.id, { onDelete: "cascade" }),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	after: jsonb("difference").notNull(),
+	status: text("status").notNull().default("PENDING"),
+	reviewedBy: text("reviewed_by").references(() => user.id),
+	reviewedAt: timestamp("reviewed_at"),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const userRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
 	accounts: many(account),
 	pins: many(pin),
 	comments: many(comment),
+	modifications: many(modification),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -197,6 +215,8 @@ export const pinRelations = relations(pin, ({ one, many }) => ({
 	pinTags: many(pinTags),
 	images: many(pinImages),
 	comments: many(comment),
+	modifications: many(modification, { relationName: "modification_user" }),
+	reviews: many(modification, { relationName: "modification_reviewer" }),
 }));
 
 export const tagRelations = relations(tag, ({ many }) => ({
@@ -220,4 +240,18 @@ export const commentRelations = relations(comment, ({ one, many }) => ({
 		references: [comment.id],
 	}),
 	replies: many(comment),
+}));
+
+export const modificationRelations = relations(modification, ({ one }) => ({
+	pin: one(pin, { fields: [modification.pinId], references: [pin.id] }),
+	user: one(user, {
+		fields: [modification.userId],
+		references: [user.id],
+		relationName: "modification_user",
+	}),
+	reviewer: one(user, {
+		fields: [modification.reviewedBy],
+		references: [user.id],
+		relationName: "modification_reviewer",
+	}),
 }));

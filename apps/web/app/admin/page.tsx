@@ -1,555 +1,869 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
 import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
 import { useTheme } from "@/lib/ThemeContext";
+import Link from "next/link";
 
 export default function AdminDashboard() {
-    const router = useRouter();
+	const router = useRouter();
 
-    const { data, isLoading } = trpc.user.getCurrent.useQuery();
+	const { data, isLoading } = trpc.user.getCurrent.useQuery();
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const { theme, toggleTheme } = useTheme();
-    const [activeSection, setActiveSection] = useState("overview");
+	const { data: pinCounts } = trpc.pin.getStatusCounts.useQuery();
+	const { data: userCount } = trpc.user.getCount.useQuery();
+	const { data: commentCount } = trpc.comment.getCount.useQuery();
+	const { data: pendingPins } = trpc.pin.getAllAdmin.useQuery({
+		status: "PENDING_VERIFICATION",
+	});
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setActiveSection(entry.target.id);
-                    }
-                });
-            },
-            {
-                root: document.querySelector('.content-area'),
-                rootMargin: "-10% 0px -70% 0px"
-            }
-        );
+	const { data: activePins } = trpc.pin.getAllAdmin.useQuery({
+		status: "ACTIVE",
+		limit: 5,
+	});
+	const utils = trpc.useUtils();
+	const rejectPin = trpc.pin.reject.useMutation({
+		onSuccess: (output) => {
+			utils.pin.getAllAdmin.invalidate();
+		},
+	});
+	const approvePin = trpc.pin.approve.useMutation({
+		onSuccess: (output) => {
+			utils.pin.getAllAdmin.invalidate();
+		},
+	});
 
-        const sections = document.querySelectorAll(".dashboard-section");
-        sections.forEach((section) => observer.observe(section));
+	const deletePin = trpc.pin.adminDelete.useMutation({
+		onSuccess: (output) => {
+			utils.pin.getAllAdmin.invalidate();
+		},
+	});
 
-        return () => observer.disconnect();
-    }, []);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const { theme, toggleTheme } = useTheme();
+	const [activeSection, setActiveSection] = useState("overview");
 
-    const scrollToSection = (sectionId: string) => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            setActiveSection(sectionId);
-            if (window.innerWidth <= 768) setIsSidebarOpen(false);
-        }
-    };
+	const [isDeletingPin, setIsDeletingPin] = useState(false);
 
-    const goToMap = () => router.push("/");
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						setActiveSection(entry.target.id);
+					}
+				});
+			},
+			{
+				root: document.querySelector(".content-area"),
+				rootMargin: "-10% 0px -70% 0px",
+			},
+		);
 
-    const handleSignOut = async () => {
-        await signOut();
-        router.refresh();
-    };
+		const sections = document.querySelectorAll(".dashboard-section");
+		sections.forEach((section) => {
+			observer.observe(section);
+		});
 
-    const globalPinStats = {
-        totalPins: 1240,
-        verifiedPins: 1105,
-        pendingPins: 85,
-        rejectedPins: 50,
-        categoryBreakdown: {
-            academic: 450,
-            food: 320,
-            social: 150,
-            transit: 200,
-            utility: 120,
-        }
-    };
+		return () => observer.disconnect();
+	}, []);
 
-    const globalVerificationRate = Math.round((globalPinStats.verifiedPins / globalPinStats.totalPins) * 100) || 0;
+	const scrollToSection = (sectionId: string) => {
+		const element = document.getElementById(sectionId);
+		if (element) {
+			element.scrollIntoView({ behavior: "smooth", block: "start" });
+			setActiveSection(sectionId);
+			if (window.innerWidth <= 768) setIsSidebarOpen(false);
+		}
+	};
 
-    const globalUserStats = {
-        totalUsers: 342,
-        totalComments: 1840,
-        avgPins: 3.6,
-        avgComments: 5.3,
-        newUsers7Days: 14,
-        newUsers30Days: 45,
-    };
+	const goToMap = () => router.push("/");
 
-    const globalPendingPins = [
-        { id: "gp1", title: "Palma Hall Annex", lat: 14.6534, lng: 121.0691, type: "academic", submittedBy: "u1" },
-        { id: "gp2", title: "KNL Tricycle Terminal", lat: 14.6552, lng: 121.0621, type: "transit", submittedBy: "u2" },
-        { id: "gp3", title: "Gyud Food", lat: 14.6542, lng: 121.0665, type: "food", submittedBy: "u3" },
-    ];
+	const handleSignOut = async () => {
+		await signOut();
+		router.refresh();
+	};
 
-    const globalVerifiedPins = [
-        { id: "v1", title: "Main Library", lat: 14.6540, lng: 121.0660, type: "academic", submittedBy: "u1" },
-        { id: "v2", title: "Area 2 Kiosk 4", lat: 14.6530, lng: 121.0685, type: "food", submittedBy: "u2" },
-        { id: "v3", title: "AS Parking", lat: 14.6538, lng: 121.0688, type: "utility", submittedBy: "u3" },
-    ];
+	const activePinCount = pinCounts?.ACTIVE || 0;
+	const rejectedPinCount = pinCounts?.ARCHIVED || 0;
+	const pendingPinCount = pinCounts?.PENDING_VERIFICATION || 0;
+	const totalPins = activePinCount + rejectedPinCount + pendingPinCount;
 
-    const recentUsers = [
-        { id: "u1", name: "User 1", email: "user1@up.edu.ph", joinedAt: "2 hours ago" },
-        { id: "u2", name: "User 2", email: "user2@up.edu.ph", joinedAt: "5 hours ago" },
-        { id: "u3", name: "User 3", email: "user3@up.edu.ph", joinedAt: "1 day ago" },
-        { id: "u4", name: "User 4", email: "user4@up.edu.ph", joinedAt: "2 days ago" },
-    ];
+	const pinTagCounts = {
+		academic: 0,
+		food: 0,
+		transit: 0,
+		utility: 0,
+		social: 0,
+	};
 
-    const topUsers = [
-        { id: "u1", name: "User 1", pinCount: 142, rank: 1 },
-        { id: "u2", name: "User 2", pinCount: 89, rank: 2 },
-        { id: "u3", name: "User 3", pinCount: 75, rank: 3 },
-        { id: "u4", name: "User 4", pinCount: 60, rank: 4 },
-    ];
+	const globalVerificationRate = useMemo(
+		() => Math.round((activePinCount / (totalPins || 1)) * 100) || 0,
+		[activePinCount, totalPins],
+	);
 
-    return (
-        <div className="dashboard-layout">
-            {/* --- MOBILE OVERLAY --- */}
-            {isSidebarOpen && (
-                <div
-                    className="mobile-overlay"
-                    onClick={() => setIsSidebarOpen(false)}
-                />
-            )}
+	const globalUserStats = {
+		totalUsers: userCount,
+		totalComments: commentCount,
+		// avgPins: 3.6,
+		// avgComments: 5.3,
+		// newUsers7Days: 14,
+		// newUsers30Days: 45,
+	};
 
-            {/* --- SIDEBAR --- */}
-            <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
-                <div className="sidebar-header">
-                    <h2 className="brand">UP WAYPOINT</h2>
-                </div>
+	const recentUsers = [
+		{
+			id: "u1",
+			name: "User 1",
+			email: "user1@up.edu.ph",
+			joinedAt: "2 hours ago",
+		},
+		{
+			id: "u2",
+			name: "User 2",
+			email: "user2@up.edu.ph",
+			joinedAt: "5 hours ago",
+		},
+		{
+			id: "u3",
+			name: "User 3",
+			email: "user3@up.edu.ph",
+			joinedAt: "1 day ago",
+		},
+		{
+			id: "u4",
+			name: "User 4",
+			email: "user4@up.edu.ph",
+			joinedAt: "2 days ago",
+		},
+	];
 
-                <nav className="sidebar-nav custom-vertical-scrollbar">
-                    <div className="nav-group">
-                        <span className="nav-label">COMMAND CENTER</span>
+	const topUsers = [
+		{ id: "u1", name: "User 1", pinCount: 142, rank: 1 },
+		{ id: "u2", name: "User 2", pinCount: 89, rank: 2 },
+		{ id: "u3", name: "User 3", pinCount: 75, rank: 3 },
+		{ id: "u4", name: "User 4", pinCount: 60, rank: 4 },
+	];
 
-                        <button
-                            className={`nav-item ${activeSection === 'overview' ? 'active' : ''}`}
-                            onClick={() => scrollToSection('overview')}
-                        >
-                            OVERVIEW
-                        </button>
+	return (
+		<div className="dashboard-layout">
+			{/* --- MOBILE OVERLAY --- */}
+			{isSidebarOpen && (
+				// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
+				// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+				<div
+					className="mobile-overlay"
+					onClick={() => setIsSidebarOpen(false)}
+				/>
+			)}
 
-                        <button
-                            className={`nav-item ${activeSection === 'pin-management' ? 'active' : ''}`}
-                            onClick={() => scrollToSection('pin-management')}
-                        >
-                            PIN MANAGEMENT
-                        </button>
+			{/* --- SIDEBAR --- */}
+			<aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+				<div className="sidebar-header">
+					<h2 className="brand">UP WAYPOINT</h2>
+				</div>
 
-                        <button
-                            className={`nav-item ${activeSection === 'user-management' ? 'active' : ''}`}
-                            onClick={() => scrollToSection('user-management')}
-                        >
-                            USER MANAGEMENT
-                        </button>
+				<nav className="sidebar-nav custom-vertical-scrollbar">
+					<div className="nav-group">
+						<span className="nav-label">COMMAND CENTER</span>
 
-                        <button className="nav-item" onClick={goToMap}>RETURN TO MAP</button>
-                    </div>
+						<button
+							type="button"
+							className={`nav-item ${activeSection === "overview" ? "active" : ""}`}
+							onClick={() => scrollToSection("overview")}
+						>
+							OVERVIEW
+						</button>
 
-                    <div className="nav-group" style={{ marginTop: '24px' }}>
-                        <span className="nav-label">DISPLAY SETTINGS</span>
-                        <button
-                            className="nav-item theme-toggle-btn"
-                            onClick={toggleTheme}
-                        >
-                            <span>UI THEME</span>
-                            <div className="theme-status">
-                                {theme === "dark" ? (
-                                    <>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                                        </svg>
-                                        <span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pin-transit)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                            <circle cx="12" cy="12" r="5"></circle>
-                                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                                        </svg>
-                                        <span style={{ color: "var(--pin-transit)" }}>DAY</span>
-                                    </>
-                                )}
-                            </div>
-                        </button>
-                    </div>
-                </nav>
+						<button
+							type="button"
+							className={`nav-item ${activeSection === "pin-management" ? "active" : ""}`}
+							onClick={() => scrollToSection("pin-management")}
+						>
+							PIN MANAGEMENT
+						</button>
 
-                <div className="sidebar-footer">
-                    <button className="sign-out-btn" onClick={handleSignOut}>
-                        SIGN OUT
-                    </button>
-                </div>
-            </aside>
+						{/* <button
+							type="button"
+							className={`nav-item ${activeSection === "user-management" ? "active" : ""}`}
+							onClick={() => scrollToSection("user-management")}
+						>
+							USER MANAGEMENT
+						</button> */}
 
-            <div className="main-wrapper">
-                {/* --- HEADER --- */}
-                <header className="dashboard-header">
-                    <div className="header-left">
-                        <button
-                            className="hamburger-btn"
-                            onClick={() => setIsSidebarOpen(true)}
-                        >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <line x1="3" y1="12" x2="21" y2="12"></line>
-                                <line x1="3" y1="6" x2="21" y2="6"></line>
-                                <line x1="3" y1="18" x2="21" y2="18"></line>
-                            </svg>
-                        </button>
-                        <h1 className="header-title" style={{ color: '#ff4d4d' }}>Admin Dashboard</h1>
-                    </div>
-                </header>
+						<button type="button" className="nav-item" onClick={goToMap}>
+							RETURN TO MAP
+						</button>
+					</div>
 
-                {/* --- MAIN --- */}
-                <main className="content-area custom-vertical-scrollbar">
-                    <div className="content-container">
-                        <div className="greeting-section">
-                            <h2 className="greeting-title">
-                                {isLoading ? "LOADING..." : `Welcome, ${data?.name ? data.name.toUpperCase() : "ADMIN"}!`}
-                            </h2>
-                            <p className="greeting-subtitle">You have accessed the restricted area. 🚨</p>
-                        </div>
+					<div className="nav-group" style={{ marginTop: "24px" }}>
+						<span className="nav-label">DISPLAY SETTINGS</span>
+						<button
+							type="button"
+							className="nav-item theme-toggle-btn"
+							onClick={toggleTheme}
+						>
+							<span>UI THEME</span>
+							<div className="theme-status">
+								{theme === "dark" ? (
+									<>
+										<svg
+											width="14"
+											height="14"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="var(--text-primary)"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										>
+											<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+										</svg>
+										<span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
+									</>
+								) : (
+									<>
+										<svg
+											width="14"
+											height="14"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="var(--pin-transit)"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										>
+											<circle cx="12" cy="12" r="5"></circle>
+											<line x1="12" y1="1" x2="12" y2="3"></line>
+											<line x1="12" y1="21" x2="12" y2="23"></line>
+											<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+											<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+											<line x1="1" y1="12" x2="3" y2="12"></line>
+											<line x1="21" y1="12" x2="23" y2="12"></line>
+											<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+											<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+										</svg>
+										<span style={{ color: "var(--pin-transit)" }}>DAY</span>
+									</>
+								)}
+							</div>
+						</button>
+					</div>
+				</nav>
 
-                        <div className="dashboard-sections">
-                            <section id="overview" className="dashboard-section">
-                                <h2 className="section-title">OVERVIEW</h2>
-                                <div className="dashboard-grid">
-                                    <div className="module-card">
-                                        <div className="card-header">
-                                            <h3>OVERALL PIN STATISTICS</h3>
-                                        </div>
-                                        <div className="card-body telemetry-body">
+				<div className="sidebar-footer">
+					<button
+						type="button"
+						className="sign-out-btn"
+						onClick={handleSignOut}
+					>
+						SIGN OUT
+					</button>
+				</div>
+			</aside>
 
-                                            {/* Top Stats Grid */}
-                                            <div className="telemetry-top-grid">
-                                                <div className="stat-block">
-                                                    <span className="stat-label">TOTAL PINS IN MAP</span>
-                                                    <span className="stat-value">{globalPinStats.totalPins}</span>
-                                                </div>
-                                                <div className="stat-block">
-                                                    <span className="stat-label">AWAITING ACTION</span>
-                                                    <span className="stat-value" style={{ color: 'var(--neon-yellow, #FFD700)' }}>
-                                                        {globalPinStats.pendingPins}
-                                                    </span>
-                                                </div>
-                                            </div>
+			<div className="main-wrapper">
+				{/* --- HEADER --- */}
+				<header className="dashboard-header">
+					<div className="header-left">
+						<button
+							type="button"
+							className="hamburger-btn"
+							onClick={() => setIsSidebarOpen(true)}
+						>
+							<svg
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<line x1="3" y1="12" x2="21" y2="12"></line>
+								<line x1="3" y1="6" x2="21" y2="6"></line>
+								<line x1="3" y1="18" x2="21" y2="18"></line>
+							</svg>
+						</button>
+						<h1 className="header-title" style={{ color: "var(--pin-social)" }}>
+							Admin Dashboard
+						</h1>
+					</div>
+				</header>
 
-                                            <div className="integrity-section">
-                                                <div className="integrity-header">
-                                                    <span className="stat-label">GLOBAL VERIFICATION</span>
-                                                    <span className="integrity-percent" style={{ color: 'var(--pin-food)' }}>
-                                                        {globalVerificationRate}%
-                                                    </span>
-                                                </div>
-                                                <div className="progress-track">
-                                                    <div
-                                                        className="progress-fill"
-                                                        style={{
-                                                            width: `${globalVerificationRate}%`,
-                                                            background: 'var(--pin-food)',
-                                                            boxShadow: '0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent)'
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                                <div className="integrity-details">
-                                                    <span className="detail-item verified">{globalPinStats.verifiedPins} VERIFIED</span>
-                                                    <span className="detail-item pending">{globalPinStats.pendingPins} PENDING</span>
-                                                    <span className="detail-item rejected">{globalPinStats.rejectedPins} REJECTED</span>
-                                                </div>
-                                            </div>
+				{/* --- MAIN --- */}
+				<main className="content-area custom-vertical-scrollbar">
+					<div className="content-container">
+						<div className="greeting-section">
+							<h2 className="greeting-title">
+								{isLoading
+									? "LOADING..."
+									: `Welcome, ${data?.name ? data.name.toUpperCase() : "ADMIN"}!`}
+							</h2>
+							<p className="greeting-subtitle">
+								You have accessed the restricted area. 🚨
+							</p>
+						</div>
 
-                                            <div className="distribution-section">
-                                                <span className="stat-label">CATEGORY BREAKDOWN</span>
-                                                <div className="category-list">
-                                                    {PIN_CATEGORIES.map((category) => {
-                                                        const count = globalPinStats.categoryBreakdown[category.id as keyof typeof globalPinStats.categoryBreakdown] || 0;
-                                                        const percentage = globalPinStats.totalPins > 0 ? (count / globalPinStats.totalPins) * 100 : 0;
+						<div className="dashboard-sections">
+							<section id="overview" className="dashboard-section">
+								<h2 className="section-title">OVERVIEW</h2>
+								<div className="dashboard-grid">
+									<div className="module-card">
+										<div className="card-header">
+											<h3>OVERALL PIN STATISTICS</h3>
+										</div>
+										<div className="card-body telemetry-body">
+											{/* Top Stats Grid */}
+											<div className="telemetry-top-grid">
+												<div className="stat-block">
+													<span className="stat-label">TOTAL PINS</span>
+													<span className="stat-value">{totalPins}</span>
+												</div>
+												<div className="stat-block">
+													<span className="stat-label">AWAITING ACTION</span>
+													<span
+														className="stat-value"
+														style={{ color: "var(--neon-yellow, #FFD700)" }}
+													>
+														{pendingPinCount}
+													</span>
+												</div>
+											</div>
 
-                                                        return (
-                                                            <div key={category.id} className="category-row">
-                                                                <div className="cat-info">
-                                                                    <span className="cat-name" style={{ color: category.color }}>{category.label}</span>
-                                                                    <span className="cat-count">{count}</span>
-                                                                </div>
-                                                                <div className="cat-track">
-                                                                    <div
-                                                                        className="cat-fill"
-                                                                        style={{
-                                                                            width: `${percentage}%`,
-                                                                            backgroundColor: category.color,
-                                                                            boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`
-                                                                        }}
-                                                                    ></div>
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+											<div className="integrity-section">
+												<div className="integrity-header">
+													<span className="stat-label">
+														GLOBAL VERIFICATION
+													</span>
+													<span
+														className="integrity-percent"
+														style={{ color: "var(--pin-food)" }}
+													>
+														{globalVerificationRate}%
+													</span>
+												</div>
+												<div className="progress-track">
+													<div
+														className="progress-fill"
+														style={{
+															width: `${globalVerificationRate}%`,
+															background: "var(--pin-food)",
+															boxShadow:
+																"0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent)",
+														}}
+													></div>
+												</div>
+												<div className="integrity-details">
+													<span className="detail-item verified">
+														{activePinCount} VERIFIED
+													</span>
+													<span className="detail-item pending">
+														{pendingPinCount} PENDING
+													</span>
+													<span className="detail-item rejected">
+														{rejectedPinCount} REJECTED
+													</span>
+												</div>
+											</div>
 
-                                    <div className="module-card">
-                                        <div className="card-header">
-                                            <h3>OVERALL USER STATISTICS</h3>
-                                        </div>
+											<div className="distribution-section">
+												<span className="stat-label">CATEGORY BREAKDOWN</span>
+												<div className="category-list">
+													{PIN_CATEGORIES.map((category) => {
+														const count =
+															pinTagCounts[
+																category.id as keyof typeof pinTagCounts
+															] || 0;
+														const percentage =
+															totalPins > 0
+																? (count / (totalPins || 1)) * 100
+																: 0;
 
-                                        <div className="card-body telemetry-body">
-                                            <div className="telemetry-top-grid">
-                                                <div className="stat-block">
-                                                    <span className="stat-label">TOTAL USERS</span>
-                                                    <span className="stat-value">{globalUserStats.totalUsers}</span>
-                                                </div>
-                                                <div className="stat-block">
-                                                    <span className="stat-label">TOTAL COMMENTS</span>
-                                                    <span className="stat-value">{globalUserStats.totalComments}</span>
-                                                </div>
-                                                <div className="stat-block">
-                                                    <span className="stat-label">AVERAGE PINS / USER</span>
-                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgPins}</span>
-                                                </div>
-                                                <div className="stat-block">
-                                                    <span className="stat-label">AVERAGE COMMENTS / USER</span>
-                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgComments}</span>
-                                                </div>
-                                                <div className="stat-block">
-                                                    <span className="stat-label">NEW USERS FOR THE LAST WEEK</span>
-                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers7Days}</span>
-                                                </div>
-                                                <div className="stat-block">
-                                                    <span className="stat-label">NEW USERS FOR THE LAST MONTH</span>
-                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers30Days}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
+														return (
+															<div key={category.id} className="category-row">
+																<div className="cat-info">
+																	<span
+																		className="cat-name"
+																		style={{ color: category.color }}
+																	>
+																		{category.label}
+																	</span>
+																	<span className="cat-count">{count}</span>
+																</div>
+																<div className="cat-track">
+																	<div
+																		className="cat-fill"
+																		style={{
+																			width: `${percentage}%`,
+																			backgroundColor: category.color,
+																			boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`,
+																		}}
+																	></div>
+																</div>
+															</div>
+														);
+													})}
+												</div>
+											</div>
+										</div>
+									</div>
 
-                            <section id="pin-management" className="dashboard-section">
-                                <h2 className="section-title">PIN MANAGEMENT</h2>
-                                <div className="dashboard-grid">
-                                    <div className="module-card">
-                                        <div className="card-header">
-                                            <h3>PENDING PIN VERIFICATIONS</h3>
-                                        </div>
+									<div className="module-card">
+										<div className="card-header">
+											<h3>OVERALL USER STATISTICS</h3>
+										</div>
 
-                                        <div className="card-body">
-                                            <div className="pin-list">
-                                                {globalPendingPins.map((pin) => {
-                                                    const color = getPinColor(pin.type);
-                                                    return (
-                                                        <div key={pin.id} className="pin-list-item">
-                                                            <div className="pin-info-group">
-                                                                <div
-                                                                    className="list-diamond"
-                                                                    style={{
-                                                                        borderColor: color,
-                                                                        backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
-                                                                    }}
-                                                                >
-                                                                    <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
-                                                                </div>
+										<div className="card-body telemetry-body">
+											<div className="telemetry-top-grid">
+												<div className="stat-block">
+													<span className="stat-label">TOTAL USERS</span>
+													<span className="stat-value">
+														{globalUserStats.totalUsers}
+													</span>
+												</div>
+												<div className="stat-block">
+													<span className="stat-label">TOTAL COMMENTS</span>
+													<span className="stat-value">
+														{globalUserStats.totalComments}
+													</span>
+												</div>
+												{/* <div className="stat-block">
+													<span className="stat-label">
+														AVERAGE PINS / USER
+													</span>
+													<span
+														className="stat-value"
+														style={{ fontSize: "24px" }}
+													>
+														{globalUserStats.avgPins}
+													</span>
+												</div>
+												<div className="stat-block">
+													<span className="stat-label">
+														AVERAGE COMMENTS / USER
+													</span>
+													<span
+														className="stat-value"
+														style={{ fontSize: "24px" }}
+													>
+														{globalUserStats.avgComments}
+													</span>
+												</div>
+												<div className="stat-block">
+													<span className="stat-label">
+														NEW USERS FOR THE LAST WEEK
+													</span>
+													<span
+														className="stat-value"
+														style={{ fontSize: "24px" }}
+													>
+														{globalUserStats.newUsers7Days}
+													</span>
+												</div>
+												<div className="stat-block">
+													<span className="stat-label">
+														NEW USERS FOR THE LAST MONTH
+													</span>
+													<span
+														className="stat-value"
+														style={{ fontSize: "24px" }}
+													>
+														{globalUserStats.newUsers30Days}
+													</span>
+												</div> */}
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
 
-                                                                <div className="pin-text">
-                                                                    <span className="pin-title">{pin.title}</span>
-                                                                    <span className="pin-coords">
-                                                                        By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
+							<section id="pin-management" className="dashboard-section">
+								<h2 className="section-title">PIN MANAGEMENT</h2>
+								<div className="dashboard-grid">
+									<div className="module-card">
+										<div className="card-header">
+											<h3>PENDING PIN VERIFICATIONS</h3>
+										</div>
 
-                                                            <div className="pin-actions" style={{ display: 'flex', gap: '8px' }}>
-                                                                <button
-                                                                    type="button"
-                                                                    className="locate-btn"
-                                                                    title="Locate on Map"
-                                                                    onClick={() => console.log("Locate pin:", pin.id)}
-                                                                >
-                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                                                        <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                                                                    </svg>
-                                                                </button>
+										<div className="card-body">
+											<div className="pin-list">
+												{pendingPins?.map((pin) => {
+													const color = getPinColor(
+														pin.pinTags?.[0]?.tag.title || "",
+													);
+													return (
+														<div key={pin.id} className="pin-list-item">
+															<div className="pin-info-group">
+																<div
+																	className="list-diamond"
+																	style={{
+																		borderColor: color,
+																		backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
+																	}}
+																>
+																	<span style={{ color }}>
+																		{pin.title.charAt(0).toUpperCase()}
+																	</span>
+																</div>
 
-                                                                <button
-                                                                    type="button"
-                                                                    className="reject-btn"
-                                                                    title="Reject Pin"
-                                                                    onClick={() => console.log("Reject pin:", pin.id)}
-                                                                >
-                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                                    </svg>
-                                                                </button>
+																<div className="pin-text">
+																	<span className="pin-title">{pin.title}</span>
+																	<span className="pin-coords">
+																		By {pin.owner} • {pin.latitude.toFixed(4)},{" "}
+																		{pin.longitude.toFixed(4)}
+																	</span>
+																</div>
+															</div>
 
-                                                                <button
-                                                                    type="button"
-                                                                    className="approve-btn"
-                                                                    title="Verify & Approve Pin"
-                                                                    onClick={() => console.log("Approve pin:", pin.id)}
-                                                                >
-                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                                                    </svg>
-                                                                </button>
-                                                            </div>
+															<div
+																className="pin-actions"
+																style={{ display: "flex", gap: "8px" }}
+															>
+																<Link
+																	className="locate-btn"
+																	style={{
+																		background: "transparent",
+																		border: "1px solid var(--border-color)",
+																		borderRadius: "8px",
+																		width: "36px",
+																		height: "36px",
+																		display: "flex",
+																		alignItems: "center",
+																		justifyContent: "center",
+																		color: "var(--text-secondary)",
+																		cursor: "pointer",
+																		transition: "all 0.2s",
+																		flexShrink: "0",
+																	}}
+																	href={`/?pin=${pin.id}`}
+																	target="_blank"
+																>
+																	<svg
+																		width="18"
+																		height="18"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2.5"
+																	>
+																		<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+																	</svg>
+																</Link>
 
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    </div>
+																<button
+																	type="button"
+																	className="reject-btn"
+																	title="Reject Pin"
+																	onClick={() =>
+																		rejectPin.mutate({ id: pin.id })
+																	}
+																>
+																	<svg
+																		width="18"
+																		height="18"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2.5"
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																	>
+																		<line x1="18" y1="6" x2="6" y2="18"></line>
+																		<line x1="6" y1="6" x2="18" y2="18"></line>
+																	</svg>
+																</button>
 
-                                    <div className="module-card">
-                                        <div className="card-header">
-                                            <h3>RECENTLY VERIFIED PINS</h3>
-                                        </div>
+																<button
+																	type="button"
+																	className="approve-btn"
+																	title="Verify & Approve Pin"
+																	onClick={() =>
+																		approvePin.mutate({ id: pin.id })
+																	}
+																>
+																	<svg
+																		width="18"
+																		height="18"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2.5"
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																	>
+																		<polyline points="20 6 9 17 4 12"></polyline>
+																	</svg>
+																</button>
+															</div>
+														</div>
+													);
+												})}
+											</div>
+										</div>
+									</div>
 
-                                        <div className="card-body">
-                                            <div className="pin-list">
-                                                {globalVerifiedPins.map((pin) => {
-                                                    const color = getPinColor(pin.type);
-                                                    return (
-                                                        <div key={pin.id} className="pin-list-item">
-                                                            <div className="pin-info-group">
-                                                                <div
-                                                                    className="list-diamond"
-                                                                    style={{
-                                                                        borderColor: color,
-                                                                        backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
-                                                                    }}
-                                                                >
-                                                                    <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
-                                                                </div>
+									<div className="module-card">
+										<div className="card-header">
+											<h3>RECENTLY VERIFIED PINS</h3>
+										</div>
 
-                                                                <div className="pin-text">
-                                                                    <span className="pin-title">{pin.title}</span>
-                                                                    <span className="pin-coords">
-                                                                        By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
+										<div className="card-body">
+											<div className="pin-list">
+												{activePins?.map((pin) => {
+													const color = getPinColor(
+														pin.pinTags?.[0]?.tag.title || "",
+													);
+													return (
+														<div key={pin.id} className="pin-list-item">
+															<div className="pin-info-group">
+																<div
+																	className="list-diamond"
+																	style={{
+																		borderColor: color,
+																		backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
+																	}}
+																>
+																	<span style={{ color }}>
+																		{pin.title.charAt(0).toUpperCase()}
+																	</span>
+																</div>
 
-                                                            <div className="pin-actions">
-                                                                <button
-                                                                    type="button"
-                                                                    className="locate-btn"
-                                                                    title="Locate on Map"
-                                                                    onClick={() => console.log("Locate verified pin:", pin.id)}
-                                                                >
-                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                                                        <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                                                                    </svg>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
+																<div className="pin-text">
+																	<span className="pin-title">{pin.title}</span>
+																	<span className="pin-coords">
+																		By {pin.owner} • {pin.latitude.toFixed(4)},{" "}
+																		{pin.longitude.toFixed(4)}
+																	</span>
+																</div>
+															</div>
 
-                            <section id="user-management" className="dashboard-section">
-                                <h2 className="section-title">USER MANAGEMENT</h2>
-                                <div className="dashboard-grid">
-                                    <div className="module-card">
-                                        <div className="card-header">
-                                            <h3>NEWEST USERS</h3>
-                                        </div>
-                                        <div className="card-body">
-                                            <div className="user-list">
-                                                {recentUsers.map((user) => (
-                                                    <div key={user.id} className="user-list-item">
-                                                        <div className="user-info-group">
-                                                            <div className="user-avatar">
-                                                                {user.name.charAt(0).toUpperCase()}
-                                                            </div>
-                                                            <div className="user-text">
-                                                                <span className="user-name">{user.name}</span>
-                                                                <span className="user-meta">
-                                                                    {user.email} • {user.joinedAt}
-                                                                </span>
-                                                            </div>
-                                                        </div>
+															<div
+																className="pin-actions"
+																style={{ display: "flex", gap: "8px" }}
+															>
+																<Link
+																	className="locate-btn"
+																	style={{
+																		background: "transparent",
+																		border: "1px solid var(--border-color)",
+																		borderRadius: "8px",
+																		width: "36px",
+																		height: "36px",
+																		display: "flex",
+																		alignItems: "center",
+																		justifyContent: "center",
+																		color: "var(--text-secondary)",
+																		cursor: "pointer",
+																		transition: "all 0.2s",
+																		flexShrink: "0",
+																	}}
+																	href={`/?pin=${pin.id}`}
+																	target="_blank"
+																>
+																	<svg
+																		width="18"
+																		height="18"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2.5"
+																	>
+																		<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+																	</svg>
+																</Link>
+																{isDeletingPin ? (
+																	<>
+																		<button
+																			type="button"
+																			className="reject-btn"
+																			title="Reject Pin"
+																			onClick={() => setIsDeletingPin(false)}
+																		>
+																			<svg
+																				width="18"
+																				height="18"
+																				viewBox="0 0 24 24"
+																				fill="none"
+																				stroke="currentColor"
+																				strokeWidth="2.5"
+																				strokeLinecap="round"
+																				strokeLinejoin="round"
+																			>
+																				<line
+																					x1="18"
+																					y1="6"
+																					x2="6"
+																					y2="18"
+																				></line>
+																				<line
+																					x1="6"
+																					y1="6"
+																					x2="18"
+																					y2="18"
+																				></line>
+																			</svg>
+																		</button>
 
-                                                        <button
-                                                            type="button"
-                                                            className="view-user-btn"
-                                                            title="Access Operator Profile"
-                                                            onClick={() => console.log("View user:", user.id)}
-                                                        >
-                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                                                <circle cx="12" cy="7" r="4"></circle>
-                                                            </svg>
-                                                        </button>
+																		<button
+																			type="button"
+																			className="approve-btn"
+																			title="Verify & Approve Pin"
+																			onClick={() =>
+																				deletePin.mutate({ id: pin.id })
+																			}
+																		>
+																			<svg
+																				width="18"
+																				height="18"
+																				viewBox="0 0 24 24"
+																				fill="none"
+																				stroke="currentColor"
+																				strokeWidth="2.5"
+																				strokeLinecap="round"
+																				strokeLinejoin="round"
+																			>
+																				<polyline points="20 6 9 17 4 12"></polyline>
+																			</svg>
+																		</button>
+																	</>
+																) : (
+																	<button
+																		type="button"
+																		className="reject-btn"
+																		onClick={() => {
+																			setIsDeletingPin(true);
+																		}}
+																	>
+																		DELETE
+																	</button>
+																)}
+															</div>
+														</div>
+													);
+												})}
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
 
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
+							{/* <section id="user-management" className="dashboard-section">
+								<h2 className="section-title">USER MANAGEMENT</h2>
+								<div className="dashboard-grid">
+									<div className="module-card">
+										<div className="card-header">
+											<h3>NEWEST USERS</h3>
+										</div>
+										<div className="card-body">
+											<div className="user-list">
+												{recentUsers.map((user) => (
+													<div key={user.id} className="user-list-item">
+														<div className="user-info-group">
+															<div className="user-avatar">
+																{user.name.charAt(0).toUpperCase()}
+															</div>
+															<div className="user-text">
+																<span className="user-name">{user.name}</span>
+																<span className="user-meta">
+																	{user.email} • {user.joinedAt}
+																</span>
+															</div>
+														</div>
 
-                                    <div className="module-card">
-                                        <div className="card-header">
-                                            <h3>TOP USERS BY PINS</h3>
-                                        </div>
-                                        <div className="card-body">
-                                            <div className="user-list">
-                                                {topUsers.map((user, index) => (
-                                                    <div key={user.id} className="user-list-item">
+														<button
+															type="button"
+															className="view-user-btn"
+															title="Access Operator Profile"
+															onClick={() => console.log("View user:", user.id)}
+														>
+															<svg
+																width="18"
+																height="18"
+																viewBox="0 0 24 24"
+																fill="none"
+																stroke="currentColor"
+																strokeWidth="2.5"
+																strokeLinecap="round"
+																strokeLinejoin="round"
+															>
+																<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+																<circle cx="12" cy="7" r="4"></circle>
+															</svg>
+														</button>
+													</div>
+												))}
+											</div>
+										</div>
+									</div>
 
-                                                        <div className="user-info-group">
-                                                            <div
-                                                                className="user-avatar"
-                                                                style={{
-                                                                    borderColor: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
-                                                                    color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
-                                                                    background: index === 0 ? 'color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent)' : 'color-mix(in srgb, var(--neon-blue) 15%, transparent)'
-                                                                }}
-                                                            >
-                                                                {user.name.charAt(0).toUpperCase()}
-                                                            </div>
-                                                            <div className="user-text">
-                                                                <span className="user-name">{user.name}</span>
-                                                                <span className="user-meta">Rank #{user.rank} Operator</span>
-                                                            </div>
-                                                        </div>
+									<div className="module-card">
+										<div className="card-header">
+											<h3>TOP USERS BY PINS</h3>
+										</div>
+										<div className="card-body">
+											<div className="user-list">
+												{topUsers.map((user, index) => (
+													<div key={user.id} className="user-list-item">
+														<div className="user-info-group">
+															<div
+																className="user-avatar"
+																style={{
+																	borderColor:
+																		index === 0
+																			? "var(--neon-yellow, #FFD700)"
+																			: "var(--neon-blue)",
+																	color:
+																		index === 0
+																			? "var(--neon-yellow, #FFD700)"
+																			: "var(--neon-blue)",
+																	background:
+																		index === 0
+																			? "color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent)"
+																			: "color-mix(in srgb, var(--neon-blue) 15%, transparent)",
+																}}
+															>
+																{user.name.charAt(0).toUpperCase()}
+															</div>
+															<div className="user-text">
+																<span className="user-name">{user.name}</span>
+																<span className="user-meta">
+																	Rank #{user.rank} Operator
+																</span>
+															</div>
+														</div>
 
-                                                        <div className="pin-count-display">
-                                                            <span className="count-number" style={{ color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--text-primary)' }}>
-                                                                {user.pinCount}
-                                                            </span>
-                                                            <span className="count-label">PINS</span>
-                                                        </div>
+														<div className="pin-count-display">
+															<span
+																className="count-number"
+																style={{
+																	color:
+																		index === 0
+																			? "var(--neon-yellow, #FFD700)"
+																			: "var(--text-primary)",
+																}}
+															>
+																{user.pinCount}
+															</span>
+															<span className="count-label">PINS</span>
+														</div>
+													</div>
+												))}
+											</div>
+										</div>
+									</div>
+								</div>
+							</section> */}
+						</div>
+					</div>
+				</main>
+			</div>
 
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                        </div>
-                    </div>
-                </main>
-            </div>
-
-            <style jsx>{`
+			<style jsx>{`
         /* --- LAYOUT SHELL --- */
         .dashboard-layout {
           display: flex;
@@ -630,9 +944,9 @@ export default function AdminDashboard() {
         }
 
         .nav-item.active {
-          background: color-mix(in srgb, #ff4d4d 10%, transparent);
-          color: #ff4d4d;
-          border-left: 3px solid #ff4d4d;
+          background: color-mix(in srgb, var(--pin-social) 10%, transparent);
+          color: var(--pin-social);
+          border-left: 3px solid var(--pin-social);
           border-radius: 0 8px 8px 0;
         }
 
@@ -1014,9 +1328,9 @@ export default function AdminDashboard() {
         }
         
         .approve-btn:hover { 
-          background: color-mix(in srgb, var(--neon-green) 15%, transparent); 
-          border-color: var(--neon-green); 
-          color: var(--neon-green); 
+          background: color-mix(in srgb, var(--pin-food) 15%, transparent); 
+          border-color: var(--pin-food); 
+          color: var(--pin-food); 
           transform: scale(1.05); 
         }
         
@@ -1181,6 +1495,6 @@ export default function AdminDashboard() {
           .content-area { padding: 24px 16px; }
         }
       `}</style>
-        </div>
-    );
+		</div>
+	);
 }

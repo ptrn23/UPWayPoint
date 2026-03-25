@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { trpc } from "@/lib/trpc";
 import { useTheme } from "@/lib/ThemeContext";
 import { useSession } from "@/lib/auth-client";
 import { useMap } from "@vis.gl/react-google-maps";
 import { JEEPNEY_ROUTES, ZONE_CATEGORIES } from "@/data/map-layers";
-import { PIN_CATEGORIES, type FilterType, getPinColor } from "@/data/pin-categories";
+import {
+	PIN_CATEGORIES,
+	type FilterType,
+	getPinColor,
+} from "@/data/pin-categories";
 
 interface TopBarProps {
 	onMenuClick: () => void;
@@ -15,12 +18,12 @@ interface TopBarProps {
 	onFilterChange: (filter: FilterType) => void;
 	searchQuery: string;
 	onSearchChange: (query: string) => void;
-	activeRoutes?: string[]; 
-    onToggleRoute?: (routeId: string) => void;
+	activeRoutes?: string[];
+	onToggleRoute?: (routeId: string) => void;
 	activeZoneCategories?: string[];
-    onToggleZoneCategory?: (categoryId: string) => void;
+	onToggleZoneCategory?: (categoryId: string) => void;
 	userLocation?: { lat: number; lng: number };
-    hideControls?: boolean;
+	hideControls?: boolean;
 }
 
 export type { FilterType };
@@ -32,11 +35,11 @@ export function TopBar({
 	searchQuery,
 	onSearchChange,
 	activeRoutes = [],
-    onToggleRoute = () => {},
+	onToggleRoute = () => {},
 	activeZoneCategories = [],
-    onToggleZoneCategory = () => {},
+	onToggleZoneCategory = () => {},
 	userLocation = { lat: 14.6549, lng: 121.0645 },
-    hideControls = false,
+	hideControls = false,
 }: TopBarProps) {
 	const router = useRouter();
 	const { data: sessionData } = useSession();
@@ -46,26 +49,26 @@ export function TopBar({
 
 	const map = useMap();
 
-    const handleCenterMap = () => {
-        if (map && userLocation) {
-            map.panTo(userLocation);
-            map.setZoom(19);
-        }
-    };
+	const handleCenterMap = () => {
+		if (map && userLocation) {
+			map.panTo(userLocation);
+			map.setZoom(19);
+		}
+	};
 
-    const handleZoomIn = () => {
-        if (map) {
-            const currentZoom = map.getZoom() || 19;
-            map.setZoom(currentZoom + 1);
-        }
-    };
+	const handleZoomIn = () => {
+		if (map) {
+			const currentZoom = map.getZoom() || 19;
+			map.setZoom(currentZoom + 1);
+		}
+	};
 
-    const handleZoomOut = () => {
-        if (map) {
-            const currentZoom = map.getZoom() || 19;
-            map.setZoom(currentZoom - 1);
-        }
-    };
+	const handleZoomOut = () => {
+		if (map) {
+			const currentZoom = map.getZoom() || 19;
+			map.setZoom(currentZoom - 1);
+		}
+	};
 
 	const handleProfileClick = () => {
 		if (sessionData?.user) {
@@ -75,123 +78,155 @@ export function TopBar({
 		}
 	};
 
-	const filters: FilterType[] = ["all", ...PIN_CATEGORIES.map(c => c.id as FilterType)];
+	const filters: FilterType[] = [
+		"all",
+		...PIN_CATEGORIES.map((c) => c.id as FilterType),
+	];
 
 	return (
 		<div className="ui-layer">
 			{/* === LEFT ZONE === */}
-            <div 
-                className="zone-left"
-                style={{
-                    opacity: hideControls ? 0 : 1,
-                    pointerEvents: hideControls ? "none" : "auto",
-                    transition: "opacity 0.3s ease",
-                }}
-            >
-                <button type="button" onClick={onMenuClick} className="icon-button">
-                    <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </button>
-
-                <div className="transit-system-container">
-                    <button 
-                        type="button" 
-                        className={`icon-button transit-btn ${isTransitMenuOpen ? 'active' : ''}`}
-                        title="Toggle Transit Routes"
-                        onClick={() => setIsTransitMenuOpen(!isTransitMenuOpen)}
-                    >
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="4" y="3" width="16" height="16" rx="2" ry="2"></rect>
-                            <path d="M4 11h16"></path>
-                            <path d="M8 15h.01"></path>
-                            <path d="M16 15h.01"></path>
-                            <path d="M6 19v2"></path>
-                            <path d="M18 19v2"></path>
-                        </svg>
-                    </button>
-
-                    {/* Extruding Route Nodes */}
-                    {isTransitMenuOpen && (
-                        <div className="extruded-menu">
-                            {JEEPNEY_ROUTES.map((route) => {
-                                const isActive = activeRoutes.includes(route.id);
-                                const initial = route.name.replace("UP ", "").charAt(0).toUpperCase();
-
-                                return (
-                                    <button
-                                        key={route.id}
-                                        type="button"
-                                        onClick={() => onToggleRoute(route.id)}
-                                        className="route-node"
-                                        title={route.name}
-                                        style={{
-                                            backgroundColor: isActive ? `${route.color}20` : 'var(--bg-panel-hover)',
-                                            color: isActive ? route.color : '#aaa',
-                                            borderColor: isActive ? route.color : 'transparent',
-                                            boxShadow: isActive ? `0 0 10px ${route.color}40` : 'none',
-                                        }}
-                                    >
-                                        {initial}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
+			<div
+				className="zone-left"
+				style={{
+					opacity: hideControls ? 0 : 1,
+					pointerEvents: hideControls ? "none" : "auto",
+					transition: "opacity 0.3s ease",
+				}}
+			>
+				<button type="button" onClick={onMenuClick} className="icon-button">
+					<svg
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<line x1="3" y1="12" x2="21" y2="12"></line>
+						<line x1="3" y1="6" x2="21" y2="6"></line>
+						<line x1="3" y1="18" x2="21" y2="18"></line>
+					</svg>
+				</button>
 
 				<div className="transit-system-container">
-                    <button 
-                        type="button" 
-                        className={`icon-button transit-btn ${isZoneMenuOpen ? 'active' : ''}`}
-                        title="Toggle Zone Layers"
-                        onClick={() => {
-                            setIsZoneMenuOpen(!isZoneMenuOpen);
-                        }}
-                    >
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
-                        </svg>
-                    </button>
+					<button
+						type="button"
+						className={`icon-button transit-btn ${isTransitMenuOpen ? "active" : ""}`}
+						title="Toggle Transit Routes"
+						onClick={() => setIsTransitMenuOpen(!isTransitMenuOpen)}
+					>
+						<svg
+							width="22"
+							height="22"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<rect x="4" y="3" width="16" height="16" rx="2" ry="2"></rect>
+							<path d="M4 11h16"></path>
+							<path d="M8 15h.01"></path>
+							<path d="M16 15h.01"></path>
+							<path d="M6 19v2"></path>
+							<path d="M18 19v2"></path>
+						</svg>
+					</button>
 
-                    {isZoneMenuOpen && (
-                        <div className="extruded-menu">
-                            {ZONE_CATEGORIES.map((category) => {
-                                const isActive = activeZoneCategories.includes(category.id);
+					{/* Extruding Route Nodes */}
+					{isTransitMenuOpen && (
+						<div className="extruded-menu">
+							{JEEPNEY_ROUTES.map((route) => {
+								const isActive = activeRoutes.includes(route.id);
+								const initial = route.name
+									.replace("UP ", "")
+									.charAt(0)
+									.toUpperCase();
 
-                                return (
-                                    <button
-                                        key={category.id}
-                                        type="button"
-                                        onClick={() => onToggleZoneCategory(category.id)}
-                                        className="route-node"
-                                        title={category.label}
-                                        style={{
-                                            backgroundColor: isActive ? `${category.color}20` : 'var(--bg-panel-hover)',
-                                            color: isActive ? category.color : '#aaa',
-                                            borderColor: isActive ? category.color : 'transparent',
-                                            boxShadow: isActive ? `0 0 10px ${category.color}40` : 'none',
-                                        }}
-                                    >
-                                        {category.initial} 
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
-            </div>
+								return (
+									<button
+										key={route.id}
+										type="button"
+										onClick={() => onToggleRoute(route.id)}
+										className="route-node"
+										title={route.name}
+										style={{
+											backgroundColor: isActive
+												? `${route.color}20`
+												: "var(--bg-panel-hover)",
+											color: isActive ? route.color : "#aaa",
+											borderColor: isActive ? route.color : "transparent",
+											boxShadow: isActive
+												? `0 0 10px ${route.color}40`
+												: "none",
+										}}
+									>
+										{initial}
+									</button>
+								);
+							})}
+						</div>
+					)}
+				</div>
+
+				<div className="transit-system-container">
+					<button
+						type="button"
+						className={`icon-button transit-btn ${isZoneMenuOpen ? "active" : ""}`}
+						title="Toggle Zone Layers"
+						onClick={() => {
+							setIsZoneMenuOpen(!isZoneMenuOpen);
+						}}
+					>
+						<svg
+							width="22"
+							height="22"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
+						</svg>
+					</button>
+
+					{isZoneMenuOpen && (
+						<div className="extruded-menu">
+							{ZONE_CATEGORIES.map((category) => {
+								const isActive = activeZoneCategories.includes(category.id);
+
+								return (
+									<button
+										key={category.id}
+										type="button"
+										onClick={() => onToggleZoneCategory(category.id)}
+										className="route-node"
+										title={category.label}
+										style={{
+											backgroundColor: isActive
+												? `${category.color}20`
+												: "var(--bg-panel-hover)",
+											color: isActive ? category.color : "#aaa",
+											borderColor: isActive ? category.color : "transparent",
+											boxShadow: isActive
+												? `0 0 10px ${category.color}40`
+												: "none",
+										}}
+									>
+										{category.initial}
+									</button>
+								);
+							})}
+						</div>
+					)}
+				</div>
+			</div>
 
 			{/* === CENTER ZONE (Search + Filters) === */}
 			<div className="zone-center">
@@ -221,27 +256,27 @@ export function TopBar({
 				</div>
 
 				<div className="filter-row no-scrollbar">
-                    {filters.map((filter) => {
-                        const color = getPinColor(filter);
-                        const isActive = activeFilter === filter;
-                        return (
-                            <button
-                                type="button"
-                                key={filter}
-                                onClick={() => onFilterChange(filter)}
-                                className={`filter-chip ${isActive ? "active" : ""}`}
-                                style={{
-                                    borderColor: isActive ? color : "var(--border-color)",
-                                    color: isActive ? "var(--bg-base)" : color,
-                                    backgroundColor: isActive ? color : "var(--bg-panel)",
-                                    transform: isActive ? "scale(1.1)" : "scale(1)",
-                                }}
-                            >
-                                {filter.toUpperCase()}
-                            </button>
-                        );
-                    })}
-                </div>
+					{filters.map((filter) => {
+						const color = getPinColor(filter);
+						const isActive = activeFilter === filter;
+						return (
+							<button
+								type="button"
+								key={filter}
+								onClick={() => onFilterChange(filter)}
+								className={`filter-chip ${isActive ? "active" : ""}`}
+								style={{
+									borderColor: isActive ? color : "var(--border-color)",
+									color: isActive ? "var(--bg-base)" : color,
+									backgroundColor: isActive ? color : "var(--bg-panel)",
+									transform: isActive ? "scale(1.1)" : "scale(1)",
+								}}
+							>
+								{filter.toUpperCase()}
+							</button>
+						);
+					})}
+				</div>
 			</div>
 
 			{/* === RIGHT ZONE (Full Height Tool Stack) === */}
@@ -270,13 +305,35 @@ export function TopBar({
 							<circle cx="12" cy="7" r="4"></circle>
 						</svg>
 					</button>
-					<button onClick={toggleTheme} className="icon-button theme-toggle">
+					<button
+						type="button"
+						onClick={toggleTheme}
+						className="icon-button theme-toggle"
+					>
 						{theme === "dark" ? (
-							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
 								<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
 							</svg>
 						) : (
-							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
 								<circle cx="12" cy="12" r="5"></circle>
 								<line x1="12" y1="1" x2="12" y2="3"></line>
 								<line x1="12" y1="21" x2="12" y2="23"></line>
@@ -293,49 +350,70 @@ export function TopBar({
 
 				{/* Bottom Group */}
 				<div
-                    className="tool-group bottom-align"
-                    style={{
-                        opacity: hideControls ? 0 : 1,
-                        pointerEvents: hideControls ? "none" : "auto",
-                        transition: "opacity 0.3s ease",
-                    }}
-                >
-                    <button 
-                        type="button" 
-                        className="icon-button gps-btn"
-                        onClick={handleCenterMap}
-                        title="Center on Current Location"
-                    >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                        </svg>
-                    </button>
+					className="tool-group bottom-align"
+					style={{
+						opacity: hideControls ? 0 : 1,
+						pointerEvents: hideControls ? "none" : "auto",
+						transition: "opacity 0.3s ease",
+					}}
+				>
+					<button
+						type="button"
+						className="icon-button gps-btn"
+						onClick={handleCenterMap}
+						title="Center on Current Location"
+					>
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+						>
+							<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+						</svg>
+					</button>
 
-                    <div className="zoom-stack">
-                        <button 
-                            type="button" 
-                            className="control-button zoom-in"
-                            onClick={handleZoomIn}
-                            title="Zoom In"
-                        >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                        </button>
-                        <div className="divider"></div>
-                        <button 
-                            type="button" 
-                            className="control-button zoom-out"
-                            onClick={handleZoomOut}
-                            title="Zoom Out"
-                        >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+					<div className="zoom-stack">
+						<button
+							type="button"
+							className="control-button zoom-in"
+							onClick={handleZoomIn}
+							title="Zoom In"
+						>
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="3"
+							>
+								<line x1="12" y1="5" x2="12" y2="19"></line>
+								<line x1="5" y1="12" x2="19" y2="12"></line>
+							</svg>
+						</button>
+						<div className="divider"></div>
+						<button
+							type="button"
+							className="control-button zoom-out"
+							onClick={handleZoomOut}
+							title="Zoom Out"
+						>
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="3"
+							>
+								<line x1="5" y1="12" x2="19" y2="12"></line>
+							</svg>
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	);

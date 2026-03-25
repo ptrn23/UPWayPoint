@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
@@ -8,413 +8,591 @@ import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
 import { useTheme } from "@/lib/ThemeContext";
 
 export default function Dashboard() {
-  const router = useRouter();
-  const { data, isLoading } = trpc.user.getCurrent.useQuery();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const router = useRouter();
+	const { data, isLoading } = trpc.user.getCurrent.useQuery();
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [isEditingBio, setIsEditingBio] = useState(false);
-  const [bioInput, setBioInput] = useState("");
-  const { theme, toggleTheme } = useTheme();
+	const { data: userPins } = trpc.pin.getCurrentUsersPins.useQuery(undefined, {
+		refetchOnWindowFocus: false,
+	});
 
-  const handleSaveBio = () => {
-    // TODO: Hook this up to trpc.user.updateBio.useMutation()
-    console.log("Saving new bio:", bioInput);
-    setIsEditingBio(false);
-  };
+	const { data: userComments } = trpc.comment.getCurrentUsersComments.useQuery(
+		undefined,
+		{
+			refetchOnWindowFocus: false,
+		},
+	);
 
-  const goToMap = () => router.push("/");
-  const goToAdmin = () => router.push("/admin");
-  
-  const handleSignOut = async () => {
-    await signOut();
-    router.refresh();
-  };
+	// const [isEditingBio, setIsEditingBio] = useState(false);
+	// const [bioInput, setBioInput] = useState("");
+	const { theme, toggleTheme } = useTheme();
 
-  const mockStats = {
-    totalPins: 42,
-    verifiedPins: 38,
-    pendingPins: 3,
-    rejectedPins: 1,
-    comments: 128,
-    categoryBreakdown: {
-      academic: 12,
-      food: 15,
-      social: 5,
-      transit: 8,
-      utility: 2,
-    },
-    pendingList: [
-      { id: "p1", title: "Quezon Hall", lat: 14.6549, lng: 121.0645, type: "academic" },
-      { id: "p2", title: "Area 2", lat: 14.6532, lng: 121.0681, type: "food" },
-      { id: "p3", title: "Sunken Garden", lat: 14.6544, lng: 121.0673, type: "social" },
-    ],
-    recentList: [
-      { id: "r1", title: "CS Library", lat: 14.6538, lng: 121.0694, type: "academic" },
-      { id: "r2", title: "TOKI Jeepney Stop", lat: 14.6551, lng: 121.0621, type: "transit" },
-    ]
-  };
+	// const handleSaveBio = () => {
+	// 	// TODO: Hook this up to trpc.user.updateBio.useMutation()
+	// 	console.log("Saving new bio:", bioInput);
+	// 	setIsEditingBio(false);
+	// };
 
-  const verificationRate = Math.round((mockStats.verifiedPins / mockStats.totalPins) * 100) || 0;
+	const goToMap = () => router.push("/");
+	const goToAdmin = () => router.push("/admin");
 
-  return (
-    <div className="dashboard-layout">
-      {/* --- MOBILE OVERLAY --- */}
-      {isSidebarOpen && (
-        <div 
-            className="mobile-overlay" 
-            onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+	const handleSignOut = async () => {
+		await signOut();
+		router.refresh();
+	};
+	const stats = useMemo(() => {
+		return {
+			totalPins: userPins?.filter((p) => p.status !== "DELETED").length,
+			verifiedPins: userPins?.filter((p) => p.status === "ACTIVE").length,
+			pendingPins: userPins?.filter((p) => p.status === "PENDING_VERIFICATION")
+				.length,
+			rejectedPins: userPins?.filter((p) => p.status === "ARCHIVED").length,
+			comments: userComments?.length,
+			categoryBreakdown: {
+				academic: userPins?.filter(
+					(p) =>
+						p.pinTags.map((pt) => pt.tag.title).includes("academic") &&
+						p.status !== "DELETED",
+				).length,
+				food: userPins?.filter(
+					(p) =>
+						p.pinTags.map((pt) => pt.tag.title).includes("food") &&
+						p.status !== "DELETED",
+				).length,
+				social: userPins?.filter(
+					(p) =>
+						p.pinTags.map((pt) => pt.tag.title).includes("social") &&
+						p.status !== "DELETED",
+				).length,
+				utility: userPins?.filter(
+					(p) =>
+						p.pinTags.map((pt) => pt.tag.title).includes("utility") &&
+						p.status !== "DELETED",
+				).length,
+				transit: userPins?.filter(
+					(p) =>
+						p.pinTags.map((pt) => pt.tag.title).includes("transit") &&
+						p.status !== "DELETED",
+				).length,
+			},
+			pendingList: userPins
+				?.filter((p) => p.status === "PENDING_VERIFICATION")
+				.slice(0, 5),
+			recentList: userPins?.filter((p) => p.status === "ACTIVE").slice(0, 5),
+		};
+	}, [userPins, userComments]);
 
-      {/* --- SIDEBAR --- */}
-      <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
-        <div className="sidebar-header">
-          <h2 className="brand">UP WAYPOINT</h2>
-        </div>
-        
-        <nav className="sidebar-nav">
-          <div className="nav-group">
-            <span className="nav-label">MAIN</span>
-            <button className="nav-item active">OVERVIEW</button>
-            {(data as any)?.userRole === "admin" && (
-              <button 
-                className="nav-item" 
-                onClick={goToAdmin}
-                style={{
-                  color: '#ff4d4d', 
-                  border: '1px solid color-mix(in srgb, #ff4d4d 30%, transparent)',
-                  background: 'color-mix(in srgb, #ff4d4d 5%, transparent)'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                  </svg>
-                  GO TO ADMIN DASHBOARD
-                </div>
-              </button>
-            )}
-            <button className="nav-item" onClick={goToMap}>RETURN TO MAP</button>
-          </div>
-          <div className="nav-group" style={{ marginTop: '24px' }}>
-            <span className="nav-label">DISPLAY SETTINGS</span>
-            
-            <button 
-              className="nav-item theme-toggle-btn" 
-              onClick={toggleTheme}
-            >
-              <span>UI THEME</span>
-              <div className="theme-status">
-                {theme === "dark" ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pin-transit)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="5"></circle>
-                      <line x1="12" y1="1" x2="12" y2="3"></line>
-                      <line x1="12" y1="21" x2="12" y2="23"></line>
-                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                      <line x1="1" y1="12" x2="3" y2="12"></line>
-                      <line x1="21" y1="12" x2="23" y2="12"></line>
-                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                    <span style={{ color: "var(--pin-transit)" }}>DAY</span>
-                  </>
-                )}
-              </div>
-            </button>
-          </div>
-        </nav>
+	const verificationRate =
+		stats.verifiedPins && stats.totalPins
+			? Math.round((stats.verifiedPins / stats.totalPins) * 100)
+			: 0;
 
-        <div className="sidebar-footer">
-          <button className="sign-out-btn" onClick={handleSignOut}>
-            SIGN OUT
-          </button>
-        </div>
-      </aside>
+	return (
+		<div className="dashboard-layout">
+			{/* --- MOBILE OVERLAY --- */}
+			{isSidebarOpen && (
+				// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
+				// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+				<div
+					className="mobile-overlay"
+					onClick={() => setIsSidebarOpen(false)}
+				/>
+			)}
 
-      <div className="main-wrapper">
-        {/* --- HEADER --- */}
-        <header className="dashboard-header">
-          <div className="header-left">
-            <button 
-              className="hamburger-btn" 
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            </button>
-            <h1 className="header-title">User Dashboard</h1>
-          </div>
-        </header>
+			{/* --- SIDEBAR --- */}
+			<aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+				<div className="sidebar-header">
+					<h2 className="brand">UP WAYPOINT</h2>
+				</div>
 
-        {/* --- MAIN --- */}
-        <main className="content-area custom-vertical-scrollbar">
-          <div className="content-container">
-            <div className="greeting-section">
-              <h2 className="greeting-title">
-                {isLoading ? "LOADING..." : `Welcome, ${data?.name ? data.name.toUpperCase() : "UNKNOWN"}!`}
-              </h2>
-              <p className="greeting-subtitle">You made it!</p>
-            </div>
-            
-            {/* --- DASHBOARD GRID --- */}
-            <div className="dashboard-grid">
-              
-              <div className="module-card operator-card">
-                <div className="card-header">
-                  <h3>YOUR PROFILE</h3>
-                  <span 
-                    className="status-badge" 
-                    style={{ 
-                      borderColor: 'var(--neon-green)', 
-                      color: 'var(--neon-green)', 
-                      background: 'color-mix(in srgb, var(--neon-green) 15%, transparent)' 
-                    }}
-                  >
-                    {(data as any)?.role === "ADMIN" ? "ADMIN" : "REGULAR USER"}
-                  </span>
-                </div>
-                
-                <div className="card-body operator-body">
-                  <div className="operator-profile">
-                    <div className="avatar-container">
-                      <div className="avatar-fallback">
-                        {data?.name ? data.name.charAt(0).toUpperCase() : "O"}
-                      </div>
-                    </div>
-                    <div className="operator-details">
-                      <span className="operator-name">{data?.name || "UNKNOWN NAME"}</span>
-                      <span className="operator-email">{(data as any)?.email || "UNKNOWN EMAIL"}</span>
-                    </div>
-                  </div>
+				<nav className="sidebar-nav">
+					<div className="nav-group">
+						<span className="nav-label">MAIN</span>
+						<button type="button" className="nav-item active">
+							OVERVIEW
+						</button>
+						{data?.userRole === "admin" && (
+							<button
+								type="button"
+								className="nav-item"
+								onClick={goToAdmin}
+								style={{
+									color: "#ff4d4d",
+									border:
+										"1px solid color-mix(in srgb, #ff4d4d 30%, transparent)",
+									background: "color-mix(in srgb, #ff4d4d 5%, transparent)",
+								}}
+							>
+								<div
+									style={{ display: "flex", alignItems: "center", gap: "8px" }}
+								>
+									<svg
+										width="14"
+										height="14"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2.5"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<rect
+											x="3"
+											y="11"
+											width="18"
+											height="11"
+											rx="2"
+											ry="2"
+										></rect>
+										<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+									</svg>
+									GO TO ADMIN DASHBOARD
+								</div>
+							</button>
+						)}
+						<button type="button" className="nav-item" onClick={goToMap}>
+							RETURN TO MAP
+						</button>
+					</div>
+					<div className="nav-group" style={{ marginTop: "24px" }}>
+						<span className="nav-label">DISPLAY SETTINGS</span>
 
-                  <div className="bio-section">
-                    <div className="bio-header">
-                      <span className="bio-label">BIO</span>
-                      {!isEditingBio && (
-                        <button 
-                          className="edit-bio-btn" 
-                          onClick={() => { 
-                            setBioInput((data as any)?.bio || ""); 
-                            setIsEditingBio(true); 
-                          }}
-                        >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                          </svg>
-                          EDIT
-                        </button>
-                      )}
-                    </div>
+						<button
+							type="button"
+							className="nav-item theme-toggle-btn"
+							onClick={toggleTheme}
+						>
+							<span>UI THEME</span>
+							<div className="theme-status">
+								{theme === "dark" ? (
+									<>
+										<svg
+											width="14"
+											height="14"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="var(--text-primary)"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										>
+											<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+										</svg>
+										<span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
+									</>
+								) : (
+									<>
+										<svg
+											width="14"
+											height="14"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="var(--pin-transit)"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										>
+											<circle cx="12" cy="12" r="5"></circle>
+											<line x1="12" y1="1" x2="12" y2="3"></line>
+											<line x1="12" y1="21" x2="12" y2="23"></line>
+											<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+											<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+											<line x1="1" y1="12" x2="3" y2="12"></line>
+											<line x1="21" y1="12" x2="23" y2="12"></line>
+											<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+											<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+										</svg>
+										<span style={{ color: "var(--pin-transit)" }}>DAY</span>
+									</>
+								)}
+							</div>
+						</button>
+					</div>
+				</nav>
 
-                    {isEditingBio ? (
-                      <div className="bio-edit-mode">
-                        <textarea
-                          className="bio-input custom-vertical-scrollbar"
-                          value={bioInput}
-                          onChange={(e) => setBioInput(e.target.value)}
-                          maxLength={150}
-                          rows={3}
-                          placeholder="Enter your bio here..."
-                        />
-                        <div className="bio-actions">
-                          <button className="tactical-button-primary small-btn" onClick={handleSaveBio}>SAVE</button>
-                          <button className="tactical-button small-btn" onClick={() => setIsEditingBio(false)}>CANCEL</button>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="bio-text">
-                        {(data as any)?.bio || "No bio here. Click EDIT to add a short bio about yourself!"}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
+				<div className="sidebar-footer">
+					<button
+						type="button"
+						className="sign-out-btn"
+						onClick={handleSignOut}
+					>
+						SIGN OUT
+					</button>
+				</div>
+			</aside>
 
-              <div className="module-card telemetry-card">
-                <div className="card-header">
-                  <h3>YOUR STATISTICS</h3>
-                  <span className="status-badge" style={{ borderColor: 'var(--neon-blue)', color: 'var(--neon-blue)', background: 'color-mix(in srgb, var(--neon-blue) 15%, transparent)' }}>
-                    SYNCED
-                  </span>
-                </div>
-                
-                <div className="card-body telemetry-body">
-                  {/* Top Stats Grid */}
-                  <div className="telemetry-top-grid">
-                    <div className="stat-block">
-                      <span className="stat-label">TOTAL PINS ADDED</span>
-                      <span className="stat-value">{mockStats.totalPins}</span>
-                    </div>
-                    <div className="stat-block">
-                      <span className="stat-label">TOTAL COMMENTS</span>
-                      <span className="stat-value">{mockStats.comments}</span>
-                    </div>
-                  </div>
+			<div className="main-wrapper">
+				{/* --- HEADER --- */}
+				<header className="dashboard-header">
+					<div className="header-left">
+						<button
+							type="button"
+							className="hamburger-btn"
+							onClick={() => setIsSidebarOpen(true)}
+						>
+							<svg
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<line x1="3" y1="12" x2="21" y2="12"></line>
+								<line x1="3" y1="6" x2="21" y2="6"></line>
+								<line x1="3" y1="18" x2="21" y2="18"></line>
+							</svg>
+						</button>
+						<h1 className="header-title">User Dashboard</h1>
+					</div>
+				</header>
 
-                  {/* Verification Integrity Bar */}
-                  <div className="integrity-section">
-                    <div className="integrity-header">
-                      <span className="stat-label">VERIFICATIONS</span>
-                      <span className="integrity-percent">{verificationRate}%</span>
-                    </div>
-                    <div className="progress-track">
-                      <div className="progress-fill" style={{ width: `${verificationRate}%` }}></div>
-                    </div>
-                    <div className="integrity-details">
-                      <span className="detail-item verified">{mockStats.verifiedPins} VERIFIED</span>
-                      <span className="detail-item pending">{mockStats.pendingPins} PENDING</span>
-                      <span className="detail-item rejected">{mockStats.rejectedPins} REJECTED</span>
-                    </div>
-                  </div>
+				{/* --- MAIN --- */}
+				<main className="content-area custom-vertical-scrollbar">
+					<div className="content-container">
+						<div className="greeting-section">
+							<h2 className="greeting-title">
+								{isLoading
+									? "LOADING..."
+									: `Welcome, ${data?.name ? data.name.toUpperCase() : "UNKNOWN"}!`}
+							</h2>
+							<p className="greeting-subtitle">You made it!</p>
+						</div>
 
-                  {/* Category Distribution */}
-                  <div className="distribution-section">
-                    <span className="stat-label">CATEGORY DISTRIBUTION</span>
-                    <div className="category-list">
-                      {PIN_CATEGORIES.map((category) => {
-                        const count = mockStats.categoryBreakdown[category.id as keyof typeof mockStats.categoryBreakdown] || 0;
-                        const percentage = mockStats.totalPins > 0 ? (count / mockStats.totalPins) * 100 : 0;
-                        
-                        return (
-                          <div key={category.id} className="category-row">
-                            <div className="cat-info">
-                              <span className="cat-name" style={{ color: category.color }}>{category.label}</span>
-                              <span className="cat-count">{count}</span>
-                            </div>
-                            <div className="cat-track">
-                              <div 
-                                className="cat-fill" 
-                                style={{ 
-                                  width: `${percentage}%`, 
-                                  backgroundColor: category.color,
-                                  boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
+						{/* --- DASHBOARD GRID --- */}
+						<div className="dashboard-grid">
+							<div className="module-card operator-card">
+								<div className="card-header">
+									<h3>YOUR PROFILE</h3>
+									<span
+										className="status-badge"
+										style={{
+											borderColor: "var(--neon-green)",
+											color: "var(--neon-green)",
+											background:
+												"color-mix(in srgb, var(--neon-green) 15%, transparent)",
+										}}
+									>
+										{data?.userRole === "admin" ? "ADMIN" : "REGULAR USER"}
+									</span>
+								</div>
 
-              <div className="module-card pending-card">
-                <div className="card-header">
-                  <h3>YOUR PENDING PINS</h3>
-                  <span className="count-badge">{mockStats.pendingList.length}</span>
-                </div>
-                <div className="card-body">
-                  <div className="pin-list">
-                    {mockStats.pendingList.map((pin) => {
-                      const color = getPinColor(pin.type);
-                      return (
-                        <div key={pin.id} className="pin-list-item">
-                          <div className="pin-info-group">
-                            <div 
-                              className="list-diamond" 
-                              style={{ 
-                                borderColor: color, 
-                                backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` 
-                              }}
-                            >
-                              <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
-                            </div>
-                            
-                            <div className="pin-text">
-                              <span className="pin-title">{pin.title}</span>
-                              <span className="pin-coords">
-                                {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
-                              </span>
-                            </div>
-                          </div>
+								<div className="card-body operator-body">
+									<div className="operator-profile">
+										<div className="avatar-container">
+											<div className="avatar-fallback">
+												{data?.name ? data.name.charAt(0).toUpperCase() : "O"}
+											</div>
+										</div>
+										<div className="operator-details">
+											<span className="operator-name">
+												{data?.name || "UNKNOWN NAME"}
+											</span>
+											<span className="operator-email">
+												{(data as any)?.email || "UNKNOWN EMAIL"}
+											</span>
+										</div>
+									</div>
 
-                          <button 
-                            type="button" 
-                            className="locate-btn"
-                            title="Locate on Map"
-                            onClick={() => console.log("Locate pin:", pin.id)}
-                          >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                            </svg>
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
+									{/* <div className="bio-section">
+										<div className="bio-header">
+											<span className="bio-label">BIO</span>
+											{!isEditingBio && (
+												<button
+													className="edit-bio-btn"
+													onClick={() => {
+														setBioInput((data as any)?.bio || "");
+														setIsEditingBio(true);
+													}}
+												>
+													<svg
+														width="12"
+														height="12"
+														viewBox="0 0 24 24"
+														fill="none"
+														stroke="currentColor"
+														strokeWidth="2.5"
+														strokeLinecap="round"
+														strokeLinejoin="round"
+													>
+														<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+														<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+													</svg>
+													EDIT
+												</button>
+											)}
+										</div>
 
-              <div className="module-card recent-card">
-                <div className="card-header">
-                  <h3>YOUR RECENT PINS</h3>
-                  <span className="count-badge" style={{ color: 'var(--text-secondary)', borderColor: 'var(--border-color)', background: 'transparent' }}>
-                    {mockStats.recentList.length}
-                  </span>
-                </div>
-                <div className="card-body">
-                  <div className="pin-list">
-                    {mockStats.recentList.map((pin) => {
-                      const color = getPinColor(pin.type);
-                      return (
-                        <div key={pin.id} className="pin-list-item">
-                          <div className="pin-info-group">
-                            <div 
-                              className="list-diamond" 
-                              style={{ 
-                                borderColor: color, 
-                                backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` 
-                              }}
-                            >
-                              <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
-                            </div>
-                            
-                            <div className="pin-text">
-                              <span className="pin-title">{pin.title}</span>
-                              <span className="pin-coords">
-                                {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
-                              </span>
-                            </div>
-                          </div>
+										{isEditingBio ? (
+											<div className="bio-edit-mode">
+												<textarea
+													className="bio-input custom-vertical-scrollbar"
+													value={bioInput}
+													onChange={(e) => setBioInput(e.target.value)}
+													maxLength={150}
+													rows={3}
+													placeholder="Enter your bio here..."
+												/>
+												<div className="bio-actions">
+													<button
+														className="tactical-button-primary small-btn"
+														onClick={handleSaveBio}
+													>
+														SAVE
+													</button>
+													<button
+														className="tactical-button small-btn"
+														onClick={() => setIsEditingBio(false)}
+													>
+														CANCEL
+													</button>
+												</div>
+											</div>
+										) : (
+											<p className="bio-text">
+												{(data as any)?.bio ||
+													"No bio here. Click EDIT to add a short bio about yourself!"}
+											</p>
+										)}
+									</div> */}
+								</div>
+							</div>
 
-                          <button 
-                            type="button" 
-                            className="locate-btn"
-                            title="Locate on Map"
-                            onClick={() => console.log("Locate pin:", pin.id)}
-                          >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                            </svg>
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
+							<div className="module-card telemetry-card">
+								<div className="card-header">
+									<h3>YOUR STATISTICS</h3>
+									<span
+										className="status-badge"
+										style={{
+											borderColor: "var(--neon-blue)",
+											color: "var(--neon-blue)",
+											background:
+												"color-mix(in srgb, var(--neon-blue) 15%, transparent)",
+										}}
+									>
+										SUMMARIZED
+									</span>
+								</div>
 
-            </div>
-          </div>
-        </main>
-      </div>
+								<div className="card-body telemetry-body">
+									{/* Top Stats Grid */}
+									<div className="telemetry-top-grid">
+										<div className="stat-block">
+											<span className="stat-label">TOTAL PINS ADDED</span>
+											<span className="stat-value">{stats.totalPins}</span>
+										</div>
+										<div className="stat-block">
+											<span className="stat-label">TOTAL COMMENTS</span>
+											<span className="stat-value">{stats.comments}</span>
+										</div>
+									</div>
 
-      <style jsx>{`
+									{/* Verification Integrity Bar */}
+									<div className="integrity-section">
+										<div className="integrity-header">
+											<span className="stat-label">VERIFICATIONS</span>
+											<span className="integrity-percent">
+												{verificationRate}%
+											</span>
+										</div>
+										<div className="progress-track">
+											<div
+												className="progress-fill"
+												style={{ width: `${verificationRate}%` }}
+											></div>
+										</div>
+										<div className="integrity-details">
+											<span className="detail-item verified">
+												{stats.verifiedPins} VERIFIED
+											</span>
+											<span className="detail-item pending">
+												{stats.pendingPins} PENDING
+											</span>
+											<span className="detail-item rejected">
+												{stats.rejectedPins} REJECTED
+											</span>
+										</div>
+									</div>
+
+									{/* Category Distribution */}
+									<div className="distribution-section">
+										<span className="stat-label">CATEGORY DISTRIBUTION</span>
+										<div className="category-list">
+											{PIN_CATEGORIES.map((category) => {
+												const count =
+													stats.categoryBreakdown[
+														category.id as keyof typeof stats.categoryBreakdown
+													] || 0;
+												const percentage =
+													stats.totalPins && stats.totalPins > 0
+														? (count / stats.totalPins) * 100
+														: 0;
+
+												return (
+													<div key={category.id} className="category-row">
+														<div className="cat-info">
+															<span
+																className="cat-name"
+																style={{ color: category.color }}
+															>
+																{category.label}
+															</span>
+															<span className="cat-count">{count}</span>
+														</div>
+														<div className="cat-track">
+															<div
+																className="cat-fill"
+																style={{
+																	width: `${percentage}%`,
+																	backgroundColor: category.color,
+																	boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`,
+																}}
+															></div>
+														</div>
+													</div>
+												);
+											})}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div className="module-card pending-card">
+								<div className="card-header">
+									<h3>YOUR PENDING PINS</h3>
+									<span className="count-badge">
+										{stats.pendingList?.length}
+									</span>
+								</div>
+								<div className="card-body">
+									<div className="pin-list">
+										{stats.pendingList?.map((pin) => {
+											const color = getPinColor(
+												pin.pinTags?.[0]?.tag.title || "",
+											);
+											return (
+												<div key={pin.id} className="pin-list-item">
+													<div className="pin-info-group">
+														<div
+															className="list-diamond"
+															style={{
+																borderColor: color,
+																backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
+															}}
+														>
+															<span style={{ color }}>
+																{pin.title.charAt(0).toUpperCase()}
+															</span>
+														</div>
+
+														<div className="pin-text">
+															<span className="pin-title">{pin.title}</span>
+															<span className="pin-coords">
+																{pin.latitude.toFixed(4)},{" "}
+																{pin.longitude.toFixed(4)}
+															</span>
+														</div>
+													</div>
+
+													<button
+														type="button"
+														className="locate-btn"
+														title="Locate on Map"
+														onClick={() => console.log("Locate pin:", pin.id)}
+													>
+														<svg
+															width="18"
+															height="18"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															strokeWidth="2.5"
+														>
+															<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+														</svg>
+													</button>
+												</div>
+											);
+										})}
+									</div>
+								</div>
+							</div>
+
+							<div className="module-card recent-card">
+								<div className="card-header">
+									<h3>YOUR RECENT PINS</h3>
+									<span
+										className="count-badge"
+										style={{
+											color: "var(--text-secondary)",
+											borderColor: "var(--border-color)",
+											background: "transparent",
+										}}
+									>
+										{stats.recentList?.length}
+									</span>
+								</div>
+								<div className="card-body">
+									<div className="pin-list">
+										{stats.recentList?.map((pin) => {
+											const color = getPinColor(
+												pin.pinTags?.[0]?.tag.title || "",
+											);
+											return (
+												<div key={pin.id} className="pin-list-item">
+													<div className="pin-info-group">
+														<div
+															className="list-diamond"
+															style={{
+																borderColor: color,
+																backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
+															}}
+														>
+															<span style={{ color }}>
+																{pin.title.charAt(0).toUpperCase()}
+															</span>
+														</div>
+
+														<div className="pin-text">
+															<span className="pin-title">{pin.title}</span>
+															<span className="pin-coords">
+																{pin.latitude.toFixed(4)},{" "}
+																{pin.longitude.toFixed(4)}
+															</span>
+														</div>
+													</div>
+
+													<button
+														type="button"
+														className="locate-btn"
+														title="Locate on Map"
+														onClick={() => console.log("Locate pin:", pin.id)}
+													>
+														<svg
+															width="18"
+															height="18"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															strokeWidth="2.5"
+														>
+															<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+														</svg>
+													</button>
+												</div>
+											);
+										})}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</main>
+			</div>
+
+			<style jsx>{`
         /* --- LAYOUT SHELL --- */
         .dashboard-layout {
           display: flex;
@@ -1149,6 +1327,6 @@ export default function Dashboard() {
           }
         }
       `}</style>
-    </div>
-  );
+		</div>
+	);
 }

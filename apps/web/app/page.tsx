@@ -17,15 +17,29 @@ import { TargetLine } from "@/components/TargetLine";
 import { Polyline } from "@/components/Polyline";
 import { Polygon } from "@/components/Polygon";
 import { Sidebar } from "@/components/Sidebar";
-import { JEEPNEY_ROUTES, CAMPUS_ZONES, ZONE_CATEGORIES } from "@/data/map-layers";
+import {
+	JEEPNEY_ROUTES,
+	CAMPUS_ZONES,
+	ZONE_CATEGORIES,
+} from "@/data/map-layers";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useTheme } from "@/lib/ThemeContext";
 import { trpc } from "@/lib/trpc";
+import { useSearchParams } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
+import { skipToken } from "@tanstack/react-query";
 
 export default function Home() {
+	const session = useSession();
+	const params = useSearchParams();
+
 	const { data: pins } = trpc.pin.getAll.useQuery(undefined, {
 		refetchOnWindowFocus: false,
 	});
+
+	const { data: currentUser } = trpc.user.getCurrent.useQuery(
+		session ? undefined : skipToken,
+	);
 
 	const {
 		mode,
@@ -42,33 +56,37 @@ export default function Home() {
 
 	const [activeRoutes, setActiveRoutes] = useState<string[]>([]);
 
-    const handleToggleRoute = (routeId: string) => {
-        setActiveRoutes((prev) => 
-            prev.includes(routeId) 
-                ? prev.filter(id => id !== routeId)
-                : [...prev, routeId]
-        );
-    };
+	const handleToggleRoute = (routeId: string) => {
+		setActiveRoutes((prev) =>
+			prev.includes(routeId)
+				? prev.filter((id) => id !== routeId)
+				: [...prev, routeId],
+		);
+	};
 
-	const [activeZoneCategories, setActiveZoneCategories] = useState<string[]>([]);
+	const [activeZoneCategories, setActiveZoneCategories] = useState<string[]>(
+		[],
+	);
 
-    const handleToggleZoneCategory = (categoryId: string) => {
-        setActiveZoneCategories((prev) => 
-            prev.includes(categoryId) ? prev.filter(id => id !== categoryId) : [...prev, categoryId]
-        );
-    };
+	const handleToggleZoneCategory = (categoryId: string) => {
+		setActiveZoneCategories((prev) =>
+			prev.includes(categoryId)
+				? prev.filter((id) => id !== categoryId)
+				: [...prev, categoryId],
+		);
+	};
 
 	const [cameraProps, setCameraProps] = useState({
-        center: { lat: 14.6549, lng: 121.0645 },
-        zoom: 19,
-    });
+		center: { lat: 14.6549, lng: 121.0645 },
+		zoom: 19,
+	});
 
-    const handleCameraChange = useCallback((ev: MapCameraChangedEvent) => {
-        setCameraProps({
-            center: ev.detail.center,
-            zoom: ev.detail.zoom,
-        });
-    }, []);
+	const handleCameraChange = useCallback((ev: MapCameraChangedEvent) => {
+		setCameraProps({
+			center: ev.detail.center,
+			zoom: ev.detail.zoom,
+		});
+	}, []);
 
 	const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
 	const mockHeading = 45;
@@ -90,8 +108,8 @@ export default function Home() {
 	}, [pins]);
 
 	const activePinObj = useMemo(() => {
-        return pinsParsed.find((p) => p.id === selectedPinId);
-    }, [pinsParsed, selectedPinId]);
+		return pinsParsed.find((p) => p.id === selectedPinId);
+	}, [pinsParsed, selectedPinId]);
 
 	useEffect(() => {
 		if (!isAddingPin) return;
@@ -106,6 +124,13 @@ export default function Home() {
 		return () => window.removeEventListener("mousemove", handleMouseMove);
 	}, [isAddingPin]);
 
+	useEffect(() => {
+		if (params.has("pin")) {
+			const preselectedPin = params.get("pin") as string;
+			selectPin(preselectedPin);
+		}
+	}, [params, selectPin]);
+
 	return (
 		<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
 			<main
@@ -118,8 +143,8 @@ export default function Home() {
 				{/* MAP LAYER */}
 				<GoogleMap
 					center={cameraProps.center}
-                    zoom={cameraProps.zoom}
-                    onCameraChanged={handleCameraChange}
+					zoom={cameraProps.zoom}
+					onCameraChanged={handleCameraChange}
 					minZoom={17}
 					mapId={process.env.NEXT_PUBLIC_MAP_ID || "71238adec955b8c6d66f595a"}
 					colorScheme={theme === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
@@ -160,11 +185,11 @@ export default function Home() {
 								?.toLowerCase()
 								.includes(searchQuery.toLowerCase());
 
-						const isVisible = !!(
-							matchesCategory &&
-							matchesSearch &&
-							pinData.status !== "DELETED"
-						);
+						const isVisible =
+							!!(matchesCategory && matchesSearch) &&
+							(currentUser?.userRole === "admin"
+								? pinData.status !== "DELETED"
+								: pinData.status === "ACTIVE");
 
 						return (
 							<AdvancedMarker
@@ -183,64 +208,66 @@ export default function Home() {
 						);
 					})}
 
-                    <AdvancedMarker position={mockUserLocation} zIndex={50}>
-                        <MapCursor heading={mockHeading} />
-                    </AdvancedMarker>
-					
-                    {activePinObj && (
-                        <TargetLine
-                            start={mockUserLocation}
-                            end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
-                            color="#00E5FF"
-                        />
-                    )}
+					<AdvancedMarker position={mockUserLocation} zIndex={50}>
+						<MapCursor heading={mockHeading} />
+					</AdvancedMarker>
+
+					{activePinObj && (
+						<TargetLine
+							start={mockUserLocation}
+							end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
+							color="#00E5FF"
+						/>
+					)}
 
 					{CAMPUS_ZONES.map((zone) => {
-                        if (!activeZoneCategories.includes(zone.categoryId)) return null;
+						if (!activeZoneCategories.includes(zone.categoryId)) return null;
 
-                        const categoryDef = ZONE_CATEGORIES.find(c => c.id === zone.categoryId);
-                        const zoneColor = categoryDef ? categoryDef.color : "#FFFFFF";
+						const categoryDef = ZONE_CATEGORIES.find(
+							(c) => c.id === zone.categoryId,
+						);
+						const zoneColor = categoryDef ? categoryDef.color : "#FFFFFF";
 
-                        return (
-                            <Polygon 
-                                key={zone.id} 
-                                paths={zone.paths} 
-                                fillColor={zoneColor} 
-                                strokeColor={zoneColor}
-                                isPulsating={true} 
-                            />
-                        );
-                    })}
+						return (
+							<Polygon
+								key={zone.id}
+								paths={zone.paths}
+								fillColor={zoneColor}
+								strokeColor={zoneColor}
+								isPulsating={true}
+							/>
+						);
+					})}
 
 					{JEEPNEY_ROUTES.map((route) => {
-                        if (!activeRoutes.includes(route.id)) return null;
+						if (!activeRoutes.includes(route.id)) return null;
 
-                        return (
-                            <Polyline 
-                                key={route.id} 
-                                path={route.path} 
-                                color={route.color} 
-                                weight={10}
-                                animateDirection="forward"
-                            />
-                        );
-                    })}
+						return (
+							<Polyline
+								key={route.id}
+								path={route.path}
+								color={route.color}
+								weight={10}
+								animateDirection="forward"
+							/>
+						);
+					})}
 				</GoogleMap>
 
 				{/* TOP BAR */}
 				<TopBar
-                    onMenuClick={toggleMenu}
-                    activeFilter={activeFilter}
-                    onFilterChange={setActiveFilter}
-                    searchQuery={searchQuery}
-                    onSearchChange={setSearchQuery}
-                    activeRoutes={activeRoutes}
-                    onToggleRoute={handleToggleRoute}
-                    activeZoneCategories={activeZoneCategories}
-                    onToggleZoneCategory={handleToggleZoneCategory}
-                    userLocation={mockUserLocation}
+					onMenuClick={toggleMenu}
+					activeFilter={activeFilter}
+					onFilterChange={setActiveFilter}
+					searchQuery={searchQuery}
+					onSearchChange={setSearchQuery}
+					activeRoutes={activeRoutes}
+					onToggleRoute={handleToggleRoute}
+					activeZoneCategories={activeZoneCategories}
+					onToggleZoneCategory={handleToggleZoneCategory}
+					userLocation={mockUserLocation}
 					hideControls={!!selectedPinId}
-                />
+				/>
 
 				{/* TARGETING CROSSHAIR (Only visible when armed) */}
 				{isAddingPin && (
@@ -293,10 +320,7 @@ export default function Home() {
 					}}
 				/>
 
-				<Sidebar 
-                    isOpen={mode === "MENU"} 
-                    onClose={toggleMenu} 
-                />
+				<Sidebar isOpen={mode === "MENU"} onClose={toggleMenu} />
 
 				{pendingPinCoords && (
 					<AddPinModal

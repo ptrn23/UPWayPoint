@@ -1,4 +1,4 @@
-import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import { inferRouterInputs, inferRouterOutputs, TRPCError } from "@trpc/server";
 import {
 	adminProcedure,
 	publicProcedure,
@@ -40,11 +40,15 @@ export const pinRouter = router({
 			return ctx.services.pin.getById(input.id);
 		}),
 
-	getByOwnerId: publicProcedure
-		.input(z.object({ ownerId: z.string() }))
+	getSimpleById: publicProcedure
+		.input(z.object({ id: z.string() }))
 		.query(async ({ ctx, input }) => {
-			return ctx.services.pin.getByOwnerId(input.ownerId);
+			return ctx.services.pin.getSimpleById(input.id);
 		}),
+
+	getCurrentUsersPins: userProcedure.query(async ({ ctx }) => {
+		return ctx.services.pin.getByOwnerId(ctx.user.id);
+	}),
 
 	getByStatus: publicProcedure
 		.input(z.object({ status: PinStatus }))
@@ -86,14 +90,34 @@ export const pinRouter = router({
 				id: z.string(),
 				title: z.string().min(1).optional(),
 				description: z.string().optional(),
-				latitude: z.number().min(-90).max(90).optional(),
-				longitude: z.number().min(-180).max(180).optional(),
-				status: PinStatus.optional(),
+				tags: z.array(z.string()),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const { id, ...data } = input;
-			return ctx.services.pin.update(id, data);
+			const { id, tags, ...data } = input;
+			return ctx.services.pin.requestUpdate(id, ctx.user.id, data, tags);
+		}),
+
+	applyUpdate: adminProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { id } = input;
+			return ctx.services.pin.applyUpdate(id, ctx.user.id);
+		}),
+
+	rejectUpdate: adminProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { id } = input;
+			return ctx.services.pin.rejectUpdate(id, ctx.user.id);
 		}),
 
 	userDelete: userProcedure
@@ -133,22 +157,16 @@ export const pinRouter = router({
 		return ctx.services.pin.getStatusCounts();
 	}),
 
-	getByIdAdmin: adminProcedure
-		.input(z.object({ id: z.string() }))
-		.query(async ({ ctx, input }) => {
-			return ctx.services.pin.getByIdWithOwner(input.id);
-		}),
-
 	approve: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.approvePin(input.id);
+			return ctx.services.pin.approvePin(input.id, ctx.user.id);
 		}),
 
 	reject: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.rejectPin(input.id);
+			return ctx.services.pin.rejectPin(input.id, ctx.user.id);
 		}),
 
 	// Admin update - can update any pin
@@ -165,7 +183,7 @@ export const pinRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const { id, ...data } = input;
-			return ctx.services.pin.update(id, data);
+			return ctx.services.pin.adminUpdate(id, ctx.user.id, data);
 		}),
 });
 

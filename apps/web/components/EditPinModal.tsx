@@ -1,52 +1,59 @@
 "use client";
 
 import { trpc } from "@/lib/trpc";
-import type { PinRouterInputs } from "@repo/api";
+import type { PinRouterInputs, PinRouterOutputs } from "@repo/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import z from "zod";
 import { fileSchema } from "@repo/api/schemas";
 import { getPinColor } from "@/data/pin-categories";
+type Pin = {
+	id?: string | undefined;
+	createdAt?: string | undefined;
+	updatedAt?: string | undefined;
+	title?: string | undefined;
+	pinTags?:
+		| {
+				createdAt: string;
+				updatedAt: string;
+				tag: {
+					id: string;
+					createdAt: string;
+					updatedAt: string;
+					title: string;
+					color: string | null;
+				};
+				pinId: string;
+				tagId: string;
+		  }[]
+		| undefined;
+	status?: string | undefined;
+	latitude?: number | undefined;
+	longitude?: number | undefined;
+	description?: string | null;
+	ownerId?: string | undefined;
+};
 
-type Pin = Omit<PinRouterInputs["userCreate"], "ownerId">;
+type UpdatePin = PinRouterInputs["update"];
 
-interface AddPinModalProps {
-	coords: { lat: number; lng: number };
+interface IEditPinModalProps {
 	onSave: (pinId: string) => void;
 	onCancel: () => void;
+	pin: Pin;
 }
 
-async function uploadImages(files: File[]): Promise<string[]> {
-	const formData = new FormData();
-	files.forEach((file) => {
-		formData.append("images", file);
-	});
-
-	const res = await fetch("/api/upload", { method: "POST", body: formData });
-	const { urls } = await res.json();
-	return urls;
-}
-
-export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
+export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
 	const pinCreationSchema = z.object({
-		title: z.string().min(1),
+		title: z.string().min(1).optional(),
 		description: z.string().optional(),
-		latitude: z.number().min(-90).max(90),
-		longitude: z.number().min(-180).max(180),
-		tags: z.array(z.string()),
-		images: z
-			.instanceof(FileList)
-			.transform((list) => Array.from(list))
-			.pipe(z.array(fileSchema).max(10)),
+		tags: z.array(z.string()).optional(),
 	});
 
 	type pinCreationSchemaType = z.infer<typeof pinCreationSchema>;
 
-	const utils = trpc.useUtils();
-	const createPin = trpc.pin.userCreate.useMutation({
+	const updatePin = trpc.pin.update.useMutation({
 		onSuccess: (newPin) => {
-			utils.pin.getAll.invalidate();
 			if (!newPin) return;
 			onSave(newPin.id);
 		},
@@ -54,23 +61,31 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 	const { data: tagsData } = trpc.tag.getAll.useQuery();
 
 	const formMethods = useForm({
-		defaultValues: { tags: [] },
+		defaultValues: {
+			tags: pin.pinTags?.map((pt) => pt.tagId),
+			title: pin.title,
+			description: pin.description || "",
+		},
 		resolver: zodResolver(pinCreationSchema),
 	});
 
 	const onSubmit = async (data: pinCreationSchemaType) => {
-		let urls: string[] = [];
-		if (data.images.length > 0) urls = await uploadImages(data.images);
-		const newPin: Pin = {
-			title: data.title.trim(),
-			description: data.description?.trim(),
-			latitude: coords.lat,
-			longitude: coords.lng,
-			tags: data.tags,
-			imageURLs: urls,
-		};
+		if (!pin.id) {
+			handleCancel();
+			return;
+		}
 
-		createPin.mutate(newPin);
+		const dirtyFields = Object.keys(formMethods.formState.dirtyFields);
+		console.log(dirtyFields);
+
+		updatePin.mutate({
+			id: pin.id,
+			title: dirtyFields.includes("title") ? data.title : undefined,
+			description: dirtyFields.includes("description")
+				? data.description
+				: undefined,
+			tags: dirtyFields.includes("tags") ? data.tags || [] : [],
+		});
 	};
 
 	const handleCancel = () => {
@@ -80,11 +95,6 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 	};
 
 	const tags = formMethods.watch("tags");
-
-	useEffect(() => {
-		formMethods.setValue("latitude", coords.lat);
-		formMethods.setValue("longitude", coords.lng);
-	}, [formMethods, coords]);
 
 	return (
 		<div className="modal-overlay">
@@ -103,7 +113,8 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 						<line x1="12" y1="5" x2="12" y2="19"></line>
 						<line x1="5" y1="12" x2="19" y2="12"></line>
 					</svg>
-					<h2 className="modal-title">ADD NEW PIN</h2>
+					<h2 className="modal-title">EDIT PIN</h2>
+					<span>{formMethods.formState.errors.tags?.message}</span>
 				</div>
 
 				<form
@@ -133,7 +144,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 						<span>PIN TYPE</span>
 						<div className="type-selector">
 							{tagsData?.map((t) => {
-								const isActive = tags.includes(t.id);
+								const isActive = tags?.includes(t.id);
 								const tagColor = getPinColor(t.title);
 
 								return (
@@ -143,9 +154,11 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 										className="type-btn"
 										onClick={() => {
 											if (isActive) {
-												formMethods.setValue("tags", []);
+												formMethods.setValue("tags", [], { shouldDirty: true });
 											} else {
-												formMethods.setValue("tags", [t.id]);
+												formMethods.setValue("tags", [t.id], {
+													shouldDirty: true,
+												});
 											}
 										}}
 										style={
@@ -165,13 +178,6 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 							})}
 						</div>
 					</div>
-
-					<input
-						type="file"
-						accept="image/jpeg,image/png,image/jpg"
-						multiple
-						{...formMethods.register("images")}
-					/>
 
 					<div className="action-row">
 						<button
@@ -207,6 +213,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
           max-width: 400px;
           padding: 24px;
           animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+					background-color: black;
         }
 
         .modal-header {
