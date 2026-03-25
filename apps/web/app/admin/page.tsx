@@ -47,6 +47,12 @@ export default function AdminDashboard() {
         newUsers30Days: 45,
     };
 
+    const globalPendingPins = [
+        { id: "gp1", title: "Palma Hall Annex", lat: 14.6534, lng: 121.0691, type: "academic", submittedBy: "u1" },
+        { id: "gp2", title: "KNL Tricycle Terminal", lat: 14.6552, lng: 121.0621, type: "transit", submittedBy: "u2" },
+        { id: "gp3", title: "Gyud Food", lat: 14.6542, lng: 121.0665, type: "food", submittedBy: "u3" },
+    ];
+
     return (
         <div className="dashboard-layout">
             {/* --- MOBILE OVERLAY --- */}
