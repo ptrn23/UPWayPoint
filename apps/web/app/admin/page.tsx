@@ -128,7 +128,7 @@ export default function AdminDashboard() {
                             className={`nav-item ${activeSection === 'overview' ? 'active' : ''}`}
                             onClick={() => scrollToSection('overview')}
                         >
-                            SYSTEM OVERVIEW
+                            OVERVIEW
                         </button>
 
                         <button
@@ -219,318 +219,330 @@ export default function AdminDashboard() {
                             <p className="greeting-subtitle">You have accessed the restricted area. 🚨</p>
                         </div>
 
-                        {/* --- DASHBOARD GRID --- */}
-                        <div className="dashboard-grid">
-                            <div className="module-card">
-                                <div className="card-header">
-                                    <h3>OVERALL PIN STATISTICS</h3>
-                                </div>
-                                <div className="card-body telemetry-body">
-
-                                    {/* Top Stats Grid */}
-                                    <div className="telemetry-top-grid">
-                                        <div className="stat-block">
-                                            <span className="stat-label">TOTAL PINS IN MAP</span>
-                                            <span className="stat-value">{globalPinStats.totalPins}</span>
+                        <div className="dashboard-sections">
+                            <section id="overview" className="dashboard-section">
+                                <h2 className="section-title">OVERVIEW</h2>
+                                <div className="dashboard-grid">
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>OVERALL PIN STATISTICS</h3>
                                         </div>
-                                        <div className="stat-block">
-                                            <span className="stat-label">AWAITING ACTION</span>
-                                            <span className="stat-value" style={{ color: 'var(--neon-yellow, #FFD700)' }}>
-                                                {globalPinStats.pendingPins}
-                                            </span>
-                                        </div>
-                                    </div>
+                                        <div className="card-body telemetry-body">
 
-                                    {/* Verification Integrity Bar */}
-                                    <div className="integrity-section">
-                                        <div className="integrity-header">
-                                            <span className="stat-label">GLOBAL VERIFICATION</span>
-                                            <span className="integrity-percent" style={{ color: 'var(--pin-food)' }}>
-                                                {globalVerificationRate}%
-                                            </span>
-                                        </div>
-                                        <div className="progress-track">
-                                            <div
-                                                className="progress-fill"
-                                                style={{
-                                                    width: `${globalVerificationRate}%`,
-                                                    background: 'var(--pin-food)',
-                                                    boxShadow: '0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent)'
-                                                }}
-                                            ></div>
-                                        </div>
-                                        <div className="integrity-details">
-                                            <span className="detail-item verified">{globalPinStats.verifiedPins} VERIFIED</span>
-                                            <span className="detail-item pending">{globalPinStats.pendingPins} PENDING</span>
-                                            <span className="detail-item rejected">{globalPinStats.rejectedPins} REJECTED</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Category Distribution */}
-                                    <div className="distribution-section">
-                                        <span className="stat-label">CATEGORY BREAKDOWN</span>
-                                        <div className="category-list">
-                                            {PIN_CATEGORIES.map((category) => {
-                                                const count = globalPinStats.categoryBreakdown[category.id as keyof typeof globalPinStats.categoryBreakdown] || 0;
-                                                const percentage = globalPinStats.totalPins > 0 ? (count / globalPinStats.totalPins) * 100 : 0;
-
-                                                return (
-                                                    <div key={category.id} className="category-row">
-                                                        <div className="cat-info">
-                                                            <span className="cat-name" style={{ color: category.color }}>{category.label}</span>
-                                                            <span className="cat-count">{count}</span>
-                                                        </div>
-                                                        <div className="cat-track">
-                                                            <div
-                                                                className="cat-fill"
-                                                                style={{
-                                                                    width: `${percentage}%`,
-                                                                    backgroundColor: category.color,
-                                                                    boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`
-                                                                }}
-                                                            ></div>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="module-card">
-                                <div className="card-header">
-                                    <h3>OVERALL USER STATISTICS</h3>
-                                </div>
-
-                                <div className="card-body telemetry-body">
-                                    <div className="telemetry-top-grid">
-                                        <div className="stat-block">
-                                            <span className="stat-label">TOTAL USERS</span>
-                                            <span className="stat-value">{globalUserStats.totalUsers}</span>
-                                        </div>
-                                        <div className="stat-block">
-                                            <span className="stat-label">TOTAL COMMENTS</span>
-                                            <span className="stat-value">{globalUserStats.totalComments}</span>
-                                        </div>
-                                        <div className="stat-block">
-                                            <span className="stat-label">AVERAGE PINS / USER</span>
-                                            <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgPins}</span>
-                                        </div>
-                                        <div className="stat-block">
-                                            <span className="stat-label">AVERAGE COMMENTS / USER</span>
-                                            <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgComments}</span>
-                                        </div>
-                                        <div className="stat-block">
-                                            <span className="stat-label">NEW USERS FOR THE LAST WEEK</span>
-                                            <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers7Days}</span>
-                                        </div>
-                                        <div className="stat-block">
-                                            <span className="stat-label">NEW USERS FOR THE LAST MONTH</span>
-                                            <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers30Days}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="module-card">
-                                <div className="card-header">
-                                    <h3>PENDING PIN VERIFICATIONS</h3>
-                                </div>
-
-                                <div className="card-body">
-                                    <div className="pin-list">
-                                        {globalPendingPins.map((pin) => {
-                                            const color = getPinColor(pin.type);
-                                            return (
-                                                <div key={pin.id} className="pin-list-item">
-                                                    <div className="pin-info-group">
-                                                        <div
-                                                            className="list-diamond"
-                                                            style={{
-                                                                borderColor: color,
-                                                                backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
-                                                            }}
-                                                        >
-                                                            <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
-                                                        </div>
-
-                                                        <div className="pin-text">
-                                                            <span className="pin-title">{pin.title}</span>
-                                                            <span className="pin-coords">
-                                                                By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="pin-actions" style={{ display: 'flex', gap: '8px' }}>
-                                                        <button
-                                                            type="button"
-                                                            className="locate-btn"
-                                                            title="Locate on Map"
-                                                            onClick={() => console.log("Locate pin:", pin.id)}
-                                                        >
-                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                                                <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                                                            </svg>
-                                                        </button>
-
-                                                        <button
-                                                            type="button"
-                                                            className="reject-btn"
-                                                            title="Reject Pin"
-                                                            onClick={() => console.log("Reject pin:", pin.id)}
-                                                        >
-                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                            </svg>
-                                                        </button>
-
-                                                        <button
-                                                            type="button"
-                                                            className="approve-btn"
-                                                            title="Verify & Approve Pin"
-                                                            onClick={() => console.log("Approve pin:", pin.id)}
-                                                        >
-                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-
+                                            {/* Top Stats Grid */}
+                                            <div className="telemetry-top-grid">
+                                                <div className="stat-block">
+                                                    <span className="stat-label">TOTAL PINS IN MAP</span>
+                                                    <span className="stat-value">{globalPinStats.totalPins}</span>
                                                 </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="module-card">
-                                <div className="card-header">
-                                    <h3>RECENTLY VERIFIED PINS</h3>
-                                </div>
-
-                                <div className="card-body">
-                                    <div className="pin-list">
-                                        {globalVerifiedPins.map((pin) => {
-                                            const color = getPinColor(pin.type);
-                                            return (
-                                                <div key={pin.id} className="pin-list-item">
-                                                    <div className="pin-info-group">
-                                                        <div
-                                                            className="list-diamond"
-                                                            style={{
-                                                                borderColor: color,
-                                                                backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
-                                                            }}
-                                                        >
-                                                            <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
-                                                        </div>
-
-                                                        <div className="pin-text">
-                                                            <span className="pin-title">{pin.title}</span>
-                                                            <span className="pin-coords">
-                                                                By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="pin-actions">
-                                                        <button
-                                                            type="button"
-                                                            className="locate-btn"
-                                                            title="Locate on Map"
-                                                            onClick={() => console.log("Locate verified pin:", pin.id)}
-                                                        >
-                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                                                <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="module-card">
-                                <div className="card-header">
-                                    <h3>NEWEST USERS</h3>
-                                </div>
-                                <div className="card-body">
-                                    <div className="user-list">
-                                        {recentUsers.map((user) => (
-                                            <div key={user.id} className="user-list-item">
-                                                <div className="user-info-group">
-                                                    <div className="user-avatar">
-                                                        {user.name.charAt(0).toUpperCase()}
-                                                    </div>
-                                                    <div className="user-text">
-                                                        <span className="user-name">{user.name}</span>
-                                                        <span className="user-meta">
-                                                            {user.email} • {user.joinedAt}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <button
-                                                    type="button"
-                                                    className="view-user-btn"
-                                                    title="Access Operator Profile"
-                                                    onClick={() => console.log("View user:", user.id)}
-                                                >
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                                        <circle cx="12" cy="7" r="4"></circle>
-                                                    </svg>
-                                                </button>
-
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="module-card">
-                                <div className="card-header">
-                                    <h3>TOP USERS BY PINS</h3>
-                                </div>
-                                <div className="card-body">
-                                    <div className="user-list">
-                                        {topUsers.map((user, index) => (
-                                            <div key={user.id} className="user-list-item">
-
-                                                <div className="user-info-group">
-                                                    <div
-                                                        className="user-avatar"
-                                                        style={{
-                                                            borderColor: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
-                                                            color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
-                                                            background: index === 0 ? 'color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent)' : 'color-mix(in srgb, var(--neon-blue) 15%, transparent)'
-                                                        }}
-                                                    >
-                                                        {user.name.charAt(0).toUpperCase()}
-                                                    </div>
-                                                    <div className="user-text">
-                                                        <span className="user-name">{user.name}</span>
-                                                        <span className="user-meta">Rank #{user.rank} Operator</span>
-                                                    </div>
-                                                </div>
-
-                                                <div className="pin-count-display">
-                                                    <span className="count-number" style={{ color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--text-primary)' }}>
-                                                        {user.pinCount}
+                                                <div className="stat-block">
+                                                    <span className="stat-label">AWAITING ACTION</span>
+                                                    <span className="stat-value" style={{ color: 'var(--neon-yellow, #FFD700)' }}>
+                                                        {globalPinStats.pendingPins}
                                                     </span>
-                                                    <span className="count-label">PINS</span>
                                                 </div>
-
                                             </div>
-                                        ))}
+
+                                            <div className="integrity-section">
+                                                <div className="integrity-header">
+                                                    <span className="stat-label">GLOBAL VERIFICATION</span>
+                                                    <span className="integrity-percent" style={{ color: 'var(--pin-food)' }}>
+                                                        {globalVerificationRate}%
+                                                    </span>
+                                                </div>
+                                                <div className="progress-track">
+                                                    <div
+                                                        className="progress-fill"
+                                                        style={{
+                                                            width: `${globalVerificationRate}%`,
+                                                            background: 'var(--pin-food)',
+                                                            boxShadow: '0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent)'
+                                                        }}
+                                                    ></div>
+                                                </div>
+                                                <div className="integrity-details">
+                                                    <span className="detail-item verified">{globalPinStats.verifiedPins} VERIFIED</span>
+                                                    <span className="detail-item pending">{globalPinStats.pendingPins} PENDING</span>
+                                                    <span className="detail-item rejected">{globalPinStats.rejectedPins} REJECTED</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="distribution-section">
+                                                <span className="stat-label">CATEGORY BREAKDOWN</span>
+                                                <div className="category-list">
+                                                    {PIN_CATEGORIES.map((category) => {
+                                                        const count = globalPinStats.categoryBreakdown[category.id as keyof typeof globalPinStats.categoryBreakdown] || 0;
+                                                        const percentage = globalPinStats.totalPins > 0 ? (count / globalPinStats.totalPins) * 100 : 0;
+
+                                                        return (
+                                                            <div key={category.id} className="category-row">
+                                                                <div className="cat-info">
+                                                                    <span className="cat-name" style={{ color: category.color }}>{category.label}</span>
+                                                                    <span className="cat-count">{count}</span>
+                                                                </div>
+                                                                <div className="cat-track">
+                                                                    <div
+                                                                        className="cat-fill"
+                                                                        style={{
+                                                                            width: `${percentage}%`,
+                                                                            backgroundColor: category.color,
+                                                                            boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`
+                                                                        }}
+                                                                    ></div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>OVERALL USER STATISTICS</h3>
+                                        </div>
+
+                                        <div className="card-body telemetry-body">
+                                            <div className="telemetry-top-grid">
+                                                <div className="stat-block">
+                                                    <span className="stat-label">TOTAL USERS</span>
+                                                    <span className="stat-value">{globalUserStats.totalUsers}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">TOTAL COMMENTS</span>
+                                                    <span className="stat-value">{globalUserStats.totalComments}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">AVERAGE PINS / USER</span>
+                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgPins}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">AVERAGE COMMENTS / USER</span>
+                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgComments}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">NEW USERS FOR THE LAST WEEK</span>
+                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers7Days}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">NEW USERS FOR THE LAST MONTH</span>
+                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers30Days}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </section>
+
+                            <section id="pin-management" className="dashboard-section">
+                                <h2 className="section-title">PIN MANAGEMENT</h2>
+                                <div className="dashboard-grid">
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>PENDING PIN VERIFICATIONS</h3>
+                                        </div>
+
+                                        <div className="card-body">
+                                            <div className="pin-list">
+                                                {globalPendingPins.map((pin) => {
+                                                    const color = getPinColor(pin.type);
+                                                    return (
+                                                        <div key={pin.id} className="pin-list-item">
+                                                            <div className="pin-info-group">
+                                                                <div
+                                                                    className="list-diamond"
+                                                                    style={{
+                                                                        borderColor: color,
+                                                                        backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
+                                                                    }}
+                                                                >
+                                                                    <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
+                                                                </div>
+
+                                                                <div className="pin-text">
+                                                                    <span className="pin-title">{pin.title}</span>
+                                                                    <span className="pin-coords">
+                                                                        By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="pin-actions" style={{ display: 'flex', gap: '8px' }}>
+                                                                <button
+                                                                    type="button"
+                                                                    className="locate-btn"
+                                                                    title="Locate on Map"
+                                                                    onClick={() => console.log("Locate pin:", pin.id)}
+                                                                >
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                                        <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="reject-btn"
+                                                                    title="Reject Pin"
+                                                                    onClick={() => console.log("Reject pin:", pin.id)}
+                                                                >
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="approve-btn"
+                                                                    title="Verify & Approve Pin"
+                                                                    onClick={() => console.log("Approve pin:", pin.id)}
+                                                                >
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>RECENTLY VERIFIED PINS</h3>
+                                        </div>
+
+                                        <div className="card-body">
+                                            <div className="pin-list">
+                                                {globalVerifiedPins.map((pin) => {
+                                                    const color = getPinColor(pin.type);
+                                                    return (
+                                                        <div key={pin.id} className="pin-list-item">
+                                                            <div className="pin-info-group">
+                                                                <div
+                                                                    className="list-diamond"
+                                                                    style={{
+                                                                        borderColor: color,
+                                                                        backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
+                                                                    }}
+                                                                >
+                                                                    <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
+                                                                </div>
+
+                                                                <div className="pin-text">
+                                                                    <span className="pin-title">{pin.title}</span>
+                                                                    <span className="pin-coords">
+                                                                        By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="pin-actions">
+                                                                <button
+                                                                    type="button"
+                                                                    className="locate-btn"
+                                                                    title="Locate on Map"
+                                                                    onClick={() => console.log("Locate verified pin:", pin.id)}
+                                                                >
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                                        <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section id="user-management" className="dashboard-section">
+                                <h2 className="section-title">USER MANAGEMENT</h2>
+                                <div className="dashboard-grid">
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>NEWEST USERS</h3>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="user-list">
+                                                {recentUsers.map((user) => (
+                                                    <div key={user.id} className="user-list-item">
+                                                        <div className="user-info-group">
+                                                            <div className="user-avatar">
+                                                                {user.name.charAt(0).toUpperCase()}
+                                                            </div>
+                                                            <div className="user-text">
+                                                                <span className="user-name">{user.name}</span>
+                                                                <span className="user-meta">
+                                                                    {user.email} • {user.joinedAt}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <button
+                                                            type="button"
+                                                            className="view-user-btn"
+                                                            title="Access Operator Profile"
+                                                            onClick={() => console.log("View user:", user.id)}
+                                                        >
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                                <circle cx="12" cy="7" r="4"></circle>
+                                                            </svg>
+                                                        </button>
+
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>TOP USERS BY PINS</h3>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="user-list">
+                                                {topUsers.map((user, index) => (
+                                                    <div key={user.id} className="user-list-item">
+
+                                                        <div className="user-info-group">
+                                                            <div
+                                                                className="user-avatar"
+                                                                style={{
+                                                                    borderColor: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
+                                                                    color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
+                                                                    background: index === 0 ? 'color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent)' : 'color-mix(in srgb, var(--neon-blue) 15%, transparent)'
+                                                                }}
+                                                            >
+                                                                {user.name.charAt(0).toUpperCase()}
+                                                            </div>
+                                                            <div className="user-text">
+                                                                <span className="user-name">{user.name}</span>
+                                                                <span className="user-meta">Rank #{user.rank} Operator</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="pin-count-display">
+                                                            <span className="count-number" style={{ color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--text-primary)' }}>
+                                                                {user.pinCount}
+                                                            </span>
+                                                            <span className="count-label">PINS</span>
+                                                        </div>
+
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
 
                         </div>
                     </div>
@@ -740,6 +752,26 @@ export default function AdminDashboard() {
           font-size: 15px;
           color: var(--text-secondary);
           margin: 0;
+        }
+
+        /* --- DASHBOARD SECTIONS --- */
+        .dashboard-sections {
+          display: flex;
+          flex-direction: column;
+          gap: 64px;
+        }
+
+        .dashboard-section {
+          scroll-margin-top: 24px;
+        }
+
+        .section-title {
+          font-size: 20px;
+          color: var(--text-primary);
+          letter-spacing: 0.1em;
+          margin: 0 0 24px 0;
+          padding-bottom: 12px;
+          border-bottom: 1px solid var(--border-color);
         }
 
         /* --- DASHBOARD GRID & CARDS --- */
