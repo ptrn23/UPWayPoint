@@ -23,6 +23,7 @@ export default function Dashboard() {
   };
 
   const goToMap = () => router.push("/");
+  const goToAdmin = () => router.push("/admin");
   
   const handleSignOut = async () => {
     await signOut();
@@ -75,6 +76,25 @@ export default function Dashboard() {
           <div className="nav-group">
             <span className="nav-label">MAIN</span>
             <button className="nav-item active">OVERVIEW</button>
+            {(data as any)?.userRole === "admin" && (
+              <button 
+                className="nav-item" 
+                onClick={goToAdmin}
+                style={{
+                  color: '#ff4d4d', 
+                  border: '1px solid color-mix(in srgb, #ff4d4d 30%, transparent)',
+                  background: 'color-mix(in srgb, #ff4d4d 5%, transparent)'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  GO TO ADMIN DASHBOARD
+                </div>
+              </button>
+            )}
             <button className="nav-item" onClick={goToMap}>RETURN TO MAP</button>
           </div>
           <div className="nav-group" style={{ marginTop: '24px' }}>
