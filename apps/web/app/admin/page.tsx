@@ -272,11 +272,11 @@ export default function AdminDashboard() {
                                             <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgComments}</span>
                                         </div>
                                         <div className="stat-block">
-                                            <span className="stat-label">NEW USERS FOR THE LAST 7 DAYS</span>
+                                            <span className="stat-label">NEW USERS FOR THE LAST WEEK</span>
                                             <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers7Days}</span>
                                         </div>
                                         <div className="stat-block">
-                                            <span className="stat-label">NEW USERS FOR THE LAST 30 DAYS</span>
+                                            <span className="stat-label">NEW USERS FOR THE LAST MONTH</span>
                                             <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers30Days}</span>
                                         </div>
                                     </div>
