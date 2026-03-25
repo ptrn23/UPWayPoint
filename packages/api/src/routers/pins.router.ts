@@ -105,7 +105,7 @@ export const pinRouter = router({
 
 	
 	getAllAdmin: adminProcedure
-		.input(paginationSchema.extend(pinFilterSchema).optional())
+		.input(paginationSchema.optional())
 		.query(async ({ ctx, input }) => {
 			const options = input
 				? {

@@ -21,7 +21,7 @@ export const userRouter = router({
 
 	
 	getAll: adminProcedure
-		.input(paginationSchema.extend(userFilterSchema).optional())
+		.input(paginationSchema.optional())
 		.query(async ({ ctx, input }) => {
 			const options = input
 				? {
