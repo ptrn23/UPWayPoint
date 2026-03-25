@@ -1,237 +1,1186 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
+import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
+import { useTheme } from "@/lib/ThemeContext";
 
 export default function AdminDashboard() {
     const router = useRouter();
-    const { data } = trpc.user.getCurrent.useQuery();
+
+    const { data, isLoading } = trpc.user.getCurrent.useQuery();
+
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { theme, toggleTheme } = useTheme();
+    const [activeSection, setActiveSection] = useState("overview");
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            {
+                root: document.querySelector('.content-area'),
+                rootMargin: "-10% 0px -70% 0px"
+            }
+        );
+
+        const sections = document.querySelectorAll(".dashboard-section");
+        sections.forEach((section) => observer.observe(section));
+
+        return () => observer.disconnect();
+    }, []);
+
+    const scrollToSection = (sectionId: string) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setActiveSection(sectionId);
+            if (window.innerWidth <= 768) setIsSidebarOpen(false);
+        }
+    };
+
+    const goToMap = () => router.push("/");
 
     const handleSignOut = async () => {
         await signOut();
         router.refresh();
     };
 
-    const goToDashboard = () => router.push("/dashboard");
-    const goToMap = () => router.push("/");
+    const globalPinStats = {
+        totalPins: 1240,
+        verifiedPins: 1105,
+        pendingPins: 85,
+        rejectedPins: 50,
+        categoryBreakdown: {
+            academic: 450,
+            food: 320,
+            social: 150,
+            transit: 200,
+            utility: 120,
+        }
+    };
+
+    const globalVerificationRate = Math.round((globalPinStats.verifiedPins / globalPinStats.totalPins) * 100) || 0;
+
+    const globalUserStats = {
+        totalUsers: 342,
+        totalComments: 1840,
+        avgPins: 3.6,
+        avgComments: 5.3,
+        newUsers7Days: 14,
+        newUsers30Days: 45,
+    };
+
+    const globalPendingPins = [
+        { id: "gp1", title: "Palma Hall Annex", lat: 14.6534, lng: 121.0691, type: "academic", submittedBy: "u1" },
+        { id: "gp2", title: "KNL Tricycle Terminal", lat: 14.6552, lng: 121.0621, type: "transit", submittedBy: "u2" },
+        { id: "gp3", title: "Gyud Food", lat: 14.6542, lng: 121.0665, type: "food", submittedBy: "u3" },
+    ];
+
+    const globalVerifiedPins = [
+        { id: "v1", title: "Main Library", lat: 14.6540, lng: 121.0660, type: "academic", submittedBy: "u1" },
+        { id: "v2", title: "Area 2 Kiosk 4", lat: 14.6530, lng: 121.0685, type: "food", submittedBy: "u2" },
+        { id: "v3", title: "AS Parking", lat: 14.6538, lng: 121.0688, type: "utility", submittedBy: "u3" },
+    ];
+
+    const recentUsers = [
+        { id: "u1", name: "User 1", email: "user1@up.edu.ph", joinedAt: "2 hours ago" },
+        { id: "u2", name: "User 2", email: "user2@up.edu.ph", joinedAt: "5 hours ago" },
+        { id: "u3", name: "User 3", email: "user3@up.edu.ph", joinedAt: "1 day ago" },
+        { id: "u4", name: "User 4", email: "user4@up.edu.ph", joinedAt: "2 days ago" },
+    ];
+
+    const topUsers = [
+        { id: "u1", name: "User 1", pinCount: 142, rank: 1 },
+        { id: "u2", name: "User 2", pinCount: 89, rank: 2 },
+        { id: "u3", name: "User 3", pinCount: 75, rank: 3 },
+        { id: "u4", name: "User 4", pinCount: 60, rank: 4 },
+    ];
 
     return (
-        <main className="dashboard-container">
-            
-            <div className="glow-orb"></div>
+        <div className="dashboard-layout">
+            {/* --- MOBILE OVERLAY --- */}
+            {isSidebarOpen && (
+                <div
+                    className="mobile-overlay"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
 
-            <div className="dashboard-card admin-card">
-                
-                {/* HEADER SECTION */}
-                <div className="header-section">
-                    <div className="status-icon">
-                        {/* Admin Shield/Lock Icon */}
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neon-maroon, #FF0055)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            <rect x="10" y="10" width="4" height="6" rx="1"></rect>
-                        </svg>
+            {/* --- SIDEBAR --- */}
+            <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+                <div className="sidebar-header">
+                    <h2 className="brand">UP WAYPOINT</h2>
+                </div>
+
+                <nav className="sidebar-nav custom-vertical-scrollbar">
+                    <div className="nav-group">
+                        <span className="nav-label">COMMAND CENTER</span>
+
+                        <button
+                            className={`nav-item ${activeSection === 'overview' ? 'active' : ''}`}
+                            onClick={() => scrollToSection('overview')}
+                        >
+                            OVERVIEW
+                        </button>
+
+                        <button
+                            className={`nav-item ${activeSection === 'pin-management' ? 'active' : ''}`}
+                            onClick={() => scrollToSection('pin-management')}
+                        >
+                            PIN MANAGEMENT
+                        </button>
+
+                        <button
+                            className={`nav-item ${activeSection === 'user-management' ? 'active' : ''}`}
+                            onClick={() => scrollToSection('user-management')}
+                        >
+                            USER MANAGEMENT
+                        </button>
+
+                        <button className="nav-item" onClick={goToMap}>RETURN TO MAP</button>
                     </div>
-                    
-                    <h1 className="title">
-                        ADMIN: {data?.name ? data.name.toUpperCase() : "UNKNOWN"}
-                    </h1>
-                    <p className="subtitle">You have accessed the restricted area. 🚨</p>
-                </div>
 
-                {/* ACTIONS PORTAL */}
-                <div className="action-grid">
-                    <button className="action-btn secondary-btn" onClick={goToMap}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                        </svg>
-                        GO TO MAP
+                    <div className="nav-group" style={{ marginTop: '24px' }}>
+                        <span className="nav-label">DISPLAY SETTINGS</span>
+                        <button
+                            className="nav-item theme-toggle-btn"
+                            onClick={toggleTheme}
+                        >
+                            <span>UI THEME</span>
+                            <div className="theme-status">
+                                {theme === "dark" ? (
+                                    <>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                        </svg>
+                                        <span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pin-transit)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="5"></circle>
+                                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                        </svg>
+                                        <span style={{ color: "var(--pin-transit)" }}>DAY</span>
+                                    </>
+                                )}
+                            </div>
+                        </button>
+                    </div>
+                </nav>
+
+                <div className="sidebar-footer">
+                    <button className="sign-out-btn" onClick={handleSignOut}>
+                        SIGN OUT
                     </button>
-
-					<button className="action-btn primary-btn admin-btn" onClick={goToDashboard}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                        RETURN TO DASHBOARD
-                    </button>
                 </div>
+            </aside>
 
-                {/* FOOTER & SIGN OUT */}
-                <div className="footer-section">
-                    <button type="button" onClick={handleSignOut} className="sign-out-btn">
-                        [ SIGN OUT ]
-                    </button>
-                </div>
+            <div className="main-wrapper">
+                {/* --- HEADER --- */}
+                <header className="dashboard-header">
+                    <div className="header-left">
+                        <button
+                            className="hamburger-btn"
+                            onClick={() => setIsSidebarOpen(true)}
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
+                            </svg>
+                        </button>
+                        <h1 className="header-title" style={{ color: '#ff4d4d' }}>Admin Dashboard</h1>
+                    </div>
+                </header>
 
+                {/* --- MAIN --- */}
+                <main className="content-area custom-vertical-scrollbar">
+                    <div className="content-container">
+                        <div className="greeting-section">
+                            <h2 className="greeting-title">
+                                {isLoading ? "LOADING..." : `Welcome, ${data?.name ? data.name.toUpperCase() : "ADMIN"}!`}
+                            </h2>
+                            <p className="greeting-subtitle">You have accessed the restricted area. 🚨</p>
+                        </div>
+
+                        <div className="dashboard-sections">
+                            <section id="overview" className="dashboard-section">
+                                <h2 className="section-title">OVERVIEW</h2>
+                                <div className="dashboard-grid">
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>OVERALL PIN STATISTICS</h3>
+                                        </div>
+                                        <div className="card-body telemetry-body">
+
+                                            {/* Top Stats Grid */}
+                                            <div className="telemetry-top-grid">
+                                                <div className="stat-block">
+                                                    <span className="stat-label">TOTAL PINS IN MAP</span>
+                                                    <span className="stat-value">{globalPinStats.totalPins}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">AWAITING ACTION</span>
+                                                    <span className="stat-value" style={{ color: 'var(--neon-yellow, #FFD700)' }}>
+                                                        {globalPinStats.pendingPins}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="integrity-section">
+                                                <div className="integrity-header">
+                                                    <span className="stat-label">GLOBAL VERIFICATION</span>
+                                                    <span className="integrity-percent" style={{ color: 'var(--pin-food)' }}>
+                                                        {globalVerificationRate}%
+                                                    </span>
+                                                </div>
+                                                <div className="progress-track">
+                                                    <div
+                                                        className="progress-fill"
+                                                        style={{
+                                                            width: `${globalVerificationRate}%`,
+                                                            background: 'var(--pin-food)',
+                                                            boxShadow: '0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent)'
+                                                        }}
+                                                    ></div>
+                                                </div>
+                                                <div className="integrity-details">
+                                                    <span className="detail-item verified">{globalPinStats.verifiedPins} VERIFIED</span>
+                                                    <span className="detail-item pending">{globalPinStats.pendingPins} PENDING</span>
+                                                    <span className="detail-item rejected">{globalPinStats.rejectedPins} REJECTED</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="distribution-section">
+                                                <span className="stat-label">CATEGORY BREAKDOWN</span>
+                                                <div className="category-list">
+                                                    {PIN_CATEGORIES.map((category) => {
+                                                        const count = globalPinStats.categoryBreakdown[category.id as keyof typeof globalPinStats.categoryBreakdown] || 0;
+                                                        const percentage = globalPinStats.totalPins > 0 ? (count / globalPinStats.totalPins) * 100 : 0;
+
+                                                        return (
+                                                            <div key={category.id} className="category-row">
+                                                                <div className="cat-info">
+                                                                    <span className="cat-name" style={{ color: category.color }}>{category.label}</span>
+                                                                    <span className="cat-count">{count}</span>
+                                                                </div>
+                                                                <div className="cat-track">
+                                                                    <div
+                                                                        className="cat-fill"
+                                                                        style={{
+                                                                            width: `${percentage}%`,
+                                                                            backgroundColor: category.color,
+                                                                            boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`
+                                                                        }}
+                                                                    ></div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>OVERALL USER STATISTICS</h3>
+                                        </div>
+
+                                        <div className="card-body telemetry-body">
+                                            <div className="telemetry-top-grid">
+                                                <div className="stat-block">
+                                                    <span className="stat-label">TOTAL USERS</span>
+                                                    <span className="stat-value">{globalUserStats.totalUsers}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">TOTAL COMMENTS</span>
+                                                    <span className="stat-value">{globalUserStats.totalComments}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">AVERAGE PINS / USER</span>
+                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgPins}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">AVERAGE COMMENTS / USER</span>
+                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.avgComments}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">NEW USERS FOR THE LAST WEEK</span>
+                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers7Days}</span>
+                                                </div>
+                                                <div className="stat-block">
+                                                    <span className="stat-label">NEW USERS FOR THE LAST MONTH</span>
+                                                    <span className="stat-value" style={{ fontSize: '24px' }}>{globalUserStats.newUsers30Days}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section id="pin-management" className="dashboard-section">
+                                <h2 className="section-title">PIN MANAGEMENT</h2>
+                                <div className="dashboard-grid">
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>PENDING PIN VERIFICATIONS</h3>
+                                        </div>
+
+                                        <div className="card-body">
+                                            <div className="pin-list">
+                                                {globalPendingPins.map((pin) => {
+                                                    const color = getPinColor(pin.type);
+                                                    return (
+                                                        <div key={pin.id} className="pin-list-item">
+                                                            <div className="pin-info-group">
+                                                                <div
+                                                                    className="list-diamond"
+                                                                    style={{
+                                                                        borderColor: color,
+                                                                        backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
+                                                                    }}
+                                                                >
+                                                                    <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
+                                                                </div>
+
+                                                                <div className="pin-text">
+                                                                    <span className="pin-title">{pin.title}</span>
+                                                                    <span className="pin-coords">
+                                                                        By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="pin-actions" style={{ display: 'flex', gap: '8px' }}>
+                                                                <button
+                                                                    type="button"
+                                                                    className="locate-btn"
+                                                                    title="Locate on Map"
+                                                                    onClick={() => console.log("Locate pin:", pin.id)}
+                                                                >
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                                        <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="reject-btn"
+                                                                    title="Reject Pin"
+                                                                    onClick={() => console.log("Reject pin:", pin.id)}
+                                                                >
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="approve-btn"
+                                                                    title="Verify & Approve Pin"
+                                                                    onClick={() => console.log("Approve pin:", pin.id)}
+                                                                >
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>RECENTLY VERIFIED PINS</h3>
+                                        </div>
+
+                                        <div className="card-body">
+                                            <div className="pin-list">
+                                                {globalVerifiedPins.map((pin) => {
+                                                    const color = getPinColor(pin.type);
+                                                    return (
+                                                        <div key={pin.id} className="pin-list-item">
+                                                            <div className="pin-info-group">
+                                                                <div
+                                                                    className="list-diamond"
+                                                                    style={{
+                                                                        borderColor: color,
+                                                                        backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
+                                                                    }}
+                                                                >
+                                                                    <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
+                                                                </div>
+
+                                                                <div className="pin-text">
+                                                                    <span className="pin-title">{pin.title}</span>
+                                                                    <span className="pin-coords">
+                                                                        By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="pin-actions">
+                                                                <button
+                                                                    type="button"
+                                                                    className="locate-btn"
+                                                                    title="Locate on Map"
+                                                                    onClick={() => console.log("Locate verified pin:", pin.id)}
+                                                                >
+                                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                                        <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section id="user-management" className="dashboard-section">
+                                <h2 className="section-title">USER MANAGEMENT</h2>
+                                <div className="dashboard-grid">
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>NEWEST USERS</h3>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="user-list">
+                                                {recentUsers.map((user) => (
+                                                    <div key={user.id} className="user-list-item">
+                                                        <div className="user-info-group">
+                                                            <div className="user-avatar">
+                                                                {user.name.charAt(0).toUpperCase()}
+                                                            </div>
+                                                            <div className="user-text">
+                                                                <span className="user-name">{user.name}</span>
+                                                                <span className="user-meta">
+                                                                    {user.email} • {user.joinedAt}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <button
+                                                            type="button"
+                                                            className="view-user-btn"
+                                                            title="Access Operator Profile"
+                                                            onClick={() => console.log("View user:", user.id)}
+                                                        >
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                                <circle cx="12" cy="7" r="4"></circle>
+                                                            </svg>
+                                                        </button>
+
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="module-card">
+                                        <div className="card-header">
+                                            <h3>TOP USERS BY PINS</h3>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="user-list">
+                                                {topUsers.map((user, index) => (
+                                                    <div key={user.id} className="user-list-item">
+
+                                                        <div className="user-info-group">
+                                                            <div
+                                                                className="user-avatar"
+                                                                style={{
+                                                                    borderColor: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
+                                                                    color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
+                                                                    background: index === 0 ? 'color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent)' : 'color-mix(in srgb, var(--neon-blue) 15%, transparent)'
+                                                                }}
+                                                            >
+                                                                {user.name.charAt(0).toUpperCase()}
+                                                            </div>
+                                                            <div className="user-text">
+                                                                <span className="user-name">{user.name}</span>
+                                                                <span className="user-meta">Rank #{user.rank} Operator</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="pin-count-display">
+                                                            <span className="count-number" style={{ color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--text-primary)' }}>
+                                                                {user.pinCount}
+                                                            </span>
+                                                            <span className="count-label">PINS</span>
+                                                        </div>
+
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                        </div>
+                    </div>
+                </main>
             </div>
 
-			<style jsx>{`
-                .dashboard-container {
-                    position: relative;
-                    display: flex;
-                    min-height: 100vh;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: var(--bg-color, #0f1115);
-                    overflow: hidden;
-                    padding: 16px;
-                }
+            <style jsx>{`
+        /* --- LAYOUT SHELL --- */
+        .dashboard-layout {
+          display: flex;
+          height: 100vh;
+          width: 100vw;
+          background-color: var(--bg-base);
+          overflow: hidden;
+        }
 
-                /* Admin Red/Maroon Glow */
-                .glow-orb {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 500px;
-                    height: 500px;
-                    background: rgba(255, 0, 85, 0.08); 
-                    border-radius: 50%;
-                    filter: blur(120px);
-                    pointer-events: none;
-                }
+        /* --- SIDEBAR --- */
+        .sidebar {
+          width: 280px;
+          background-color: var(--bg-panel);
+          border-right: 1px solid var(--border-color);
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          z-index: 100;
+        }
 
-                .dashboard-card {
-                    position: relative;
-                    z-index: 10;
-                    width: 100%;
-                    max-width: 420px;
-                    border-radius: 24px;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    /* Maroon accent line for Admin */
-                    border-top: 2px solid var(--neon-maroon, #FF0055); 
-                    background: rgba(10, 10, 12, 0.6);
-                    backdrop-filter: blur(20px);
-                    -webkit-backdrop-filter: blur(20px);
-                    padding: 40px 32px;
-                    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-                    animation: fadeUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                }
+        .sidebar-header {
+          height: 72px;
+          display: flex;
+          align-items: center;
+          padding: 0 24px;
+          border-bottom: 1px solid var(--border-color);
+        }
 
-                .header-section {
-                    text-align: center;
-                    margin-bottom: 40px;
-                }
+        .brand {
+          font-family: var(--font-cubao-wide), sans-serif;
+          font-size: 18px;
+          color: var(--text-primary);
+          letter-spacing: 0.1em;
+          margin: 0;
+        }
 
-                /* Admin icon styling */
-                .status-icon {
-                    margin: 0 auto 20px auto;
-                    display: flex;
-                    height: 64px;
-                    width: 64px;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 50%;
-                    border: 1px solid rgba(255, 0, 85, 0.4);
-                    background: rgba(255, 0, 85, 0.1);
-                    box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
-                }
+        .sidebar-nav {
+          flex: 1;
+          padding: 24px 16px;
+          overflow-y: auto;
+        }
 
-                .title {
-                    font-family: var(--font-cubao-wide), sans-serif;
-                    font-weight: 100;
-                    font-size: 32px;
-                    color: white;
-                    margin: 0 0 8px 0;
-                    letter-spacing: 0.05em;
-                }
+        .nav-group {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
 
-                .subtitle {
-                    font-family: var(--font-nunito), sans-serif;
-                    font-size: 14px;
-                    color: #8899A6;
-                    margin: 0;
-                    line-height: 1.5;
-                }
+        .nav-label {
+          font-family: var(--font-chakra);
+          font-size: 11px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.15em;
+          padding: 0 8px;
+          margin-bottom: 4px;
+        }
 
-                /* ACTIONS */
-                .action-grid {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 16px;
-                    width: 100%;
-                }
+        .nav-item {
+          text-align: left;
+          padding: 12px 16px;
+          background: transparent;
+          border: none;
+          border-radius: 8px;
+          color: var(--text-secondary);
+          font-family: var(--font-chakra);
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
 
-                .action-btn {
-                    position: relative;
-                    display: flex;
-                    width: 100%;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 12px;
-                    border-radius: 12px;
-                    padding: 14px 24px;
-                    font-family: var(--font-chakra), sans-serif;
-                    font-size: 14px;
-                    font-weight: 600;
-                    letter-spacing: 0.05em;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                }
+        .nav-item:hover {
+          background: var(--bg-panel-hover);
+          color: var(--text-primary);
+        }
 
-                .action-btn:active {
-                    transform: scale(0.98);
-                }
+        .nav-item.active {
+          background: color-mix(in srgb, #ff4d4d 10%, transparent);
+          color: #ff4d4d;
+          border-left: 3px solid #ff4d4d;
+          border-radius: 0 8px 8px 0;
+        }
 
-                /* PRIMARY ADMIN BUTTON (Maroon) */
-                .primary-btn.admin-btn {
-                    background: rgba(255, 0, 85, 0.05);
-                    border: 1px solid var(--neon-maroon, #FF0055);
-                    color: var(--neon-maroon, #FF0055);
-                    box-shadow: inset 0 0 10px rgba(255, 0, 85, 0.1);
-                }
+        .theme-toggle-btn {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
 
-                .primary-btn.admin-btn:hover {
-                    background: rgba(255, 0, 85, 0.15);
-                    box-shadow: 0 0 20px rgba(255, 0, 85, 0.3), inset 0 0 15px rgba(255, 0, 85, 0.2);
-                    text-shadow: 0 0 8px rgba(255, 0, 85, 0.8);
-                    color: #fff;
-                }
+        .theme-status {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-family: var(--font-chakra);
+          font-size: 11px;
+          font-weight: 800;
+        }
 
-                /* SECONDARY BUTTON */
-                .secondary-btn {
-                    background: rgba(255, 255, 255, 0.02);
-                    border: 1px solid rgba(255, 255, 255, 0.15);
-                    color: #aaa;
-                }
+        .sidebar-footer {
+          padding: 24px;
+          border-top: 1px solid var(--border-color);
+        }
 
-                .secondary-btn:hover {
-                    background: rgba(255, 255, 255, 0.08);
-                    border-color: rgba(255, 255, 255, 0.4);
-                    color: #fff;
-                }
+        .sign-out-btn {
+          width: 100%;
+          background: transparent;
+          border: 1px solid var(--border-color);
+          color: #ff4d4d;
+          padding: 12px;
+          border-radius: 8px;
+          font-family: var(--font-chakra);
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
 
-                /* FOOTER & SIGN OUT */
-                .footer-section {
-                    margin-top: 40px;
-                    text-align: center;
-                    border-top: 1px solid rgba(255, 255, 255, 0.05);
-                    padding-top: 24px;
-                }
+        .sign-out-btn:hover {
+          background: color-mix(in srgb, #ff4d4d 10%, transparent);
+          border-color: #ff4d4d;
+        }
 
-                .sign-out-btn {
-                    background: none;
-                    border: none;
-                    font-family: var(--font-chakra), sans-serif;
-                    font-size: 12px;
-                    font-weight: 700;
-                    letter-spacing: 0.1em;
-                    color: var(--neon-maroon, #FF0055);
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                }
+        /* --- MAIN AREA --- */
+        .main-wrapper {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+        }
 
-                .sign-out-btn:hover {
-                    color: #fff;
-                    text-shadow: 0 0 10px rgba(255, 0, 85, 0.8);
-                }
+        .dashboard-header {
+          height: 72px;
+          background-color: var(--bg-panel);
+          border-bottom: 1px solid var(--border-color);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 32px;
+          flex-shrink: 0;
+        }
 
-                @keyframes fadeUp {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-            `}</style>
-        </main>
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .hamburger-btn {
+          display: none;
+          background: transparent;
+          border: none;
+          color: var(--text-primary);
+          cursor: pointer;
+          padding: 4px;
+        }
+
+        .header-title {
+          font-family: var(--font-chakra);
+          font-size: 16px;
+          font-weight: 700;
+          color: var(--text-primary);
+          margin: 0;
+          letter-spacing: 0.05em;
+        }
+
+        .content-area {
+          flex: 1;
+          padding: 32px;
+          background-color: var(--bg-base);
+          overflow-y: auto;
+        }
+
+        .content-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          gap: 32px;
+        }
+
+        .greeting-section {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .greeting-title {
+          font-family: var(--font-chakra);
+          font-size: 28px;
+          font-weight: 800;
+          color: var(--text-primary);
+          margin: 0;
+        }
+
+        .greeting-subtitle {
+          font-family: var(--font-nunito);
+          font-size: 15px;
+          color: var(--text-secondary);
+          margin: 0;
+        }
+
+        /* --- DASHBOARD SECTIONS --- */
+        .dashboard-sections {
+          display: flex;
+          flex-direction: column;
+          gap: 64px;
+        }
+
+        .dashboard-section {
+          scroll-margin-top: 24px;
+        }
+
+        .section-title {
+          font-size: 20px;
+          color: var(--text-primary);
+          letter-spacing: 0.1em;
+          margin: 0 0 24px 0;
+          padding-bottom: 12px;
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        /* --- DASHBOARD GRID & CARDS --- */
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px;
+        }
+
+        .module-card {
+          background: var(--bg-panel);
+          border: 1px solid var(--border-color);
+          border-radius: 16px;
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid var(--border-color);
+          padding-bottom: 12px;
+        }
+
+        .card-header h3 {
+          font-family: var(--font-chakra);
+          font-size: 14px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.15em;
+          margin: 0;
+        }
+
+        .status-badge {
+          background: color-mix(in srgb, var(--neon-green) 15%, transparent);
+          color: var(--neon-green);
+          border: 1px solid var(--neon-green);
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+
+        .count-badge {
+          background: color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent);
+          color: var(--neon-yellow, #FFD700);
+          border: 1px solid var(--neon-yellow, #FFD700);
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-family: var(--font-nunito);
+          font-weight: 800;
+          font-size: 12px;
+        }
+        
+        .card-body {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .placeholder-content {
+          height: 100%;
+          min-height: 200px;
+          border: 1px dashed var(--border-color);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-secondary);
+          font-family: var(--font-chakra);
+          background: var(--bg-panel-hover);
+        }
+
+        /* --- PRESERVED UTILITY CLASSES FROM USER DASHBOARD --- */
+        .stat-label { font-family: var(--font-chakra); font-size: 10px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.15em; }
+        .stat-block { background: var(--bg-panel-hover); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+        .stat-value { font-family: var(--font-cubao-wide); font-size: 32px; color: var(--text-primary); letter-spacing: 0.05em; }
+        
+        .pin-list { display: flex; flex-direction: column; gap: 12px; }
+        .pin-list-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-panel-hover); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; }
+        .pin-list-item:hover { border-color: color-mix(in srgb, var(--text-secondary) 50%, transparent); background: color-mix(in srgb, var(--bg-panel-hover) 80%, var(--border-color)); }
+        .pin-info-group { display: flex; align-items: center; gap: 16px; }
+        .list-diamond { width: 32px; height: 32px; transform: rotate(45deg); border: 1.5px solid; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
+        .list-diamond span { transform: rotate(-45deg); font-family: var(--font-cubao-wide); font-size: 14px; }
+        .pin-text { display: flex; flex-direction: column; gap: 4px; }
+        .pin-title { font-family: var(--font-chakra); font-size: 14px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; }
+        .pin-coords { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: var(--text-secondary); letter-spacing: 0.05em; }
+
+        .locate-btn { background: transparent; border: 1px solid var(--border-color); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+        .locate-btn:hover { background: color-mix(in srgb, var(--neon-blue) 15%, transparent); border-color: var(--neon-blue); color: var(--neon-blue); transform: scale(1.05); }
+
+        .telemetry-body {
+          gap: 24px;
+        }
+
+        .stat-label {
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.15em;
+        }
+
+        .telemetry-top-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+
+        .stat-block {
+          background: var(--bg-panel-hover);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .stat-value {
+          font-family: var(--font-cubao-wide);
+          font-size: 32px;
+          color: var(--text-primary);
+          letter-spacing: 0.05em;
+        }
+        
+        .integrity-section {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .integrity-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+        }
+
+        .integrity-percent {
+          font-family: var(--font-chakra);
+          font-size: 14px;
+          font-weight: 800;
+          color: var(--neon-green);
+        }
+        
+        .progress-track {
+          height: 6px;
+          background: var(--bg-panel-hover);
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          background: var(--pin-food);
+          box-shadow: 0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent);
+          border-radius: 3px;
+          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .integrity-details {
+          display: flex;
+          gap: 12px;
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+        }
+
+        .detail-item.verified { color: var(--neon-green); }
+        .detail-item.pending { color: var(--neon-yellow, #FFD700); }
+        .detail-item.rejected { color: #ff4d4d; }
+
+        /* Category Distribution */
+        .distribution-section {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .category-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .category-row {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .cat-info {
+          display: flex;
+          justify-content: space-between;
+          font-family: var(--font-chakra);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+
+        .cat-count {
+          color: var(--text-primary);
+          font-family: var(--font-nunito);
+        }
+
+        .cat-track {
+          height: 4px;
+          background: var(--bg-panel-hover);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+
+        .cat-fill {
+          height: 100%;
+          border-radius: 2px;
+          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Admin Action Buttons */
+        .approve-btn { 
+          background: transparent; 
+          border: 1px solid var(--border-color); 
+          border-radius: 8px; 
+          width: 36px; 
+          height: 36px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          color: var(--text-secondary); 
+          cursor: pointer; 
+          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+          flex-shrink: 0; 
+        }
+        
+        .approve-btn:hover { 
+          background: color-mix(in srgb, var(--neon-green) 15%, transparent); 
+          border-color: var(--neon-green); 
+          color: var(--neon-green); 
+          transform: scale(1.05); 
+        }
+        
+        .approve-btn:active { 
+          transform: scale(0.95); 
+        }
+
+       .reject-btn { 
+          background: transparent; 
+          border: 1px solid var(--border-color); 
+          border-radius: 8px; 
+          width: 36px; 
+          height: 36px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          color: var(--text-secondary); 
+          cursor: pointer; 
+          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+          flex-shrink: 0; 
+        }
+        
+        .reject-btn:hover { 
+          background: color-mix(in srgb, #ff4d4d 15%, transparent); 
+          border-color: #ff4d4d; 
+          color: #ff4d4d; 
+          transform: scale(1.05); 
+        }
+        
+        .reject-btn:active { 
+          transform: scale(0.95); 
+        } 
+
+        /* --- USER LIST STYLES --- */
+        .user-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .user-list-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: var(--bg-panel-hover);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          padding: 12px 16px;
+          transition: all 0.2s ease;
+        }
+
+        .user-list-item:hover {
+          border-color: color-mix(in srgb, var(--text-secondary) 50%, transparent);
+          background: color-mix(in srgb, var(--bg-panel-hover) 80%, var(--border-color));
+        }
+
+        .user-info-group {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        /* Circular Avatar Layout */
+        .user-avatar {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          border: 1.5px solid var(--neon-blue);
+          color: var(--neon-blue);
+          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          font-family: var(--font-cubao-wide);
+          font-size: 16px;
+        }
+
+        .user-text {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .user-name {
+          font-family: var(--font-chakra);
+          font-size: 14px;
+          font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: 0.05em;
+        }
+
+        .user-meta {
+          font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+          font-size: 11px;
+          color: var(--text-secondary);
+        }
+
+        /* Admin Action Buttons */
+        .view-user-btn {
+          background: transparent;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-secondary);
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          flex-shrink: 0;
+        }
+
+        .view-user-btn:hover {
+          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
+          border-color: var(--neon-blue);
+          color: var(--neon-blue);
+          transform: scale(1.05);
+        }
+
+        .view-user-btn:active {
+          transform: scale(0.95);
+        }
+
+        /* Leaderboard Count Alignment */
+        .pin-count-display {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
+        }
+
+        .count-number {
+          font-family: var(--font-cubao-wide);
+          font-size: 20px;
+          color: var(--text-primary);
+          line-height: 1;
+        }
+
+        .count-label {
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.1em;
+        }
+
+        /* Custom Scrollbar */
+        .custom-vertical-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-vertical-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-vertical-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+          .sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); }
+          .sidebar.open { transform: translateX(0); }
+          .mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 99; }
+          .hamburger-btn { display: flex; align-items: center; justify-content: center; }
+          .dashboard-header { padding: 0 16px; }
+          .dashboard-grid { grid-template-columns: 1fr; }
+          .content-area { padding: 24px 16px; }
+        }
+      `}</style>
+        </div>
     );
 }
