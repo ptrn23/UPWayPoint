@@ -128,7 +128,9 @@ export function makePinRepository(db: Database) {
 		return !!deleted;
 	}
 
-	async function getAllAdmin(options?: GetAllPinsAdminOptions): Promise<Pin[]> {
+	async function getAllAdmin(
+		options?: GetAllPinsAdminOptions,
+	): Promise<(Pin & { pinTags: (PinTags & { tag: Tag })[]; owner: string })[]> {
 		const limit = options?.limit ?? 50;
 		const offset = options?.offset ?? 0;
 
@@ -149,14 +151,24 @@ export function makePinRepository(db: Database) {
 			}
 		}
 
-		const query = await db
-			.select()
-			.from(pin)
-			.where(whereClause)
-			.orderBy(desc(pin.createdAt))
-			.limit(limit)
-			.offset(offset);
-		return query;
+		const query = await db.query.pin.findMany({
+			where: whereClause,
+			orderBy: desc(pin.createdAt),
+			limit: limit,
+			offset: offset,
+			with: {
+				pinTags: {
+					with: {
+						tag: true,
+					},
+				},
+				owner: true,
+			},
+		});
+
+		return query.map((q) => {
+			return { ...q, owner: q.owner.name };
+		});
 	}
 
 	async function getCount(options?: GetPinCountOptions): Promise<number> {

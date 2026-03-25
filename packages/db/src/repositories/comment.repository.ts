@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
 import type { Database } from "../db/database";
 import type { Comment, CreateComment } from "../db/types";
 import { comment } from "../db/schema";
@@ -67,10 +67,17 @@ export function makeCommentRepository(db: Database) {
 			throw e;
 		}
 	}
+
+	async function getCount(): Promise<number> {
+		const result = await db.select({ count: count() }).from(comment);
+		return result[0]?.count ?? 0;
+	}
+
 	return {
 		create,
 		getByPinId,
 		getByUserId,
+		getCount,
 	};
 }
 

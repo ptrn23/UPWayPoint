@@ -45,10 +45,15 @@ export function makeCommentService(
 		return await repositories.comment.getByUserId(id);
 	}
 
+	async function getCount() {
+		return await repositories.comment.getCount();
+	}
+
 	return {
 		create,
 		getByPinId,
 		getByUserId,
+		getCount,
 	};
 }
 

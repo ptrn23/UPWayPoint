@@ -1,5 +1,5 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { router, userProcedure } from "../trpc";
+import { adminProcedure, router, userProcedure } from "../trpc";
 import z from "zod";
 
 export const commentRouter = router({
@@ -12,13 +12,17 @@ export const commentRouter = router({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.comment.create({
+			return await ctx.services.comment.create({
 				...input,
 				ownerId: ctx.user.id,
 			});
 		}),
 	getCurrentUsersComments: userProcedure.query(async ({ ctx }) => {
-		return ctx.services.comment.getByUserId(ctx.user.id);
+		return await ctx.services.comment.getByUserId(ctx.user.id);
+	}),
+
+	getCount: adminProcedure.query(async ({ ctx }) => {
+		return await ctx.services.comment.getCount();
 	}),
 });
 
