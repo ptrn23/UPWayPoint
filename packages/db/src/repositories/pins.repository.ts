@@ -9,7 +9,7 @@ import type {
 	UpdatePin,
 } from "../db/types";
 
-export type PinStatus = "PENDING_VERIFICATION" | "ACTIVE" | "DELETED";
+export type PinStatus = "PENDING_VERIFICATION" | "ACTIVE" | "ARCHIVED" | "DELETED";
 
 export interface GetAllPinsAdminOptions {
 	limit?: number;
@@ -133,10 +133,11 @@ export function makePinRepository(db: Database) {
 	}
 
 	async function getStatusCounts(): Promise<Record<PinStatus, number>> {
-		const statuses: PinStatus[] = ["PENDING_VERIFICATION", "ACTIVE", "DELETED"];
+		const statuses: PinStatus[] = ["PENDING_VERIFICATION", "ACTIVE", "ARCHIVED", "DELETED"];
 		const result: Record<PinStatus, number> = {
 			PENDING_VERIFICATION: 0,
 			ACTIVE: 0,
+			ARCHIVED: 0,
 			DELETED: 0,
 		};
 
