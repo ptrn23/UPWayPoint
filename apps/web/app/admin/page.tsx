@@ -307,6 +307,18 @@ export default function AdminDashboard() {
 
                                                         <button
                                                             type="button"
+                                                            className="reject-btn"
+                                                            title="Reject Pin"
+                                                            onClick={() => console.log("Reject pin:", pin.id)}
+                                                        >
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
                                                             className="approve-btn"
                                                             title="Verify & Approve Pin"
                                                             onClick={() => console.log("Approve pin:", pin.id)}
@@ -816,6 +828,32 @@ export default function AdminDashboard() {
         .approve-btn:active { 
           transform: scale(0.95); 
         }
+
+       .reject-btn { 
+          background: transparent; 
+          border: 1px solid var(--border-color); 
+          border-radius: 8px; 
+          width: 36px; 
+          height: 36px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          color: var(--text-secondary); 
+          cursor: pointer; 
+          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+          flex-shrink: 0; 
+        }
+        
+        .reject-btn:hover { 
+          background: color-mix(in srgb, #ff4d4d 15%, transparent); 
+          border-color: #ff4d4d; 
+          color: #ff4d4d; 
+          transform: scale(1.05); 
+        }
+        
+        .reject-btn:active { 
+          transform: scale(0.95); 
+        } 
 
         /* Custom Scrollbar */
         .custom-vertical-scrollbar::-webkit-scrollbar { width: 8px; }
