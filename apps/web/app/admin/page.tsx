@@ -267,9 +267,59 @@ export default function AdminDashboard() {
                                 <div className="card-header">
                                     <h3>PENDING PIN VERIFICATIONS</h3>
                                 </div>
+
                                 <div className="card-body">
-                                    <div className="placeholder-content">
-                                        Pending Pins Queue Go Here
+                                    <div className="pin-list">
+                                        {globalPendingPins.map((pin) => {
+                                            const color = getPinColor(pin.type);
+                                            return (
+                                                <div key={pin.id} className="pin-list-item">
+                                                    <div className="pin-info-group">
+                                                        <div
+                                                            className="list-diamond"
+                                                            style={{
+                                                                borderColor: color,
+                                                                backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`
+                                                            }}
+                                                        >
+                                                            <span style={{ color }}>{pin.title.charAt(0).toUpperCase()}</span>
+                                                        </div>
+
+                                                        <div className="pin-text">
+                                                            <span className="pin-title">{pin.title}</span>
+                                                            <span className="pin-coords">
+                                                                By {pin.submittedBy} • {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="pin-actions" style={{ display: 'flex', gap: '8px' }}>
+                                                        <button
+                                                            type="button"
+                                                            className="locate-btn"
+                                                            title="Locate on Map"
+                                                            onClick={() => console.log("Locate pin:", pin.id)}
+                                                        >
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                                <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                                                            </svg>
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
+                                                            className="approve-btn"
+                                                            title="Verify & Approve Pin"
+                                                            onClick={() => console.log("Approve pin:", pin.id)}
+                                                        >
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </div>
@@ -738,6 +788,33 @@ export default function AdminDashboard() {
           height: 100%;
           border-radius: 2px;
           transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Admin Action Buttons */
+        .approve-btn { 
+          background: transparent; 
+          border: 1px solid var(--border-color); 
+          border-radius: 8px; 
+          width: 36px; 
+          height: 36px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          color: var(--text-secondary); 
+          cursor: pointer; 
+          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+          flex-shrink: 0; 
+        }
+        
+        .approve-btn:hover { 
+          background: color-mix(in srgb, var(--neon-green) 15%, transparent); 
+          border-color: var(--neon-green); 
+          color: var(--neon-green); 
+          transform: scale(1.05); 
+        }
+        
+        .approve-btn:active { 
+          transform: scale(0.95); 
         }
 
         /* Custom Scrollbar */
