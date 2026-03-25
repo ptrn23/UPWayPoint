@@ -120,11 +120,77 @@ export default function AdminDashboard() {
             
             {/* --- DASHBOARD GRID --- */}
             <div className="dashboard-grid">
+              <div className="module-card">
+                <div className="card-header">
+                  <h3>OVERALL PIN STATISTICS</h3>
+                </div>
+                <div className="card-body">
+                  <div className="placeholder-content">
+                    Overall Pin Statistics Go Here
+                  </div>
+                </div>
+              </div>
+
+              <div className="module-card">
+                <div className="card-header">
+                  <h3>OVERALL USER STATISTICS</h3>
+                </div>
+                <div className="card-body">
+                  <div className="placeholder-content">
+                    Overall User Statistics Go Here
+                  </div>
+                </div>
+              </div>
+
+              <div className="module-card">
+                <div className="card-header">
+                  <h3>PENDING PIN VERIFICATIONS</h3>
+                </div>
+                <div className="card-body">
+                  <div className="placeholder-content">
+                    Pending Pins Queue Go Here
+                  </div>
+                </div>
+              </div>
+
+              <div className="module-card">
+                <div className="card-header">
+                  <h3>RECENTLY VERIFIED PINS</h3>
+                </div>
+                <div className="card-body">
+                  <div className="placeholder-content">
+                    Newly Verified Pins Go Here
+                  </div>
+                </div>
+              </div>
+
+              <div className="module-card">
+                <div className="card-header">
+                  <h3>NEWEST REGISTRATIONS</h3>
+                </div>
+                <div className="card-body">
+                  <div className="placeholder-content">
+                    Newest Accounts List Go Here
+                  </div>
+                </div>
+              </div>
+
+              <div className="module-card">
+                <div className="card-header">
+                  <h3>TOP USERS</h3>
+                </div>
+                <div className="card-body">
+                  <div className="placeholder-content">
+                    Top Users (Leaderboard) Go Here
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </main>
       </div>
-      
+
       <style jsx>{`
         /* --- LAYOUT SHELL --- */
         .dashboard-layout {
