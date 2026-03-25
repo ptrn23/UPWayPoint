@@ -123,9 +123,28 @@ export default function AdminDashboard() {
                 <nav className="sidebar-nav custom-vertical-scrollbar">
                     <div className="nav-group">
                         <span className="nav-label">COMMAND CENTER</span>
-                        <button className="nav-item active">SYSTEM OVERVIEW</button>
-                        <button className="nav-item">VERIFICATION QUEUE</button>
-                        <button className="nav-item">USER MANAGEMENT</button>
+
+                        <button
+                            className={`nav-item ${activeSection === 'overview' ? 'active' : ''}`}
+                            onClick={() => scrollToSection('overview')}
+                        >
+                            SYSTEM OVERVIEW
+                        </button>
+
+                        <button
+                            className={`nav-item ${activeSection === 'pin-management' ? 'active' : ''}`}
+                            onClick={() => scrollToSection('pin-management')}
+                        >
+                            PIN MANAGEMENT
+                        </button>
+
+                        <button
+                            className={`nav-item ${activeSection === 'user-management' ? 'active' : ''}`}
+                            onClick={() => scrollToSection('user-management')}
+                        >
+                            USER MANAGEMENT
+                        </button>
+
                         <button className="nav-item" onClick={goToMap}>RETURN TO MAP</button>
                     </div>
 
