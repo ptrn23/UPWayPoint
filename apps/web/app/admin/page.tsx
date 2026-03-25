@@ -59,6 +59,20 @@ export default function AdminDashboard() {
         { id: "v3", title: "AS Parking", lat: 14.6538, lng: 121.0688, type: "utility", submittedBy: "u3" },
     ];
 
+    const recentUsers = [
+        { id: "u1", name: "User 1", email: "user1@up.edu.ph", joinedAt: "2 hours ago" },
+        { id: "u2", name: "User 2", email: "user2@up.edu.ph", joinedAt: "5 hours ago" },
+        { id: "u3", name: "User 3", email: "user3@up.edu.ph", joinedAt: "1 day ago" },
+        { id: "u4", name: "User 4", email: "user4@up.edu.ph", joinedAt: "2 days ago" },
+    ];
+
+    const topUsers = [
+        { id: "u1", name: "User 1", pinCount: 142, rank: 1 },
+        { id: "u2", name: "User 2", pinCount: 89, rank: 2 },
+        { id: "u3", name: "User 3", pinCount: 75, rank: 3 },
+        { id: "u4", name: "User 4", pinCount: 60, rank: 4 },
+    ];
+
     return (
         <div className="dashboard-layout">
             {/* --- MOBILE OVERLAY --- */}
