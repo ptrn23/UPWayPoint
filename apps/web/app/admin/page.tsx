@@ -281,7 +281,7 @@ export default function AdminDashboard() {
 								<line x1="3" y1="18" x2="21" y2="18"></line>
 							</svg>
 						</button>
-						<h1 className="header-title" style={{ color: "#ff4d4d" }}>
+						<h1 className="header-title" style={{ color: "var(--pin-social)" }}>
 							Admin Dashboard
 						</h1>
 					</div>
@@ -867,9 +867,9 @@ export default function AdminDashboard() {
         }
 
         .nav-item.active {
-          background: color-mix(in srgb, #ff4d4d 10%, transparent);
-          color: #ff4d4d;
-          border-left: 3px solid #ff4d4d;
+          background: color-mix(in srgb, var(--pin-social) 10%, transparent);
+          color: var(--pin-social);
+          border-left: 3px solid var(--pin-social);
           border-radius: 0 8px 8px 0;
         }
 
@@ -1251,9 +1251,9 @@ export default function AdminDashboard() {
         }
         
         .approve-btn:hover { 
-          background: color-mix(in srgb, var(--neon-green) 15%, transparent); 
-          border-color: var(--neon-green); 
-          color: var(--neon-green); 
+          background: color-mix(in srgb, var(--pin-food) 15%, transparent); 
+          border-color: var(--pin-food); 
+          color: var(--pin-food); 
           transform: scale(1.05); 
         }
         
