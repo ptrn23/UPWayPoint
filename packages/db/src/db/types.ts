@@ -9,6 +9,7 @@ import type {
 	tag,
 	pinImages,
 	comment,
+	modification,
 } from "./schema";
 
 export type Session = InferSelectModel<typeof session>;
@@ -25,6 +26,8 @@ export type CommentWithReplies = Comment & {
 
 export type PinTags = InferSelectModel<typeof pinTags>;
 export type PinImages = InferSelectModel<typeof pinImages>;
+export type Modification = InferSelectModel<typeof modification>;
+export type CreateModification = InferInsertModel<typeof modification>;
 export type Pin = InferSelectModel<typeof pin>;
 
 export type CreatePin = InferInsertModel<typeof pin>;

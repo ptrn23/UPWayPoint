@@ -99,7 +99,29 @@ export const pinRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const { id, ...data } = input;
-			return ctx.services.pin.update(id, data);
+			return ctx.services.pin.requestUpdate(id, ctx.user.id, data);
+		}),
+
+	applyUpdate: adminProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { id } = input;
+			return ctx.services.pin.applyUpdate(id, ctx.user.id);
+		}),
+
+	rejectUpdate: adminProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { id } = input;
+			return ctx.services.pin.rejectUpdate(id, ctx.user.id);
 		}),
 
 	userDelete: userProcedure
@@ -148,13 +170,13 @@ export const pinRouter = router({
 	approve: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.approvePin(input.id);
+			return ctx.services.pin.approvePin(input.id, ctx.user.id);
 		}),
 
 	reject: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			return ctx.services.pin.rejectPin(input.id);
+			return ctx.services.pin.rejectPin(input.id, ctx.user.id);
 		}),
 
 	// Admin update - can update any pin
@@ -171,7 +193,7 @@ export const pinRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const { id, ...data } = input;
-			return ctx.services.pin.update(id, data);
+			return ctx.services.pin.adminUpdate(id, ctx.user.id, data);
 		}),
 });
 

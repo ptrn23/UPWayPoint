@@ -191,17 +191,13 @@ export function makePinRepository(db: Database) {
 					},
 				},
 				images: true,
+				owner: true,
 			},
 		});
 
 		if (!query) return undefined;
 
-		const ownerQuery = await db
-			.select({ name: user.name })
-			.from(user)
-			.where(eq(user.id, query.ownerId));
-
-		return { ...query, ownerName: ownerQuery[0]?.name ?? "Unknown" };
+		return { ...query, ownerName: query.owner.name ?? "Unknown" };
 	}
 
 	return {
