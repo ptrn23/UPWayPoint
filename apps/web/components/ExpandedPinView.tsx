@@ -767,6 +767,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 margin-top: 8px;
                 border-top: 1px solid var(--border-color);
                 padding-top: 24px;
+								padding-bottom: 100px;
             }
             .section-title {
                 font-family: var(--font-chakra); font-size: 12px; font-weight: 900;

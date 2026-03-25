@@ -130,40 +130,41 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 					</div>
 
 					<div className="input-group">
-                        <span>PIN TYPES (select all that apply)</span>
-                        <div className="type-selector">
-                            {tagsData?.map((t) => {
-                                const isActive = tags.includes(t.id);
-                                const tagColor = getPinColor(t.title);
+						<span>PIN TYPE</span>
+						<div className="type-selector">
+							{tagsData?.map((t) => {
+								const isActive = tags.includes(t.id);
+								const tagColor = getPinColor(t.title);
 
-                                return (
-                                    <button
-                                        key={t.id}
-                                        type="button"
-                                        className="type-btn"
-                                        onClick={() => {
-                                            if (isActive) {
-                                                formMethods.setValue(
-                                                    "tags",
-                                                    tags.filter((tag) => tag !== t.id),
-                                                );
-                                            } else {
-                                                formMethods.setValue("tags", [...tags, t.id]);
-                                            }
-                                        }}
-                                        style={isActive ? {
-                                            backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`, 
-                                            borderColor: tagColor,
-                                            color: tagColor,
-                                            boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`
-                                        } : {}}
-                                    >
-                                        {t.title.toUpperCase()}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
+								return (
+									<button
+										key={t.id}
+										type="button"
+										className="type-btn"
+										onClick={() => {
+											if (isActive) {
+												formMethods.setValue("tags", []);
+											} else {
+												formMethods.setValue("tags", [t.id]);
+											}
+										}}
+										style={
+											isActive
+												? {
+														backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`,
+														borderColor: tagColor,
+														color: tagColor,
+														boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`,
+													}
+												: {}
+										}
+									>
+										{t.title.toUpperCase()}
+									</button>
+								);
+							})}
+						</div>
+					</div>
 
 					<input
 						type="file"
@@ -173,7 +174,11 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
 					/>
 
 					<div className="action-row">
-						<button type="button" className="tactical-button" onClick={handleCancel}>
+						<button
+							type="button"
+							className="tactical-button"
+							onClick={handleCancel}
+						>
 							CANCEL
 						</button>
 						<button type="submit" className="tactical-button-primary save-btn">
