@@ -1,5 +1,10 @@
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { adminProcedure, publicProcedure, router, userProcedure } from "../trpc";
+import {
+	adminProcedure,
+	publicProcedure,
+	router,
+	userProcedure,
+} from "../trpc";
 import { z } from "zod";
 import { pinCreationSchema } from "../schemas";
 
@@ -60,7 +65,7 @@ export const pinRouter = router({
 				input.imageURLs,
 			);
 		}),
-	
+
 	adminCreate: adminProcedure
 		.input(pinCreationSchema)
 		.mutation(async ({ ctx, input }) => {
@@ -96,16 +101,15 @@ export const pinRouter = router({
 		.mutation(async ({ ctx, input }) => {
 			return ctx.services.pin.userDeleteById(input.id, ctx.user.id);
 		}),
-	
+
 	adminDelete: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
 			return ctx.services.pin.adminDeleteById(input.id);
 		}),
 
-	
 	getAllAdmin: adminProcedure
-		.input(paginationSchema.extend(pinFilterSchema).optional())
+		.input(paginationSchema.extend(pinFilterSchema.shape).optional())
 		.query(async ({ ctx, input }) => {
 			const options = input
 				? {

@@ -19,9 +19,8 @@ export const userRouter = router({
 		return ctx.services.user.getById(id);
 	}),
 
-	
 	getAll: adminProcedure
-		.input(paginationSchema.extend(userFilterSchema).optional())
+		.input(paginationSchema.extend(userFilterSchema.shape).optional())
 		.query(async ({ ctx, input }) => {
 			const options = input
 				? {
@@ -39,6 +38,4 @@ export const userRouter = router({
 		.query(async ({ ctx, input }) => {
 			return ctx.services.user.getCount({ role: input?.role });
 		}),
-
-	
 });
