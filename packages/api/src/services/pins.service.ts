@@ -4,6 +4,9 @@ import type {
 	PinImagesRepository,
 	PinRepository,
 	PinTagsRepository,
+	GetAllPinsAdminOptions,
+	GetPinCountOptions,
+	PinStatus,
 } from "@repo/db";
 import { TRPCError } from "@trpc/server";
 import type { CommentService } from "./comment.service";
@@ -80,6 +83,42 @@ export function makePinService(
 		return await repositories.pin.adminDeleteById(id);
 	}
 
+	async function getAllAdmin(options?: GetAllPinsAdminOptions) {
+		return await repositories.pin.getAllAdmin(options);
+	}
+
+	async function getCount(options?: GetPinCountOptions) {
+		return await repositories.pin.getCount(options);
+	}
+
+	async function getStatusCounts() {
+		return await repositories.pin.getStatusCounts();
+	}
+
+	async function getByIdWithOwner(id: string) {
+		return await repositories.pin.getByIdWithOwner(id);
+	}
+
+	async function approvePin(id: string) {
+		const result = await repositories.pin.update(id, { status: "ACTIVE" });
+		if (!result)
+			throw new TRPCError({
+				message: "Failed to approve pin",
+				code: "NOT_FOUND",
+			});
+		return result;
+	}
+
+	async function rejectPin(id: string) {
+		const result = await repositories.pin.update(id, { status: "ARCHIVED" });
+		if (!result)
+			throw new TRPCError({
+				message: "Failed to reject pin",
+				code: "NOT_FOUND",
+			});
+		return result;
+	}
+
 	return {
 		getAll,
 		getById,
@@ -89,6 +128,12 @@ export function makePinService(
 		update,
 		userDeleteById,
 		adminDeleteById,
+		getAllAdmin,
+		getCount,
+		getStatusCounts,
+		getByIdWithOwner,
+		approvePin,
+		rejectPin,
 	};
 }
 

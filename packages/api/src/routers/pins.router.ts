@@ -10,6 +10,20 @@ const PinStatus = z.enum([
 	"DELETED",
 ]);
 
+const paginationSchema = z.object({
+	limit: z.number().min(1).max(100).default(50),
+	offset: z.number().min(0).default(0),
+	status: PinStatus.optional(),
+	ownerId: z.string().optional(),
+	search: z.string().optional(),
+});
+
+const pinFilterSchema = z.object({
+	status: PinStatus.optional(),
+	ownerId: z.string().optional(),
+	search: z.string().optional(),
+});
+
 export const pinRouter = router({
 	getAll: publicProcedure.query(async ({ ctx }) => {
 		return ctx.services.pin.getAll();
@@ -87,6 +101,67 @@ export const pinRouter = router({
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
 			return ctx.services.pin.adminDeleteById(input.id);
+		}),
+
+	
+	getAllAdmin: adminProcedure
+		.input(paginationSchema.extend(pinFilterSchema).optional())
+		.query(async ({ ctx, input }) => {
+			const options = input
+				? {
+						limit: input.limit,
+						offset: input.offset,
+						status: input.status,
+						ownerId: input.ownerId,
+						search: input.search,
+					}
+				: {};
+			return ctx.services.pin.getAllAdmin(options);
+		}),
+
+	getCount: adminProcedure
+		.input(pinFilterSchema.optional())
+		.query(async ({ ctx, input }) => {
+			return ctx.services.pin.getCount({ status: input?.status });
+		}),
+
+	getStatusCounts: adminProcedure.query(async ({ ctx }) => {
+		return ctx.services.pin.getStatusCounts();
+	}),
+
+	getByIdAdmin: adminProcedure
+		.input(z.object({ id: z.string() }))
+		.query(async ({ ctx, input }) => {
+			return ctx.services.pin.getByIdWithOwner(input.id);
+		}),
+
+	approve: adminProcedure
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			return ctx.services.pin.approvePin(input.id);
+		}),
+
+	reject: adminProcedure
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			return ctx.services.pin.rejectPin(input.id);
+		}),
+
+	// Admin update - can update any pin
+	adminUpdate: adminProcedure
+		.input(
+			z.object({
+				id: z.string(),
+				title: z.string().min(1).optional(),
+				description: z.string().optional(),
+				latitude: z.number().min(-90).max(90).optional(),
+				longitude: z.number().min(-180).max(180).optional(),
+				status: PinStatus.optional(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { id, ...data } = input;
+			return ctx.services.pin.update(id, data);
 		}),
 });
 
