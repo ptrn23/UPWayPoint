@@ -356,7 +356,6 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
 
-                            {/* 4. Newly Verified Pins */}
                             <div className="module-card">
                                 <div className="card-header">
                                     <h3>RECENTLY VERIFIED PINS</h3>
@@ -408,22 +407,77 @@ export default function AdminDashboard() {
 
                             <div className="module-card">
                                 <div className="card-header">
-                                    <h3>NEWEST REGISTRATIONS</h3>
+                                    <h3>NEWEST USERS</h3>
                                 </div>
                                 <div className="card-body">
-                                    <div className="placeholder-content">
-                                        Newest Accounts List Go Here
+                                    <div className="user-list">
+                                        {recentUsers.map((user) => (
+                                            <div key={user.id} className="user-list-item">
+                                                <div className="user-info-group">
+                                                    <div className="user-avatar">
+                                                        {user.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div className="user-text">
+                                                        <span className="user-name">{user.name}</span>
+                                                        <span className="user-meta">
+                                                            {user.email} • {user.joinedAt}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    className="view-user-btn"
+                                                    title="Access Operator Profile"
+                                                    onClick={() => console.log("View user:", user.id)}
+                                                >
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                </button>
+
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
 
                             <div className="module-card">
                                 <div className="card-header">
-                                    <h3>TOP USERS</h3>
+                                    <h3>TOP USERS BY PINS</h3>
                                 </div>
                                 <div className="card-body">
-                                    <div className="placeholder-content">
-                                        Top Users (Leaderboard) Go Here
+                                    <div className="user-list">
+                                        {topUsers.map((user, index) => (
+                                            <div key={user.id} className="user-list-item">
+
+                                                <div className="user-info-group">
+                                                    <div
+                                                        className="user-avatar"
+                                                        style={{
+                                                            borderColor: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
+                                                            color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--neon-blue)',
+                                                            background: index === 0 ? 'color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent)' : 'color-mix(in srgb, var(--neon-blue) 15%, transparent)'
+                                                        }}
+                                                    >
+                                                        {user.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div className="user-text">
+                                                        <span className="user-name">{user.name}</span>
+                                                        <span className="user-meta">Rank #{user.rank} Operator</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="pin-count-display">
+                                                    <span className="count-number" style={{ color: index === 0 ? 'var(--neon-yellow, #FFD700)' : 'var(--text-primary)' }}>
+                                                        {user.pinCount}
+                                                    </span>
+                                                    <span className="count-label">PINS</span>
+                                                </div>
+
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -913,6 +967,121 @@ export default function AdminDashboard() {
         .reject-btn:active { 
           transform: scale(0.95); 
         } 
+
+        /* --- USER LIST STYLES --- */
+        .user-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .user-list-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: var(--bg-panel-hover);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          padding: 12px 16px;
+          transition: all 0.2s ease;
+        }
+
+        .user-list-item:hover {
+          border-color: color-mix(in srgb, var(--text-secondary) 50%, transparent);
+          background: color-mix(in srgb, var(--bg-panel-hover) 80%, var(--border-color));
+        }
+
+        .user-info-group {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        /* Circular Avatar Layout */
+        .user-avatar {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          border: 1.5px solid var(--neon-blue);
+          color: var(--neon-blue);
+          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          font-family: var(--font-cubao-wide);
+          font-size: 16px;
+        }
+
+        .user-text {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .user-name {
+          font-family: var(--font-chakra);
+          font-size: 14px;
+          font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: 0.05em;
+        }
+
+        .user-meta {
+          font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+          font-size: 11px;
+          color: var(--text-secondary);
+        }
+
+        /* Admin Action Buttons */
+        .view-user-btn {
+          background: transparent;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-secondary);
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          flex-shrink: 0;
+        }
+
+        .view-user-btn:hover {
+          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
+          border-color: var(--neon-blue);
+          color: var(--neon-blue);
+          transform: scale(1.05);
+        }
+
+        .view-user-btn:active {
+          transform: scale(0.95);
+        }
+
+        /* Leaderboard Count Alignment */
+        .pin-count-display {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
+        }
+
+        .count-number {
+          font-family: var(--font-cubao-wide);
+          font-size: 20px;
+          color: var(--text-primary);
+          line-height: 1;
+        }
+
+        .count-label {
+          font-family: var(--font-chakra);
+          font-size: 10px;
+          font-weight: 800;
+          color: var(--text-secondary);
+          letter-spacing: 0.1em;
+        }
 
         /* Custom Scrollbar */
         .custom-vertical-scrollbar::-webkit-scrollbar { width: 8px; }
