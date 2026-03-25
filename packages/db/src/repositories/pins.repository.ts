@@ -7,9 +7,14 @@ import type {
 	PinWithTags,
 	PinDetails,
 	UpdatePin,
+	PinDetailsSimple,
 } from "../db/types";
 
-export type PinStatus = "PENDING_VERIFICATION" | "ACTIVE" | "ARCHIVED" | "DELETED";
+export type PinStatus =
+	| "PENDING_VERIFICATION"
+	| "ACTIVE"
+	| "ARCHIVED"
+	| "DELETED";
 
 export interface GetAllPinsAdminOptions {
 	limit?: number;
@@ -41,6 +46,23 @@ export function makePinRepository(db: Database) {
 					},
 				},
 				images: true,
+			},
+		});
+
+		return query;
+	}
+
+	async function getSimpleById(
+		id: string,
+	): Promise<PinDetailsSimple | undefined> {
+		const query = await db.query.pin.findFirst({
+			where: eq(pin.id, id),
+			with: {
+				pinTags: {
+					with: {
+						tag: true,
+					},
+				},
 			},
 		});
 
@@ -82,7 +104,7 @@ export function makePinRepository(db: Database) {
 	async function userDeleteById(id: string): Promise<boolean> {
 		const [deleted] = await db
 			.update(pin)
-			.set({ status: "DELETED",updatedAt: new Date()})
+			.set({ status: "DELETED", updatedAt: new Date() })
 			.where(eq(pin.id, id))
 			.returning();
 		return !!deleted;
@@ -133,7 +155,12 @@ export function makePinRepository(db: Database) {
 	}
 
 	async function getStatusCounts(): Promise<Record<PinStatus, number>> {
-		const statuses: PinStatus[] = ["PENDING_VERIFICATION", "ACTIVE", "ARCHIVED", "DELETED"];
+		const statuses: PinStatus[] = [
+			"PENDING_VERIFICATION",
+			"ACTIVE",
+			"ARCHIVED",
+			"DELETED",
+		];
 		const result: Record<PinStatus, number> = {
 			PENDING_VERIFICATION: 0,
 			ACTIVE: 0,
@@ -152,7 +179,9 @@ export function makePinRepository(db: Database) {
 		return result;
 	}
 
-	async function getByIdWithOwner(id: string): Promise<(Pin & { ownerName: string }) | undefined> {
+	async function getByIdWithOwner(
+		id: string,
+	): Promise<(Pin & { ownerName: string }) | undefined> {
 		const query = await db.query.pin.findFirst({
 			where: eq(pin.id, id),
 			with: {
@@ -167,7 +196,6 @@ export function makePinRepository(db: Database) {
 
 		if (!query) return undefined;
 
-		
 		const ownerQuery = await db
 			.select({ name: user.name })
 			.from(user)
@@ -189,6 +217,7 @@ export function makePinRepository(db: Database) {
 		getCount,
 		getStatusCounts,
 		getByIdWithOwner,
+		getSimpleById,
 	};
 }
 

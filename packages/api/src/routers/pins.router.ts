@@ -40,6 +40,12 @@ export const pinRouter = router({
 			return ctx.services.pin.getById(input.id);
 		}),
 
+	getSimpleById: publicProcedure
+		.input(z.object({ id: z.string() }))
+		.query(async ({ ctx, input }) => {
+			return ctx.services.pin.getSimpleById(input.id);
+		}),
+
 	getByOwnerId: publicProcedure
 		.input(z.object({ ownerId: z.string() }))
 		.query(async ({ ctx, input }) => {

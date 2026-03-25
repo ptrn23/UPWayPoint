@@ -30,6 +30,11 @@ export function makePinService(
 		return { ...pin, comments: comments };
 	}
 
+	async function getSimpleById(id: string) {
+		const pin = await repositories.pin.getSimpleById(id);
+		return pin;
+	}
+
 	async function getByOwnerId(ownerId: string) {
 		return await repositories.pin.getByOwnerId(ownerId);
 	}
@@ -134,6 +139,7 @@ export function makePinService(
 		getByIdWithOwner,
 		approvePin,
 		rejectPin,
+		getSimpleById,
 	};
 }
 

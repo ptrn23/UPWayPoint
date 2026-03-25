@@ -18,13 +18,27 @@ export function PinDetailsCard({
 	onClose,
 	onExpand,
 }: PinDetailsCardProps) {
-	const { data: pin } = trpc.pin.getById.useQuery(
-		{ id: pinId },
-		{ refetchOnWindowFocus: false },
-	);
+	const { data: pin, isLoading: isPinLoading } =
+		trpc.pin.getSimpleById.useQuery(
+			{ id: pinId },
+			{ refetchOnWindowFocus: false },
+		);
 	const color = getPinColor(
-      pin?.pinTags ? pin?.pinTags[0]?.tag.title || "" : "",
-  );
+		pin?.pinTags ? pin?.pinTags[0]?.tag.title || "" : "",
+	);
+
+	if (isPinLoading)
+		return (
+			<div
+				className="details-card"
+				style={{
+					borderTop: "3px solid black",
+					animation:
+						"slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), pulse 1s ease-in-out infinite",
+					minHeight: "156px",
+				}}
+			></div>
+		);
 
 	return (
 		<div className="details-card">
@@ -94,8 +108,6 @@ export function PinDetailsCard({
           display: flex;
           flex-direction: column;
           gap: 16px;
-          animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          pointer-events: auto; 
         }
 
         .card-header {
