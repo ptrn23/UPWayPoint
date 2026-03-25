@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
@@ -14,6 +14,37 @@ export default function AdminDashboard() {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { theme, toggleTheme } = useTheme();
+    const [activeSection, setActiveSection] = useState("overview");
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            {
+                root: document.querySelector('.content-area'),
+                rootMargin: "-10% 0px -70% 0px"
+            }
+        );
+
+        const sections = document.querySelectorAll(".dashboard-section");
+        sections.forEach((section) => observer.observe(section));
+
+        return () => observer.disconnect();
+    }, []);
+
+    const scrollToSection = (sectionId: string) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setActiveSection(sectionId);
+            if (window.innerWidth <= 768) setIsSidebarOpen(false);
+        }
+    };
 
     const goToMap = () => router.push("/");
 
