@@ -54,11 +54,11 @@ export function makePinService(
 				message: "Failed to create pin",
 				code: "BAD_REQUEST",
 			});
-
+		const { status, ...dataWithoutStatus } = data;
 		await repositories.modification.create({
 			userId: data.ownerId,
 			pinId: res.id,
-			after: { data: data, tags: tags },
+			after: { data: dataWithoutStatus, tags: tags },
 			status: data.status === "ACTIVE" ? "APPLIED" : "PENDING",
 		});
 
@@ -194,7 +194,7 @@ export function makePinService(
 			id,
 		);
 
-		if (initialMod)
+		if (!!initialMod)
 			await repositories.modification.applyModification(initialMod.id, adminId);
 
 		return result;
