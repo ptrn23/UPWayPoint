@@ -189,7 +189,10 @@ export default function Home() {
 							!!(matchesCategory && matchesSearch) &&
 							(currentUser?.userRole === "admin"
 								? pinData.status !== "DELETED"
-								: pinData.status === "ACTIVE");
+								: currentUser?.userRole === "user" &&
+										pinData.ownerId === currentUser?.id
+									? pinData.status !== "DELETED"
+									: pinData.status === "ACTIVE");
 
 						return (
 							<AdvancedMarker
