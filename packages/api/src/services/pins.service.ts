@@ -126,15 +126,21 @@ export function makePinService(
 				code: "NOT_FOUND",
 			});
 		const after = pendingModification.after as {
-			data: UpdatePin;
+			data: { title?: string; description?: string };
 			tags: string[];
 		};
 
-		const updatedPin = await repositories.pin.update(id, after.data);
+		const updatedPin = await repositories.pin.update(
+			pendingModification.pinId,
+			after.data,
+		);
 
 		if (after.tags.length > 0) {
-			await repositories.pinTags.deleteTagByPinId(id);
-			await repositories.pinTags.create({ pinId: id, tagId: after.tags[0]! }); // change this to handle multiple tags in the future
+			await repositories.pinTags.deleteTagByPinId(pendingModification.pinId);
+			await repositories.pinTags.create({
+				pinId: pendingModification.pinId,
+				tagId: after.tags[0]!,
+			}); // change this to handle multiple tags in the future
 		}
 
 		await repositories.modification.applyModification(id, adminId);
