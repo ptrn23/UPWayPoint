@@ -40,12 +40,12 @@ export default function AdminDashboard() {
 			utils.modification.getPending.invalidate();
 		},
 	});
-	const applyMod = trpc.modification.applyModification.useMutation({
+	const applyMod = trpc.pin.applyUpdate.useMutation({
 		onSuccess: (output) => {
 			utils.modification.getPending.invalidate();
 		},
 	});
-	const rejectMod = trpc.modification.rejectModification.useMutation({
+	const rejectMod = trpc.pin.rejectUpdate.useMutation({
 		onSuccess: (output) => {
 			utils.modification.getPending.invalidate();
 		},
