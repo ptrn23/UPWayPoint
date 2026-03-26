@@ -358,7 +358,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 						</div>
 
 						<div className="header-actions">
-							{sessionData?.user?.id === pin?.ownerId && (
+							{!!sessionData && (
 								<button
 									type="button"
 									className="edit-btn"
