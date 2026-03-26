@@ -75,17 +75,26 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
 			return;
 		}
 
-		const dirtyFields = Object.keys(formMethods.formState.dirtyFields);
-		console.log(dirtyFields);
+		// compare default to current (idk why dirtyfields doesn't work istg)
+		const changedFields: string[] = [];
+		const formValues = formMethods.getValues();
+		const defaultVals = formMethods.formState.defaultValues;
+		if (defaultVals)
+			Object.keys(formValues).forEach((k) => {
+				if (
+					formValues[k as keyof typeof formValues] !==
+					defaultVals[k as keyof typeof defaultVals]
+				)
+					changedFields.push(k);
+			});
+		console.log(changedFields);
 
-		updatePin.mutate({
-			id: pin.id,
-			title: dirtyFields.includes("title") ? data.title : undefined,
-			description: dirtyFields.includes("description")
-				? data.description
-				: undefined,
-			tags: dirtyFields.includes("tags") ? data.tags || [] : [],
-		});
+		// updatePin.mutate({
+		// 	id: pin.id,
+		// 	title: data.title,
+		// 	description: data.description,
+		// 	tags: data.tags || [],
+		// });
 	};
 
 	const handleCancel = () => {
