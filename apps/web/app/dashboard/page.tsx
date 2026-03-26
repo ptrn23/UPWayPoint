@@ -6,6 +6,7 @@ import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
 import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
 import { useTheme } from "@/lib/ThemeContext";
+import Link from "next/link";
 
 export default function Dashboard() {
 	const router = useRouter();
@@ -496,11 +497,24 @@ export default function Dashboard() {
 														</div>
 													</div>
 
-													<button
-														type="button"
+													<Link
 														className="locate-btn"
-														title="Locate on Map"
-														onClick={() => console.log("Locate pin:", pin.id)}
+														style={{
+															background: "transparent",
+															border: "1px solid var(--border-color)",
+															borderRadius: "8px",
+															width: "36px",
+															height: "36px",
+															display: "flex",
+															alignItems: "center",
+															justifyContent: "center",
+															color: "var(--text-secondary)",
+															cursor: "pointer",
+															transition: "all 0.2s",
+															flexShrink: "0",
+														}}
+														href={`/?pin=${pin.id}`}
+														target="_blank"
 													>
 														<svg
 															width="18"
@@ -512,7 +526,7 @@ export default function Dashboard() {
 														>
 															<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
 														</svg>
-													</button>
+													</Link>
 												</div>
 											);
 										})}
@@ -564,11 +578,24 @@ export default function Dashboard() {
 														</div>
 													</div>
 
-													<button
-														type="button"
+													<Link
 														className="locate-btn"
-														title="Locate on Map"
-														onClick={() => console.log("Locate pin:", pin.id)}
+														style={{
+															background: "transparent",
+															border: "1px solid var(--border-color)",
+															borderRadius: "8px",
+															width: "36px",
+															height: "36px",
+															display: "flex",
+															alignItems: "center",
+															justifyContent: "center",
+															color: "var(--text-secondary)",
+															cursor: "pointer",
+															transition: "all 0.2s",
+															flexShrink: "0",
+														}}
+														href={`/?pin=${pin.id}`}
+														target="_blank"
 													>
 														<svg
 															width="18"
@@ -580,7 +607,7 @@ export default function Dashboard() {
 														>
 															<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
 														</svg>
-													</button>
+													</Link>
 												</div>
 											);
 										})}
