@@ -2,6 +2,15 @@
 
 import { getPinColor } from "@/data/pin-categories";
 import { trpc } from "@/lib/trpc";
+import { clsxm } from "@repo/ui/clsxm";
+
+// STYLES
+const detailsCardStyles = `
+  p-[24px] w-full max-w-[400px] flex flex-col gap-[16px]
+  bg-[var(--bg-panel)] backdrop-filter-[blur(20px)]
+  border border-solid border-[1px] border-[var(--border-color)] border-t-[3px] rounded-[20px]
+  shadow-[0_20px_40px_rgba(0, 0, 0, 0.3)]
+  `;
 
 interface PinDetailsCardProps {
 	pinId: string;
@@ -30,7 +39,7 @@ export function PinDetailsCard({
 	if (isPinLoading)
 		return (
 			<div
-				className="details-card"
+				className={detailsCardStyles}
 				style={{
 					borderTop: "3px solid black",
 					animation:
@@ -41,7 +50,7 @@ export function PinDetailsCard({
 		);
 
 	return (
-		<div className="details-card">
+		<div style={{ borderTopColor: `${color}` }} className={detailsCardStyles}>
 			{/* HEADER */}
 			<div className="card-header">
 				<div>
@@ -80,35 +89,23 @@ export function PinDetailsCard({
 				<button type="button" className="expand-button" onClick={onExpand}>
 					DETAILS
 				</button>
+
 				<button
 					type="button"
-					className="lock-button"
+					className={clsxm(
+						`
+            flex w-full justify-center p-[14px] rounded-[12px] border-none font-[var(--font-chakra)] text-[13px] tracking-[0.05em] cursor-pointer
+            transition-all duration-[0.2s] ease-[cubic-bezier(0.175, 0.885, 0.32, 1.275)] text-[var(--bg-base)] bg-[var(--text-primary)] font-[900]
+          `,
+						isLocked && "opacity-[40%] scale-[95%]",
+					)}
 					onClick={onLockClick}
-					style={{
-						background: isLocked ? "var(--neon-blue)" : "var(--text-primary)",
-						color: "var(--bg-base)",
-					}}
 				>
 					{isLocked ? "TARGET LOCKED" : "LOCK TARGET"}
 				</button>
 			</div>
 
 			<style jsx>{`
-        .details-card {
-          background: var(--bg-panel);
-          backdrop-filter: blur(20px);
-          border: 1px solid var(--border-color);
-          border-top: 3px solid ${color}; 
-          border-radius: 20px;
-          padding: 24px;
-          width: 100%;
-          max-width: 400px;
-          /* Softened the shadow slightly so it looks natural in both modes */
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
 
         .card-header {
           display: flex;
@@ -184,22 +181,6 @@ export function PinDetailsCard({
           background: var(--border-color); 
         }
 
-        .lock-button {
-          flex: 1;
-          padding: 14px;
-          border-radius: 12px;
-          border: none;
-          font-weight: 900;
-          font-family: var(--font-chakra);
-          font-size: 13px;
-          letter-spacing: 0.05em;
-          cursor: pointer;
-          transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .lock-button:active {
-          transform: scale(0.95);
-        }
       `}</style>
 		</div>
 	);
