@@ -1,13 +1,11 @@
 "use client";
 
 import { trpc } from "@/lib/trpc";
-import type { PinRouterInputs, PinRouterOutputs } from "@repo/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import z from "zod";
-import { fileSchema } from "@repo/api/schemas";
 import { getPinColor } from "@/data/pin-categories";
+import { useEffect } from "react";
 type Pin = {
 	id?: string | undefined;
 	createdAt?: string | undefined;
@@ -34,8 +32,6 @@ type Pin = {
 	description?: string | null;
 	ownerId?: string | undefined;
 };
-
-type UpdatePin = PinRouterInputs["update"];
 
 interface IEditPinModalProps {
 	onSave: (pinId: string) => void;
@@ -74,27 +70,15 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
 			handleCancel();
 			return;
 		}
+		const diffs = Object.keys(formMethods.formState.dirtyFields);
+		if (diffs.length === 0) return;
 
-		// compare default to current (idk why dirtyfields doesn't work istg)
-		const changedFields: string[] = [];
-		const formValues = formMethods.getValues();
-		const defaultVals = formMethods.formState.defaultValues;
-		if (defaultVals)
-			Object.keys(formValues).forEach((k) => {
-				if (
-					formValues[k as keyof typeof formValues] !==
-					defaultVals[k as keyof typeof defaultVals]
-				)
-					changedFields.push(k);
-			});
-		console.log(changedFields);
-
-		// updatePin.mutate({
-		// 	id: pin.id,
-		// 	title: data.title,
-		// 	description: data.description,
-		// 	tags: data.tags || [],
-		// });
+		updatePin.mutate({
+			id: pin.id,
+			title: diffs.includes("title") ? data.title : undefined,
+			description: diffs.includes("description") ? data.description : undefined,
+			tags: diffs.includes("tags") ? data.tags || [] : [],
+		});
 	};
 
 	const handleCancel = () => {
@@ -104,6 +88,14 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
 	};
 
 	const tags = formMethods.watch("tags");
+
+	useEffect(() => {
+		formMethods.reset({
+			tags: pin.pinTags?.map((pt) => pt.tagId),
+			title: pin.title,
+			description: pin.description || "",
+		});
+	}, [formMethods, pin.description, pin.pinTags, pin.title]);
 
 	return (
 		<div className="modal-overlay">
