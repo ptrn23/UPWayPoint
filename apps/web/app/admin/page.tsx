@@ -36,6 +36,7 @@ export default function AdminDashboard() {
 	});
 	const approvePin = trpc.pin.approve.useMutation({
 		onSuccess: (output) => {
+			utils.pin.getAll.invalidate();
 			utils.pin.getAllAdmin.invalidate();
 			utils.modification.getPending.invalidate();
 		},
@@ -43,6 +44,9 @@ export default function AdminDashboard() {
 	const applyMod = trpc.pin.applyUpdate.useMutation({
 		onSuccess: (output) => {
 			utils.modification.getPending.invalidate();
+			utils.pin.getAll.invalidate();
+			utils.pin.getAllAdmin.invalidate();
+			utils.pin.getStatusCounts.invalidate();
 		},
 	});
 	const rejectMod = trpc.pin.rejectUpdate.useMutation({
