@@ -13,6 +13,9 @@ export default function AdminDashboard() {
 
 	const { data, isLoading } = trpc.user.getCurrent.useQuery();
 
+	const { data: pendingModifications } =
+		trpc.modification.getPending.useQuery();
+
 	const { data: pinCounts } = trpc.pin.getStatusCounts.useQuery();
 	const { data: userCount } = trpc.user.getCount.useQuery();
 	const { data: commentCount } = trpc.comment.getCount.useQuery();
@@ -28,11 +31,27 @@ export default function AdminDashboard() {
 	const rejectPin = trpc.pin.reject.useMutation({
 		onSuccess: (output) => {
 			utils.pin.getAllAdmin.invalidate();
+			utils.modification.getPending.invalidate();
 		},
 	});
 	const approvePin = trpc.pin.approve.useMutation({
 		onSuccess: (output) => {
+			utils.pin.getAll.invalidate();
 			utils.pin.getAllAdmin.invalidate();
+			utils.modification.getPending.invalidate();
+		},
+	});
+	const applyMod = trpc.pin.applyUpdate.useMutation({
+		onSuccess: (output) => {
+			utils.modification.getPending.invalidate();
+			utils.pin.getAll.invalidate();
+			utils.pin.getAllAdmin.invalidate();
+			utils.pin.getStatusCounts.invalidate();
+		},
+	});
+	const rejectMod = trpc.pin.rejectUpdate.useMutation({
+		onSuccess: (output) => {
+			utils.modification.getPending.invalidate();
 		},
 	});
 
@@ -113,40 +132,6 @@ export default function AdminDashboard() {
 		// newUsers7Days: 14,
 		// newUsers30Days: 45,
 	};
-
-	const recentUsers = [
-		{
-			id: "u1",
-			name: "User 1",
-			email: "user1@up.edu.ph",
-			joinedAt: "2 hours ago",
-		},
-		{
-			id: "u2",
-			name: "User 2",
-			email: "user2@up.edu.ph",
-			joinedAt: "5 hours ago",
-		},
-		{
-			id: "u3",
-			name: "User 3",
-			email: "user3@up.edu.ph",
-			joinedAt: "1 day ago",
-		},
-		{
-			id: "u4",
-			name: "User 4",
-			email: "user4@up.edu.ph",
-			joinedAt: "2 days ago",
-		},
-	];
-
-	const topUsers = [
-		{ id: "u1", name: "User 1", pinCount: 142, rank: 1 },
-		{ id: "u2", name: "User 2", pinCount: 89, rank: 2 },
-		{ id: "u3", name: "User 3", pinCount: 75, rank: 3 },
-		{ id: "u4", name: "User 4", pinCount: 60, rank: 4 },
-	];
 
 	return (
 		<div className="dashboard-layout">
@@ -742,6 +727,127 @@ export default function AdminDashboard() {
 																		DELETE
 																	</button>
 																)}
+															</div>
+														</div>
+													);
+												})}
+											</div>
+										</div>
+									</div>
+
+									<div className="module-card">
+										<div className="card-header">
+											<h3>RECENT MODIFICATION REQUESTS</h3>
+										</div>
+
+										<div className="card-body">
+											<div className="pin-list">
+												{pendingModifications?.map((mod) => {
+													const color = "var(--text-primary)";
+													return (
+														<div key={mod.id} className="pin-list-item">
+															<div className="pin-info-group">
+																<div
+																	className="list-diamond"
+																	style={{
+																		borderColor: color,
+																		backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
+																	}}
+																>
+																	<span style={{ color }}>
+																		{mod.pin.title.charAt(0).toUpperCase()}
+																	</span>
+																</div>
+
+																<div className="pin-text">
+																	<span className="pin-title">
+																		{mod.pin.title}
+																	</span>
+																	<span className="pin-coords">
+																		Modification by {mod.user.name}
+																	</span>
+																</div>
+															</div>
+
+															<div
+																className="pin-actions"
+																style={{ display: "flex", gap: "8px" }}
+															>
+																<Link
+																	className="locate-btn"
+																	style={{
+																		background: "transparent",
+																		border: "1px solid var(--border-color)",
+																		borderRadius: "8px",
+																		width: "36px",
+																		height: "36px",
+																		display: "flex",
+																		alignItems: "center",
+																		justifyContent: "center",
+																		color: "var(--text-secondary)",
+																		cursor: "pointer",
+																		transition: "all 0.2s",
+																		flexShrink: "0",
+																	}}
+																	href={`/?pin=${mod.pin.id}`}
+																	target="_blank"
+																>
+																	<svg
+																		width="18"
+																		height="18"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2.5"
+																	>
+																		<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+																	</svg>
+																</Link>
+
+																<button
+																	type="button"
+																	className="reject-btn"
+																	title="Reject Pin"
+																	onClick={() =>
+																		rejectMod.mutate({ id: mod.id })
+																	}
+																>
+																	<svg
+																		width="18"
+																		height="18"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2.5"
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																	>
+																		<line x1="18" y1="6" x2="6" y2="18"></line>
+																		<line x1="6" y1="6" x2="18" y2="18"></line>
+																	</svg>
+																</button>
+
+																<button
+																	type="button"
+																	className="approve-btn"
+																	title="Verify & Approve Pin"
+																	onClick={() =>
+																		applyMod.mutate({ id: mod.id })
+																	}
+																>
+																	<svg
+																		width="18"
+																		height="18"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2.5"
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																	>
+																		<polyline points="20 6 9 17 4 12"></polyline>
+																	</svg>
+																</button>
 															</div>
 														</div>
 													);

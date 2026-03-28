@@ -14,6 +14,10 @@ export function makeModificationRepository(db: Database) {
 	async function getPending() {
 		return await db.query.modification.findMany({
 			where: eq(modification.status, "PENDING"),
+			with: {
+				pin: true,
+				user: true,
+			},
 		});
 	}
 

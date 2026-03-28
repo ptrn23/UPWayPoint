@@ -1,13 +1,11 @@
 "use client";
 
 import { trpc } from "@/lib/trpc";
-import type { PinRouterInputs, PinRouterOutputs } from "@repo/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import z from "zod";
-import { fileSchema } from "@repo/api/schemas";
 import { getPinColor } from "@/data/pin-categories";
+import { useEffect } from "react";
 type Pin = {
 	id?: string | undefined;
 	createdAt?: string | undefined;
@@ -34,8 +32,6 @@ type Pin = {
 	description?: string | null;
 	ownerId?: string | undefined;
 };
-
-type UpdatePin = PinRouterInputs["update"];
 
 interface IEditPinModalProps {
 	onSave: (pinId: string) => void;
@@ -74,17 +70,14 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
 			handleCancel();
 			return;
 		}
-
-		const dirtyFields = Object.keys(formMethods.formState.dirtyFields);
-		console.log(dirtyFields);
+		const diffs = Object.keys(formMethods.formState.dirtyFields);
+		if (diffs.length === 0) return;
 
 		updatePin.mutate({
 			id: pin.id,
-			title: dirtyFields.includes("title") ? data.title : undefined,
-			description: dirtyFields.includes("description")
-				? data.description
-				: undefined,
-			tags: dirtyFields.includes("tags") ? data.tags || [] : [],
+			title: diffs.includes("title") ? data.title : undefined,
+			description: diffs.includes("description") ? data.description : undefined,
+			tags: diffs.includes("tags") ? data.tags || [] : [],
 		});
 	};
 
@@ -95,6 +88,14 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
 	};
 
 	const tags = formMethods.watch("tags");
+
+	useEffect(() => {
+		formMethods.reset({
+			tags: pin.pinTags?.map((pt) => pt.tagId),
+			title: pin.title,
+			description: pin.description || "",
+		});
+	}, [formMethods, pin.description, pin.pinTags, pin.title]);
 
 	return (
 		<div className="modal-overlay">

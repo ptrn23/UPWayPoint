@@ -33,6 +33,8 @@ export default function Home() {
 	const session = useSession();
 	const params = useSearchParams();
 
+	const [hasPreselected, setHasPreselected] = useState(false);
+
 	const { data: pins } = trpc.pin.getAll.useQuery(undefined, {
 		refetchOnWindowFocus: false,
 	});
@@ -125,11 +127,12 @@ export default function Home() {
 	}, [isAddingPin]);
 
 	useEffect(() => {
-		if (params.has("pin")) {
+		if (params.has("pin") && !hasPreselected) {
 			const preselectedPin = params.get("pin") as string;
 			selectPin(preselectedPin);
+			setHasPreselected(true);
 		}
-	}, [params, selectPin]);
+	}, [params, selectPin, hasPreselected]);
 
 	return (
 		<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
@@ -189,7 +192,10 @@ export default function Home() {
 							!!(matchesCategory && matchesSearch) &&
 							(currentUser?.userRole === "admin"
 								? pinData.status !== "DELETED"
-								: pinData.status === "ACTIVE");
+								: currentUser?.userRole === "user" &&
+										pinData.ownerId === currentUser?.id
+									? pinData.status !== "DELETED"
+									: pinData.status === "ACTIVE");
 
 						return (
 							<AdvancedMarker
