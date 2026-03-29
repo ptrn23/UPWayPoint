@@ -106,7 +106,7 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
 						height="24"
 						viewBox="0 0 24 24"
 						fill="none"
-						stroke="var(--neon-blue, #00E5FF)"
+						stroke="var(--neon-blue)"
 						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
@@ -249,7 +249,7 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
         .input-group span {
           font-family: var(--font-chakra), sans-serif;
           font-size: 12px;
-          color: var(--neon-blue, #00E5FF);
+          color: var(--neon-blue);
           letter-spacing: 0.1em;
           font-weight: 700;
         }
@@ -267,7 +267,7 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
         }
 
         input:focus, textarea:focus {
-          border-color: var(--neon-blue, #00E5FF);
+          border-color: var(--neon-blue);
           box-shadow: 0 0 10px var(--shadow-glow);
         }
 
