@@ -292,7 +292,7 @@ export default function AdminDashboard() {
 													<span className="stat-value">{totalPins}</span>
 												</div>
 												<div className="stat-block">
-													<span className="stat-label">AWAITING ACTION</span>
+													<span className="stat-label">PENDING PINS</span>
 													<span
 														className="stat-value"
 														style={{ color: "var(--status-warning)" }}
