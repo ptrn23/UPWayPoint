@@ -445,7 +445,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* PIN ID */}
 							<div className="meta-item">
 								<span className="meta-label">PIN ID</span>
-								<span className="meta-value font-mono">
+								<span className="meta-value font-mono animate-pan">
 									{pin?.id?.padStart(7, "0")}
 								</span>
 							</div>
@@ -730,8 +730,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 gap: 4px; 
                 min-width: 0; 
                 /* 1. Turn the container into a measurable query zone */
-                container-type: inline-size; 
-                /* 2. Hide the overflow from bleeding into other columns */
+                container-type: inline-size;
                 overflow: hidden; 
             }
 
@@ -745,17 +744,10 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 color: var(--text-primary); 
                 white-space: nowrap;
                 width: max-content;
-                animation: autoPan 6s ease-in-out infinite alternate;
-            }
-            
-            .meta-value { 
-                font-family: var(--font-nunito); 
-                font-size: 14px; 
-                font-weight: 700; 
-                color: var(--text-primary); 
-                white-space: nowrap;
-                overflow-x: auto;
-                scrollbar-width: none; /* Firefox */
+				background-size: 200% 200%;
+                animation: scrollText 6s ease-in-out infinite alternate;
+				scrollbar-width: none; /* Firefox */
+				overflow: hidden;
             }
             .meta-value::-webkit-scrollbar { 
                 display: none; /* Safari and Chrome */

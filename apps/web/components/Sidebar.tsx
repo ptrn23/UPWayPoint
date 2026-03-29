@@ -188,14 +188,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     letter-spacing: 0.1em;
                 }
 
-                @keyframes slideRight {
-                    from { transform: translateX(-100%); }
-                    to { transform: translateX(0); }
-                }
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
+                
             `}</style>
         </>
     );
