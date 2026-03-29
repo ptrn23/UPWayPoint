@@ -1059,10 +1059,6 @@ export default function Dashboard() {
           font-size: 11px;
         }
 
-        @keyframes spin {
-          100% { transform: rotate(360deg); }
-        }
-
         /* --- TELEMETRY MODULE STYLES --- */
         .telemetry-body {
           gap: 24px;

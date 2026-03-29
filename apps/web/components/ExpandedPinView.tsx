@@ -816,17 +816,6 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             }
             .reply-input:focus { border-color: var(--neon-blue); }
             .form-btn { padding: 10px 16px; font-size: 11px; border-radius: 6px; }
-
-            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-            @keyframes scalePop { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-			@keyframes autoPan {
-                0%, 20% { 
-                    transform: translateX(0); 
-                }
-                80%, 100% {
-                    transform: translateX(min(0px, calc(100cqw - 100%))); 
-                }
-            }
       `}</style>
 		</div>
 	);

@@ -60,16 +60,7 @@ export function MapCursor({ heading = 0 }: MapCursorProps) {
         .pulse-ring.delay-1 { animation-delay: 0s; }
         .pulse-ring.delay-2 { animation-delay: 1.25s; }
 
-        @keyframes radarPing {
-          0% {
-            transform: scale(0.8);
-            opacity: 0.8;
-          }
-          100% {
-            transform: scale(4.5);
-            opacity: 0;
-          }
-        }
+        
       `}</style>
         </div>
     );
