@@ -16,7 +16,7 @@ export function MapCursor({ heading = 0 }: MapCursorProps) {
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="var(--neon-blue, #00E5FF)"
+                    stroke="var(--neon-blue)"
                     strokeWidth="2"
                     strokeLinejoin="round"
                 >
@@ -50,7 +50,7 @@ export function MapCursor({ heading = 0 }: MapCursorProps) {
           width: 100%;
           height: 100%;
           background: transparent;
-          border: 1.5px solid var(--neon-blue, #00E5FF);
+          border: 1.5px solid var(--neon-blue);
           border-radius: 50%;
           opacity: 0; /* Hidden until animation starts */
           animation: radarPing 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
