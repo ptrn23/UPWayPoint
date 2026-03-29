@@ -310,7 +310,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             }
 
             .modal-content {
-                background: var(--bg-panel);
+                background: var(--bg-base);
                 border: 1px solid var(--border-color);
                 border-top: 4px solid ${color}; 
                 border-radius: 24px;

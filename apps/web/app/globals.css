@@ -2,7 +2,7 @@
 
 :root {
 	--bg-base: #f0f2f5;
-	--bg-panel: rgba(255, 255, 255, 0.9);
+	--bg-panel: rgba(255, 255, 255, 0.95);
 	--bg-panel-hover: rgba(0, 0, 0, 0.05);
 
 	--text-primary: #121212;
@@ -30,7 +30,7 @@
 
 .dark {
 	--bg-base: #0f1115;
-	--bg-panel: rgba(10, 10, 12, 0.85);
+	--bg-panel: rgba(10, 10, 12, 0.95);
 	--bg-panel-hover: rgba(255, 255, 255, 0.1);
 
 	--text-primary: #ffffff;

@@ -165,7 +165,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 }
 
                 .primary-action {
-                    background: var(--border-color);
+                    background: var(--bg-panel);
                     border-color: var(--neon-blue);
                     color: var(--neon-blue);
                 }

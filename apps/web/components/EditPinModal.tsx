@@ -210,11 +210,13 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
         }
 
         .modal-card {
+		  background: var(--bg-base);
+		  border: 1px solid var(--border-color);
+		  border-radius: 12px;
           width: 100%;
           max-width: 400px;
           padding: 24px;
           animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-					background-color: black;
         }
 
         .modal-header {
