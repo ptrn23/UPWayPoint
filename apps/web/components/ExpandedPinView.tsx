@@ -304,7 +304,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 				<style jsx>{`
             .modal-overlay {
                 position: fixed; inset: 0; 
-                background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+                background: var(--border-color); backdrop-filter: blur(8px);
                 z-index: 200; display: flex; align-items: center; justify-content: center;
                 padding: 24px; animation: fadeIn 0.2s ease-out; pointer-events: auto;
             }
@@ -319,7 +319,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 height: 70vh; 
                 display: flex; 
                 flex-direction: column;
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 30px 60px var(--border-color);
                 animation: scalePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 overflow: hidden; 
                 position: relative;
@@ -590,7 +590,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             .modal-overlay {
 							position: fixed;
 							top: 0; left: 0; width: 100vw; height: 100vh;
-							background: rgba(0, 0, 0, 0.7);
+							background: var(--border-color);
 							backdrop-filter: blur(8px);
 							-webkit-backdrop-filter: blur(8px);
 							display: flex;
@@ -610,7 +610,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 height: 70vh; 
                 display: flex; 
                 flex-direction: column;
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 30px 60px var(--border-color);
                 overflow: hidden; 
                 position: relative;
                 padding: 0; 
