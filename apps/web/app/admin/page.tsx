@@ -915,15 +915,15 @@ export default function AdminDashboard() {
 																style={{
 																	borderColor:
 																		index === 0
-																			? "var(--neon-yellow, #FFD700)"
+																			? "var(--neon-yellow)"
 																			: "var(--neon-blue)",
 																	color:
 																		index === 0
-																			? "var(--neon-yellow, #FFD700)"
+																			? "var(--neon-yellow)"
 																			: "var(--neon-blue)",
 																	background:
 																		index === 0
-																			? "color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent)"
+																			? "color-mix(in srgb, var(--neon-yellow) 15%, transparent)"
 																			: "color-mix(in srgb, var(--neon-blue) 15%, transparent)",
 																}}
 															>
@@ -943,7 +943,7 @@ export default function AdminDashboard() {
 																style={{
 																	color:
 																		index === 0
-																			? "var(--neon-yellow, #FFD700)"
+																			? "var(--neon-yellow)"
 																			: "var(--text-primary)",
 																}}
 															>
