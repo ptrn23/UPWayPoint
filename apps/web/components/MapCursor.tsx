@@ -16,13 +16,13 @@ export function MapCursor({ heading = 0 }: MapCursorProps) {
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="var(--neon-blue, #00E5FF)"
+                    stroke="var(--neon-blue)"
                     strokeWidth="2"
                     strokeLinejoin="round"
                 >
                     <polygon
                         points="12 2 22 22 12 17 2 22"
-                        fill="rgba(0, 229, 255, 0.4)"
+                        fill="color-mix(in oklab, white 20%, var(--neon-blue))"
                     ></polygon>
                 </svg>
             </div>
@@ -50,7 +50,7 @@ export function MapCursor({ heading = 0 }: MapCursorProps) {
           width: 100%;
           height: 100%;
           background: transparent;
-          border: 1.5px solid var(--neon-blue, #00E5FF);
+          border: 1.5px solid var(--neon-blue);
           border-radius: 50%;
           opacity: 0; /* Hidden until animation starts */
           animation: radarPing 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
@@ -60,16 +60,7 @@ export function MapCursor({ heading = 0 }: MapCursorProps) {
         .pulse-ring.delay-1 { animation-delay: 0s; }
         .pulse-ring.delay-2 { animation-delay: 1.25s; }
 
-        @keyframes radarPing {
-          0% {
-            transform: scale(0.8);
-            opacity: 0.8;
-          }
-          100% {
-            transform: scale(4.5);
-            opacity: 0;
-          }
-        }
+        
       `}</style>
         </div>
     );

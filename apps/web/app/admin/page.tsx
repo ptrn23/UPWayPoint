@@ -195,32 +195,14 @@ export default function AdminDashboard() {
 							<div className="theme-status">
 								{theme === "dark" ? (
 									<>
-										<svg
-											width="14"
-											height="14"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="var(--text-primary)"
-											strokeWidth="2.5"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										>
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--theme-moon)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
 											<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
 										</svg>
-										<span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
+										<span style={{ color: "var(--theme-moon)" }}>NIGHT</span>
 									</>
 								) : (
 									<>
-										<svg
-											width="14"
-											height="14"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="var(--pin-transit)"
-											strokeWidth="2.5"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										>
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--theme-sun)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
 											<circle cx="12" cy="12" r="5"></circle>
 											<line x1="12" y1="1" x2="12" y2="3"></line>
 											<line x1="12" y1="21" x2="12" y2="23"></line>
@@ -231,7 +213,7 @@ export default function AdminDashboard() {
 											<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
 											<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
 										</svg>
-										<span style={{ color: "var(--pin-transit)" }}>DAY</span>
+										<span style={{ color: "var(--theme-sun)" }}>DAY</span>
 									</>
 								)}
 							</div>
@@ -310,10 +292,10 @@ export default function AdminDashboard() {
 													<span className="stat-value">{totalPins}</span>
 												</div>
 												<div className="stat-block">
-													<span className="stat-label">AWAITING ACTION</span>
+													<span className="stat-label">PENDING PINS</span>
 													<span
 														className="stat-value"
-														style={{ color: "var(--neon-yellow, #FFD700)" }}
+														style={{ color: "var(--status-warning)" }}
 													>
 														{pendingPinCount}
 													</span>
@@ -327,19 +309,19 @@ export default function AdminDashboard() {
 													</span>
 													<span
 														className="integrity-percent"
-														style={{ color: "var(--pin-food)" }}
+														style={{ color: "var(--status-success)" }}
 													>
 														{globalVerificationRate}%
 													</span>
-												</div>
-												<div className="progress-track">
+													</div>
+													<div className="progress-track">
 													<div
 														className="progress-fill"
 														style={{
 															width: `${globalVerificationRate}%`,
-															background: "var(--pin-food)",
+															background: "var(--status-success)",
 															boxShadow:
-																"0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent)",
+																"0 0 10px color-mix(in srgb, var(--status-success) 50%, transparent)",
 														}}
 													></div>
 												</div>
@@ -724,7 +706,19 @@ export default function AdminDashboard() {
 																			setIsDeletingPin(true);
 																		}}
 																	>
-																		DELETE
+																		<svg
+																			width="18"
+																			height="18"
+																			viewBox="0 0 24 24"
+																			fill="none"
+																			stroke="currentColor"
+																			strokeWidth="2.5"
+																			strokeLinecap="round"
+																			strokeLinejoin="round"
+																		>
+																			<polyline points="3 6 5 6 21 6"></polyline>
+																			<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+																		</svg>
 																	</button>
 																)}
 															</div>
@@ -921,15 +915,15 @@ export default function AdminDashboard() {
 																style={{
 																	borderColor:
 																		index === 0
-																			? "var(--neon-yellow, #FFD700)"
+																			? "var(--neon-yellow)"
 																			: "var(--neon-blue)",
 																	color:
 																		index === 0
-																			? "var(--neon-yellow, #FFD700)"
+																			? "var(--neon-yellow)"
 																			: "var(--neon-blue)",
 																	background:
 																		index === 0
-																			? "color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent)"
+																			? "color-mix(in srgb, var(--neon-yellow) 15%, transparent)"
 																			: "color-mix(in srgb, var(--neon-blue) 15%, transparent)",
 																}}
 															>
@@ -949,7 +943,7 @@ export default function AdminDashboard() {
 																style={{
 																	color:
 																		index === 0
-																			? "var(--neon-yellow, #FFD700)"
+																			? "var(--neon-yellow)"
 																			: "var(--text-primary)",
 																}}
 															>
@@ -1080,7 +1074,7 @@ export default function AdminDashboard() {
           width: 100%;
           background: transparent;
           border: 1px solid var(--border-color);
-          color: #ff4d4d;
+          color: var(--status-danger);
           padding: 12px;
           border-radius: 8px;
           font-family: var(--font-chakra);
@@ -1091,9 +1085,9 @@ export default function AdminDashboard() {
         }
 
         .sign-out-btn:hover {
-          background: color-mix(in srgb, #ff4d4d 10%, transparent);
-          border-color: #ff4d4d;
-        }
+			background: color-mix(in srgb, var(--status-danger) 10%, transparent);
+			border-color: var(--status-danger);
+		}
 
         /* --- MAIN AREA --- */
         .main-wrapper {
@@ -1230,9 +1224,9 @@ export default function AdminDashboard() {
         }
 
         .status-badge {
-          background: color-mix(in srgb, var(--neon-green) 15%, transparent);
-          color: var(--neon-green);
-          border: 1px solid var(--neon-green);
+          background: color-mix(in srgb, var(--status-success) 15%, transparent);
+  		  color: var(--status-success);
+  		  border: 1px solid var(--status-success);
           padding: 4px 8px;
           border-radius: 4px;
           font-family: var(--font-chakra);
@@ -1242,9 +1236,9 @@ export default function AdminDashboard() {
         }
 
         .count-badge {
-          background: color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent);
-          color: var(--neon-yellow, #FFD700);
-          border: 1px solid var(--neon-yellow, #FFD700);
+          background: color-mix(in srgb, var(--status-warning) 15%, transparent);
+		  color: var(--status-warning);
+		  border: 1px solid var(--status-warning);
           padding: 2px 8px;
           border-radius: 12px;
           font-family: var(--font-nunito);
@@ -1280,7 +1274,7 @@ export default function AdminDashboard() {
         .pin-list-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-panel-hover); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; }
         .pin-list-item:hover { border-color: color-mix(in srgb, var(--text-secondary) 50%, transparent); background: color-mix(in srgb, var(--bg-panel-hover) 80%, var(--border-color)); }
         .pin-info-group { display: flex; align-items: center; gap: 16px; }
-        .list-diamond { width: 32px; height: 32px; transform: rotate(45deg); border: 1.5px solid; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
+        .list-diamond { width: 32px; height: 32px; transform: rotate(45deg); border: 1.5px solid; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px var(--border-color); }
         .list-diamond span { transform: rotate(-45deg); font-family: var(--font-cubao-wide); font-size: 14px; }
         .pin-text { display: flex; flex-direction: column; gap: 4px; }
         .pin-title { font-family: var(--font-chakra); font-size: 14px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; }
@@ -1352,8 +1346,8 @@ export default function AdminDashboard() {
 
         .progress-fill {
           height: 100%;
-          background: var(--pin-food);
-          box-shadow: 0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent);
+          background: var(--status-success);
+          box-shadow: 0 0 10px color-mix(in srgb, var(--status-success) 50%, transparent);
           border-radius: 3px;
           transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -1367,9 +1361,9 @@ export default function AdminDashboard() {
           letter-spacing: 0.05em;
         }
 
-        .detail-item.verified { color: var(--neon-green); }
-        .detail-item.pending { color: var(--neon-yellow, #FFD700); }
-        .detail-item.rejected { color: #ff4d4d; }
+        .detail-item.verified { color: var(--status-success); }
+		.detail-item.pending { color: var(--status-warning); }
+		.detail-item.rejected { color: var(--status-danger); }
 
         /* Category Distribution */
         .distribution-section {
@@ -1434,10 +1428,10 @@ export default function AdminDashboard() {
         }
         
         .approve-btn:hover { 
-          background: color-mix(in srgb, var(--pin-food) 15%, transparent); 
-          border-color: var(--pin-food); 
-          color: var(--pin-food); 
-          transform: scale(1.05); 
+          background: color-mix(in srgb, var(--status-success) 15%, transparent); 
+		  border-color: var(--status-success); 
+		  color: var(--status-success); 
+		  transform: scale(1.05);
         }
         
         .approve-btn:active { 
@@ -1460,11 +1454,11 @@ export default function AdminDashboard() {
         }
         
         .reject-btn:hover { 
-          background: color-mix(in srgb, #ff4d4d 15%, transparent); 
-          border-color: #ff4d4d; 
-          color: #ff4d4d; 
-          transform: scale(1.05); 
-        }
+		  background: color-mix(in srgb, var(--status-danger) 15%, transparent); 
+		  border-color: var(--status-danger); 
+		  color: var(--status-danger); 
+		  transform: scale(1.05); 
+		}
         
         .reject-btn:active { 
           transform: scale(0.95); 
@@ -1594,7 +1588,7 @@ export default function AdminDashboard() {
         @media (max-width: 768px) {
           .sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); }
           .sidebar.open { transform: translateX(0); }
-          .mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 99; }
+          .mobile-overlay { position: fixed; inset: 0; background: var(--border-color); backdrop-filter: blur(4px); z-index: 99; }
           .hamburger-btn { display: flex; align-items: center; justify-content: center; }
           .dashboard-header { padding: 0 16px; }
           .dashboard-grid { grid-template-columns: 1fr; }

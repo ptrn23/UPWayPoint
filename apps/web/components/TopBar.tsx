@@ -158,7 +158,7 @@ export function TopBar({
 											backgroundColor: isActive
 												? `${route.color}20`
 												: "var(--bg-panel-hover)",
-											color: isActive ? route.color : "#aaa",
+											color: isActive ? route.color : "var(--text-secondary)",
 											borderColor: isActive ? route.color : "transparent",
 											boxShadow: isActive
 												? `0 0 10px ${route.color}40`
@@ -212,7 +212,7 @@ export function TopBar({
 											backgroundColor: isActive
 												? `${category.color}20`
 												: "var(--bg-panel-hover)",
-											color: isActive ? category.color : "#aaa",
+											color: isActive ? category.color : "var(--text-secondary)",
 											borderColor: isActive ? category.color : "transparent",
 											boxShadow: isActive
 												? `0 0 10px ${category.color}40`
@@ -296,7 +296,7 @@ export function TopBar({
 							fill="none"
 							stroke={
 								sessionData?.user
-									? "var(--neon-green, #00FF99)"
+									? "var(--status-success)"
 									: "currentColor"
 							}
 							strokeWidth="2.5"
@@ -316,7 +316,7 @@ export function TopBar({
 								height="20"
 								viewBox="0 0 24 24"
 								fill="none"
-								stroke="currentColor"
+								stroke="var(--theme-moon)"
 								strokeWidth="2.5"
 								strokeLinecap="round"
 								strokeLinejoin="round"
@@ -329,7 +329,7 @@ export function TopBar({
 								height="20"
 								viewBox="0 0 24 24"
 								fill="none"
-								stroke="currentColor"
+								stroke="var(--theme-sun)"
 								strokeWidth="2.5"
 								strokeLinecap="round"
 								strokeLinejoin="round"

@@ -133,10 +133,7 @@ export function HeadsUpDisplay({
           transform: scale(0.95);
         }
 
-        @keyframes pulseGlow {
-          0% { box-shadow: 0 0 15px var(--shadow-glow), inset 0 0 10px var(--shadow-glow); }
-          100% { box-shadow: 0 0 25px var(--shadow-glow), inset 0 0 15px var(--shadow-glow); }
-        }
+        
       `}</style>
 		</div>
 	);

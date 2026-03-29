@@ -9,7 +9,7 @@ interface TargetLineProps {
     color?: string;
 }
 
-export function TargetLine({ start, end, color = "#FF0055" }: TargetLineProps) {
+export function TargetLine({ start, end, color = "var(--neon-blue)" }: TargetLineProps) {
     const map = useMap();
     const polylineRef = useRef<google.maps.Polyline | null>(null);
     const animationRef = useRef<number>(0);

@@ -222,7 +222,7 @@ export default function Home() {
 						<TargetLine
 							start={mockUserLocation}
 							end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
-							color="#00E5FF"
+							color="var(--neon-blue)"
 						/>
 					)}
 
@@ -232,7 +232,7 @@ export default function Home() {
 						const categoryDef = ZONE_CATEGORIES.find(
 							(c) => c.id === zone.categoryId,
 						);
-						const zoneColor = categoryDef ? categoryDef.color : "#FFFFFF";
+						const zoneColor = categoryDef ? categoryDef.color : "var(--bg-panel)";
 
 						return (
 							<Polygon
@@ -290,8 +290,8 @@ export default function Home() {
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
-							color: "var(--neon-blue, #00E5FF)",
-							filter: "drop-shadow(0 0 8px rgba(0, 229, 255, 0.8))",
+							color: "var(--neon-blue)",
+							filter: "drop-shadow(0 0 8px var(--neon-blue))",
 							transition: "opacity 0.2s ease",
 						}}
 					>

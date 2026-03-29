@@ -148,7 +148,7 @@ const CommentNode = ({
             font-size: 13px;
             outline: none;
         }
-        .reply-input:focus { border-color: var(--neon-blue, #00E5FF); }
+        .reply-input:focus { border-color: var(--neon-blue); }
         .form-btn { padding: 6px 12px; font-size: 11px; border-radius: 6px; }
       `}</style>
 		</div>
@@ -201,7 +201,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 			case "VERIFIED":
 				return {
 					text: "VERIFIED",
-					// color: "var(--neon-green, #00FF99)",
+					// color: "var(--status-success)",
 					icon: (
 						<svg
 							width="14"
@@ -221,7 +221,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 			case "PENDING_VERIFICATION":
 				return {
 					text: "PENDING",
-					// color: "var(--neon-yellow, #FFD700)",
+					// color: "var(--neon-yellow)",
 					icon: (
 						<svg
 							width="14"
@@ -241,7 +241,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 			case "REJECTED":
 				return {
 					text: "REJECTED",
-					// color: "#ff4d4d",
+					// color: "var(--status-danger)",
 					icon: (
 						<svg
 							width="14"
@@ -304,13 +304,13 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 				<style jsx>{`
             .modal-overlay {
                 position: fixed; inset: 0; 
-                background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+                background: var(--border-color); backdrop-filter: blur(8px);
                 z-index: 200; display: flex; align-items: center; justify-content: center;
                 padding: 24px; animation: fadeIn 0.2s ease-out; pointer-events: auto;
             }
 
             .modal-content {
-                background: var(--bg-panel);
+                background: var(--bg-base);
                 border: 1px solid var(--border-color);
                 border-top: 4px solid ${color}; 
                 border-radius: 24px;
@@ -319,7 +319,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 height: 70vh; 
                 display: flex; 
                 flex-direction: column;
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 30px 60px var(--border-color);
                 animation: scalePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 overflow: hidden; 
                 position: relative;
@@ -445,7 +445,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* PIN ID */}
 							<div className="meta-item">
 								<span className="meta-label">PIN ID</span>
-								<span className="meta-value font-mono">
+								<span className="meta-value font-mono animate-pan">
 									{pin?.id?.padStart(7, "0")}
 								</span>
 							</div>
@@ -590,7 +590,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             .modal-overlay {
 							position: fixed;
 							top: 0; left: 0; width: 100vw; height: 100vh;
-							background: rgba(0, 0, 0, 0.7);
+							background: var(--border-color);
 							backdrop-filter: blur(8px);
 							-webkit-backdrop-filter: blur(8px);
 							display: flex;
@@ -610,7 +610,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 height: 70vh; 
                 display: flex; 
                 flex-direction: column;
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 30px 60px var(--border-color);
                 overflow: hidden; 
                 position: relative;
                 padding: 0; 
@@ -730,8 +730,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 gap: 4px; 
                 min-width: 0; 
                 /* 1. Turn the container into a measurable query zone */
-                container-type: inline-size; 
-                /* 2. Hide the overflow from bleeding into other columns */
+                container-type: inline-size;
                 overflow: hidden; 
             }
 
@@ -745,17 +744,10 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 color: var(--text-primary); 
                 white-space: nowrap;
                 width: max-content;
-                animation: autoPan 6s ease-in-out infinite alternate;
-            }
-            
-            .meta-value { 
-                font-family: var(--font-nunito); 
-                font-size: 14px; 
-                font-weight: 700; 
-                color: var(--text-primary); 
-                white-space: nowrap;
-                overflow-x: auto;
-                scrollbar-width: none; /* Firefox */
+				background-size: 200% 200%;
+                animation: scrollText 6s ease-in-out infinite alternate;
+				scrollbar-width: none; /* Firefox */
+				overflow: hidden;
             }
             .meta-value::-webkit-scrollbar { 
                 display: none; /* Safari and Chrome */
@@ -771,14 +763,14 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
             .font-cubao-wide { font-family: var(--font-cubao-wide); font-weight: 100; letter-spacing: 0.1em;}
             .text-muted { color: var(--text-secondary); font-style: italic; }
-            .text-neon-green { color: var(--neon-green, #00FF99); text-shadow: 0 0 10px rgba(0, 255, 153, 0.3); }
+            .text-neon-green { color: var(--status-success); text-shadow: 0 0 10px var(--status-success); }
 
-            .danger-btn { border-color: #ff4d4d; color: #ff4d4d; padding: 12px; }
-            .danger-btn:hover { background: rgba(255, 77, 77, 0.1); transform: none;}
+            .danger-btn { border-color: var(--status-danger); color: var(--status-danger); padding: 12px; }
+            .danger-btn:hover { background: var(--status-danger); color: white; transform: none;}
             
             .delete-confirm-box {
-                background: rgba(255, 77, 77, 0.05);
-                border: 1px solid #ff4d4d;
+                background: var(--bg-panel-hover);
+                border: 1px solid var(--status-danger);
                 border-radius: 12px;
                 padding: 16px;
                 display: flex;
@@ -787,8 +779,8 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             }
             .delete-confirm-box p { margin: 0; color: var(--text-primary); font-family: var(--font-nunito); font-size: 14px; }
             .delete-actions { display: flex; gap: 8px; }
-            .danger-btn-solid { background: rgba(255, 77, 77, 0.2); border-color: #ff4d4d; color: #ff4d4d; box-shadow: none; flex: 1; padding: 10px;}
-            .danger-btn-solid:hover { background: #ff4d4d; color: white; box-shadow: 0 0 15px rgba(255, 77, 77, 0.4); }
+            .danger-btn-solid { background: var(--status-danger); border-color: var(--status-danger); color: white; box-shadow: none; flex: 1; padding: 10px;}
+            .danger-btn-solid:hover { background: var(--status-danger); color: white; box-shadow: 0 0 15px var(--status-danger);}
             
             .forum-section {
                 margin-top: 8px;
@@ -814,19 +806,8 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 border-radius: 6px; padding: 10px 12px; color: var(--text-primary);
                 font-family: var(--font-nunito); font-size: 13px; outline: none;
             }
-            .reply-input:focus { border-color: var(--neon-blue, #00E5FF); }
+            .reply-input:focus { border-color: var(--neon-blue); }
             .form-btn { padding: 10px 16px; font-size: 11px; border-radius: 6px; }
-
-            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-            @keyframes scalePop { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-			@keyframes autoPan {
-                0%, 20% { 
-                    transform: translateX(0); 
-                }
-                80%, 100% {
-                    transform: translateX(min(0px, calc(100cqw - 100%))); 
-                }
-            }
       `}</style>
 		</div>
 	);

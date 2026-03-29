@@ -106,7 +106,7 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
 						height="24"
 						viewBox="0 0 24 24"
 						fill="none"
-						stroke="var(--neon-blue, #00E5FF)"
+						stroke="var(--neon-blue)"
 						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
@@ -199,7 +199,7 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
         .modal-overlay {
           position: fixed;
           top: 0; left: 0; width: 100vw; height: 100vh;
-          background: rgba(0, 0, 0, 0.7);
+          background: var(--border-color);
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
           display: flex;
@@ -210,11 +210,13 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
         }
 
         .modal-card {
+		  background: var(--bg-base);
+		  border: 1px solid var(--border-color);
+		  border-radius: 12px;
           width: 100%;
           max-width: 400px;
           padding: 24px;
           animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-					background-color: black;
         }
 
         .modal-header {
@@ -249,7 +251,7 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
         .input-group span {
           font-family: var(--font-chakra), sans-serif;
           font-size: 12px;
-          color: var(--neon-blue, #00E5FF);
+          color: var(--neon-blue);
           letter-spacing: 0.1em;
           font-weight: 700;
         }
@@ -267,7 +269,7 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
         }
 
         input:focus, textarea:focus {
-          border-color: var(--neon-blue, #00E5FF);
+          border-color: var(--neon-blue);
           box-shadow: 0 0 10px var(--shadow-glow);
         }
 
@@ -310,11 +312,6 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
         .save-btn:disabled {
           opacity: 0.5;
           cursor: not-allowed;
-        }
-
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>
 		</div>
