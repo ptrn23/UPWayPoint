@@ -148,7 +148,7 @@ const CommentNode = ({
             font-size: 13px;
             outline: none;
         }
-        .reply-input:focus { border-color: var(--neon-blue, #00E5FF); }
+        .reply-input:focus { border-color: var(--neon-blue); }
         .form-btn { padding: 6px 12px; font-size: 11px; border-radius: 6px; }
       `}</style>
 		</div>
@@ -201,7 +201,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 			case "VERIFIED":
 				return {
 					text: "VERIFIED",
-					// color: "var(--neon-green, #00FF99)",
+					// color: "var(--status-success)",
 					icon: (
 						<svg
 							width="14"
@@ -221,7 +221,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 			case "PENDING_VERIFICATION":
 				return {
 					text: "PENDING",
-					// color: "var(--neon-yellow, #FFD700)",
+					// color: "var(--neon-yellow)",
 					icon: (
 						<svg
 							width="14"
@@ -241,7 +241,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 			case "REJECTED":
 				return {
 					text: "REJECTED",
-					// color: "#ff4d4d",
+					// color: "var(--status-danger)",
 					icon: (
 						<svg
 							width="14"
@@ -771,14 +771,14 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.05em; }
             .font-cubao-wide { font-family: var(--font-cubao-wide); font-weight: 100; letter-spacing: 0.1em;}
             .text-muted { color: var(--text-secondary); font-style: italic; }
-            .text-neon-green { color: var(--neon-green, #00FF99); text-shadow: 0 0 10px rgba(0, 255, 153, 0.3); }
+            .text-neon-green { color: var(--status-success); text-shadow: 0 0 10px var(--status-success); }
 
-            .danger-btn { border-color: #ff4d4d; color: #ff4d4d; padding: 12px; }
-            .danger-btn:hover { background: rgba(255, 77, 77, 0.1); transform: none;}
+            .danger-btn { border-color: var(--status-danger); color: var(--status-danger); padding: 12px; }
+            .danger-btn:hover { background: var(--status-danger); color: white; transform: none;}
             
             .delete-confirm-box {
-                background: rgba(255, 77, 77, 0.05);
-                border: 1px solid #ff4d4d;
+                background: var(--bg-panel-hover);
+                border: 1px solid var(--status-danger);
                 border-radius: 12px;
                 padding: 16px;
                 display: flex;
@@ -787,8 +787,8 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
             }
             .delete-confirm-box p { margin: 0; color: var(--text-primary); font-family: var(--font-nunito); font-size: 14px; }
             .delete-actions { display: flex; gap: 8px; }
-            .danger-btn-solid { background: rgba(255, 77, 77, 0.2); border-color: #ff4d4d; color: #ff4d4d; box-shadow: none; flex: 1; padding: 10px;}
-            .danger-btn-solid:hover { background: #ff4d4d; color: white; box-shadow: 0 0 15px rgba(255, 77, 77, 0.4); }
+            .danger-btn-solid { background: var(--status-danger); border-color: var(--status-danger); color: white; box-shadow: none; flex: 1; padding: 10px;}
+            .danger-btn-solid:hover { background: var(--status-danger); color: white; box-shadow: 0 0 15px var(--status-danger);}
             
             .forum-section {
                 margin-top: 8px;
@@ -814,7 +814,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
                 border-radius: 6px; padding: 10px 12px; color: var(--text-primary);
                 font-family: var(--font-nunito); font-size: 13px; outline: none;
             }
-            .reply-input:focus { border-color: var(--neon-blue, #00E5FF); }
+            .reply-input:focus { border-color: var(--neon-blue); }
             .form-btn { padding: 10px 16px; font-size: 11px; border-radius: 6px; }
 
             @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
