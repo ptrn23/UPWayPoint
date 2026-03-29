@@ -13,7 +13,7 @@ interface PolylineProps {
 
 export function Polyline({ 
   path, 
-  color = "#FFD700", 
+  color = "var(--pin-transit)", 
   weight = 5, 
   animateDirection = "forward",
   speed = 0.8
