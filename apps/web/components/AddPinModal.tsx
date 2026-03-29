@@ -192,7 +192,7 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
         .modal-overlay {
           position: fixed;
           top: 0; left: 0; width: 100vw; height: 100vh;
-          background: rgba(0, 0, 0, 0.7);
+          background: var(--border-color);
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
           display: flex;

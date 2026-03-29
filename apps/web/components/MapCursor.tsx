@@ -22,7 +22,7 @@ export function MapCursor({ heading = 0 }: MapCursorProps) {
                 >
                     <polygon
                         points="12 2 22 22 12 17 2 22"
-                        fill="rgba(0, 229, 255, 0.4)"
+                        fill="color-mix(in oklab, white 20%, var(--neon-blue))"
                     ></polygon>
                 </svg>
             </div>

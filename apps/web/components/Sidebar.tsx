@@ -78,7 +78,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 .sidebar-overlay {
                     position: fixed;
                     inset: 0;
-                    background: rgba(0, 0, 0, 0.6);
+                    background: var(--border-color);
                     backdrop-filter: blur(4px);
                     -webkit-backdrop-filter: blur(4px);
                     z-index: 400;
@@ -97,7 +97,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     z-index: 401;
                     display: flex;
                     flex-direction: column;
-                    box-shadow: 20px 0 50px rgba(0,0,0,0.1);
+                    box-shadow: 20px 0 50px var(--border-color);
                     animation: slideRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
 
@@ -165,7 +165,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 }
 
                 .primary-action {
-                    background: rgba(0, 229, 255, 0.1);
+                    background: var(--border-color);
                     border-color: var(--neon-blue);
                     color: var(--neon-blue);
                 }

@@ -1137,7 +1137,7 @@ export default function Dashboard() {
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 10px var(--border-color);
         }
 
         .list-diamond span {
@@ -1310,7 +1310,7 @@ export default function Dashboard() {
           .mobile-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.6);
+            background: var(--border-color);
             backdrop-filter: blur(4px);
             z-index: 99;
           }

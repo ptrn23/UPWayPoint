@@ -9,7 +9,7 @@ const detailsCardStyles = `
   p-[24px] w-full max-w-[400px] flex flex-col gap-[16px]
   bg-[var(--bg-panel)] backdrop-filter-[blur(20px)]
   border border-solid border-[1px] border-[var(--border-color)] border-t-[3px] rounded-[20px]
-  shadow-[0_20px_40px_rgba(0, 0, 0, 0.3)]
+  shadow-[0_20px_40px_[var(--border-color)]]
   `;
 
 interface PinDetailsCardProps {
