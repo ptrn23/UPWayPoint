@@ -118,11 +118,10 @@ export default function Dashboard() {
 								className="nav-item"
 								onClick={goToAdmin}
 								style={{
-									color: "#ff4d4d",
-									border:
-										"1px solid color-mix(in srgb, #ff4d4d 30%, transparent)",
-									background: "color-mix(in srgb, #ff4d4d 5%, transparent)",
-								}}
+                  color: "var(--status-danger)",
+                  border: "1px solid color-mix(in srgb, var(--status-danger) 30%, transparent)",
+                  background: "color-mix(in srgb, var(--status-danger) 5%, transparent)",
+                }}
 							>
 								<div
 									style={{ display: "flex", alignItems: "center", gap: "8px" }}
@@ -172,14 +171,14 @@ export default function Dashboard() {
 											height="14"
 											viewBox="0 0 24 24"
 											fill="none"
-											stroke="var(--text-primary)"
+											stroke="var(--theme-moon)"
 											strokeWidth="2.5"
 											strokeLinecap="round"
 											strokeLinejoin="round"
 										>
 											<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
 										</svg>
-										<span style={{ color: "var(--neon-blue)" }}>NIGHT</span>
+										<span style={{ color: "var(--theme-moon)" }}>NIGHT</span>
 									</>
 								) : (
 									<>
@@ -188,7 +187,7 @@ export default function Dashboard() {
 											height="14"
 											viewBox="0 0 24 24"
 											fill="none"
-											stroke="var(--pin-transit)"
+											stroke="var(--theme-sun)"
 											strokeWidth="2.5"
 											strokeLinecap="round"
 											strokeLinejoin="round"
@@ -203,7 +202,7 @@ export default function Dashboard() {
 											<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
 											<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
 										</svg>
-										<span style={{ color: "var(--pin-transit)" }}>DAY</span>
+										<span style={{ color: "var(--theme-sun)" }}>DAY</span>
 									</>
 								)}
 							</div>
@@ -270,11 +269,10 @@ export default function Dashboard() {
 									<span
 										className="status-badge"
 										style={{
-											borderColor: "var(--neon-green)",
-											color: "var(--neon-green)",
-											background:
-												"color-mix(in srgb, var(--neon-green) 15%, transparent)",
-										}}
+                      borderColor: "var(--status-success)",
+                      color: "var(--status-success)",
+                      background: "color-mix(in srgb, var(--status-success) 15%, transparent)",
+                    }}
 									>
 										{data?.userRole === "admin" ? "ADMIN" : "REGULAR USER"}
 									</span>
@@ -364,17 +362,6 @@ export default function Dashboard() {
 							<div className="module-card telemetry-card">
 								<div className="card-header">
 									<h3>YOUR STATISTICS</h3>
-									<span
-										className="status-badge"
-										style={{
-											borderColor: "var(--neon-blue)",
-											color: "var(--neon-blue)",
-											background:
-												"color-mix(in srgb, var(--neon-blue) 15%, transparent)",
-										}}
-									>
-										SUMMARIZED
-									</span>
 								</div>
 
 								<div className="card-body telemetry-body">
@@ -537,14 +524,7 @@ export default function Dashboard() {
 							<div className="module-card recent-card">
 								<div className="card-header">
 									<h3>YOUR RECENT PINS</h3>
-									<span
-										className="count-badge"
-										style={{
-											color: "var(--text-secondary)",
-											borderColor: "var(--border-color)",
-											background: "transparent",
-										}}
-									>
+									<span className="count-badge">
 										{stats.recentList?.length}
 									</span>
 								</div>
@@ -730,7 +710,7 @@ export default function Dashboard() {
           width: 100%;
           background: transparent;
           border: 1px solid var(--border-color);
-          color: #ff4d4d;
+          color: var(--status-danger);
           padding: 12px;
           border-radius: 8px;
           font-family: var(--font-chakra);
@@ -741,8 +721,8 @@ export default function Dashboard() {
         }
 
         .sign-out-btn:hover {
-          background: color-mix(in srgb, #ff4d4d 10%, transparent);
-          border-color: #ff4d4d;
+          background: color-mix(in srgb, var(--status-danger) 10%, transparent);
+          border-color: var(--status-danger);
         }
 
         /* --- MAIN AREA --- */
@@ -862,9 +842,9 @@ export default function Dashboard() {
 
         /* Badges */
         .status-badge {
-          background: color-mix(in srgb, var(--neon-green) 15%, transparent);
-          color: var(--neon-green);
-          border: 1px solid var(--neon-green);
+          background: color-mix(in srgb, var(--status-success) 15%, transparent);
+          color: var(--status-success);
+          border: 1px solid var(--status-success);
           padding: 4px 8px;
           border-radius: 4px;
           font-family: var(--font-chakra);
@@ -874,9 +854,9 @@ export default function Dashboard() {
         }
 
         .count-badge {
-          background: color-mix(in srgb, var(--neon-yellow, #FFD700) 15%, transparent);
-          color: var(--neon-yellow, #FFD700);
-          border: 1px solid var(--neon-yellow, #FFD700);
+          background: color-mix(in srgb, var(--status-warning) 15%, transparent);
+          color: var(--status-warning);
+          border: 1px solid var(--status-warning);
           padding: 2px 8px;
           border-radius: 12px;
           font-family: var(--font-nunito);
@@ -1244,8 +1224,8 @@ export default function Dashboard() {
 
         .progress-fill {
           height: 100%;
-          background: var(--pin-food);
-          box-shadow: 0 0 10px color-mix(in srgb, var(--pin-food) 50%, transparent);
+          background: var(--status-success);
+          box-shadow: 0 0 10px color-mix(in srgb, var(--status-success) 50%, transparent);
           border-radius: 3px;
           transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -1259,9 +1239,9 @@ export default function Dashboard() {
           letter-spacing: 0.05em;
         }
 
-        .detail-item.verified { color: var(--neon-green); }
-        .detail-item.pending { color: var(--neon-yellow, #FFD700); }
-        .detail-item.rejected { color: #ff4d4d; }
+        .detail-item.verified { color: var(--status-success); }
+        .detail-item.pending { color: var(--status-warning); }
+        .detail-item.rejected { color: var(--status-danger); }
 
         /* Category Distribution */
         .distribution-section {
