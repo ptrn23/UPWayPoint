@@ -266,16 +266,9 @@ export default function Dashboard() {
 							<div className="module-card operator-card">
 								<div className="card-header">
 									<h3>YOUR PROFILE</h3>
-									<span
-										className="status-badge"
-										style={{
-                      borderColor: "var(--status-success)",
-                      color: "var(--status-success)",
-                      background: "color-mix(in srgb, var(--status-success) 15%, transparent)",
-                    }}
-									>
-										{data?.userRole === "admin" ? "ADMIN" : "REGULAR USER"}
-									</span>
+									<span className="bg-status-success/15 text-status-success border border-status-success px-2 py-1 rounded text-[10px] font-chakra font-bold tracking-[0.1em]">
+                    {data?.userRole === "admin" ? "ADMIN" : "REGULAR USER"}
+                  </span>
 								</div>
 
 								<div className="card-body operator-body">
@@ -841,17 +834,6 @@ export default function Dashboard() {
         }
 
         /* Badges */
-        .status-badge {
-          background: color-mix(in srgb, var(--status-success) 15%, transparent);
-          color: var(--status-success);
-          border: 1px solid var(--status-success);
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-        }
 
         .count-badge {
           background: color-mix(in srgb, var(--status-warning) 15%, transparent);
