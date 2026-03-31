@@ -277,21 +277,20 @@ export default function AdminDashboard() {
 							<section id="overview" className="scroll-mt-6">
 								<h2 className="font-chakra text-[20px] font-bold text-primary tracking-[0.1em] m-0 mb-6 pb-3 border-b border-border-color">OVERVIEW</h2>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-									<div className="module-card">
-										<div className="card-header">
-											<h3>OVERALL PIN STATISTICS</h3>
+									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+										<div className="flex justify-between items-center border-b border-border-color pb-3">
+											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">OVERALL PIN STATISTICS</h3>
 										</div>
-										<div className="card-body telemetry-body">
-											{/* Top Stats Grid */}
-											<div className="telemetry-top-grid">
-												<div className="stat-block">
-													<span className="stat-label">TOTAL PINS</span>
-													<span className="stat-value">{totalPins}</span>
+										<div className="flex-1 flex flex-col gap-6">
+    										<div className="grid grid-cols-2 gap-4">
+												<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
+													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL PINS</span>
+													<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">{totalPins}</span>
 												</div>
-												<div className="stat-block">
-													<span className="stat-label">PENDING PINS</span>
+												<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
+													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">PENDING PINS</span>
 													<span
-														className="stat-value"
+														className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]"
 														style={{ color: "var(--status-warning)" }}
 													>
 														{pendingPinCount}
@@ -299,11 +298,9 @@ export default function AdminDashboard() {
 												</div>
 											</div>
 
-											<div className="integrity-section">
-												<div className="integrity-header">
-													<span className="stat-label">
-														GLOBAL VERIFICATION
-													</span>
+											<div className="flex flex-col gap-2">
+												<div className="flex justify-between items-end">
+													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">GLOBAL VERIFICATION</span>
 													<span
 														className="integrity-percent"
 														style={{ color: "var(--status-success)" }}
@@ -311,9 +308,9 @@ export default function AdminDashboard() {
 														{globalVerificationRate}%
 													</span>
 													</div>
-													<div className="progress-track">
+													<div className="h-[6px] bg-panel-hover rounded-full overflow-hidden">
 													<div
-														className="progress-fill"
+														className="h-full rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
 														style={{
 															width: `${globalVerificationRate}%`,
 															background: "var(--status-success)",
@@ -335,9 +332,8 @@ export default function AdminDashboard() {
 												</div>
 											</div>
 
-											<div className="distribution-section">
-												<span className="stat-label">CATEGORY BREAKDOWN</span>
-												<div className="category-list">
+											<div className="flex flex-col gap-3">
+												<div className="flex flex-col gap-2.5">
 													{PIN_CATEGORIES.map((category) => {
 														const count =
 															pinTagCounts[
@@ -349,8 +345,8 @@ export default function AdminDashboard() {
 																: 0;
 
 														return (
-															<div key={category.id} className="category-row">
-																<div className="cat-info">
+															<div key={category.id} className="flex flex-col gap-1">
+                    											<div className="flex justify-between font-chakra text-[11px] font-bold tracking-[0.1em]">
 																	<span
 																		className="cat-name"
 																		style={{ color: category.color }}
@@ -359,9 +355,8 @@ export default function AdminDashboard() {
 																	</span>
 																	<span className="cat-count">{count}</span>
 																</div>
-																<div className="cat-track">
-																	<div
-																		className="cat-fill"
+																<div className="h-1 bg-panel-hover rounded-full overflow-hidden">
+                         											<div className="h-full rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
 																		style={{
 																			width: `${percentage}%`,
 																			backgroundColor: category.color,
@@ -377,26 +372,21 @@ export default function AdminDashboard() {
 										</div>
 									</div>
 
-									<div className="module-card">
-										<div className="card-header">
-											<h3>OVERALL USER STATISTICS</h3>
-										</div>
-
-										<div className="card-body telemetry-body">
-											<div className="telemetry-top-grid">
-												<div className="stat-block">
-													<span className="stat-label">TOTAL USERS</span>
-													<span className="stat-value">
-														{globalUserStats.totalUsers}
-													</span>
-												</div>
-												<div className="stat-block">
-													<span className="stat-label">TOTAL COMMENTS</span>
-													<span className="stat-value">
-														{globalUserStats.totalComments}
-													</span>
-												</div>
-												{/* <div className="stat-block">
+									<div className="flex-1 flex flex-col gap-6">
+										<div className="grid grid-cols-2 gap-4">
+											<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
+												<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL USERS</span>
+												<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
+													{globalUserStats.totalUsers}
+												</span>
+											</div>
+											<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
+												<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL COMMENTS</span>
+												<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
+													{globalUserStats.totalComments}
+												</span>
+											</div>
+											{/* <div className="stat-block">
 													<span className="stat-label">
 														AVERAGE PINS / USER
 													</span>
@@ -440,7 +430,6 @@ export default function AdminDashboard() {
 														{globalUserStats.newUsers30Days}
 													</span>
 												</div> */}
-											</div>
 										</div>
 									</div>
 								</div>
@@ -449,64 +438,42 @@ export default function AdminDashboard() {
 							<section id="pin-management" className="scroll-mt-6">
 								<h2 className="font-chakra text-[20px] font-bold text-primary tracking-[0.1em] m-0 mb-6 pb-3 border-b border-border-color">PIN MANAGEMENT</h2>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-									<div className="module-card">
-										<div className="card-header">
-											<h3>PENDING PIN VERIFICATIONS</h3>
+									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+										<div className="flex justify-between items-center border-b border-border-color pb-3">
+											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">PENDING PIN VERIFICATIONS</h3>
 										</div>
 
 										<div className="card-body">
-											<div className="pin-list">
+											<div className="flex flex-col gap-3">
 												{pendingPins?.map((pin) => {
 													const color = getPinColor(
 														pin.pinTags?.[0]?.tag.title || "",
 													);
 													return (
-														<div key={pin.id} className="pin-list-item">
-															<div className="pin-info-group">
-																<div
-																	className="list-diamond"
+														<div key={pin.id} className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]">
+															<div className="flex items-center gap-4">
+																<div 
+																	className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
 																	style={{
 																		borderColor: color,
 																		backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
 																	}}
 																>
-																	<span style={{ color }}>
+																	<span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
 																		{pin.title.charAt(0).toUpperCase()}
 																	</span>
 																</div>
 
-																<div className="pin-text">
-																	<span className="pin-title">{pin.title}</span>
-																	<span className="pin-coords">
-																		By {pin.owner} • {pin.latitude.toFixed(4)},{" "}
-																		{pin.longitude.toFixed(4)}
+																<div className="flex flex-col gap-1">
+																	<span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{pin.title}</span>
+																	<span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
+																		By {pin.owner} • {pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
 																	</span>
 																</div>
 															</div>
 
-															<div
-																className="pin-actions"
-																style={{ display: "flex", gap: "8px" }}
-															>
-																<Link
-																	className="locate-btn"
-																	style={{
-																		background: "transparent",
-																		border: "1px solid var(--border-color)",
-																		borderRadius: "8px",
-																		width: "36px",
-																		height: "36px",
-																		display: "flex",
-																		alignItems: "center",
-																		justifyContent: "center",
-																		color: "var(--text-secondary)",
-																		cursor: "pointer",
-																		transition: "all 0.2s",
-																		flexShrink: "0",
-																	}}
-																	href={`/?pin=${pin.id}`}
-																	target="_blank"
-																>
+															<div className="flex items-center gap-2">
+																<Link className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95" href={`/?pin=${pin.id}`} target="_blank">
 																	<svg
 																		width="18"
 																		height="18"
@@ -519,10 +486,8 @@ export default function AdminDashboard() {
 																	</svg>
 																</Link>
 
-																<button
-																	type="button"
-																	className="reject-btn"
-																	title="Reject Pin"
+																<button type="button" title="Reject Pin"
+																	className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-danger/15 hover:border-status-danger hover:text-status-danger hover:scale-105 active:scale-95"
 																	onClick={() =>
 																		rejectPin.mutate({ id: pin.id })
 																	}
@@ -571,45 +536,36 @@ export default function AdminDashboard() {
 										</div>
 									</div>
 
-									<div className="module-card">
-										<div className="card-header">
-											<h3>RECENTLY VERIFIED PINS</h3>
+									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+										<div className="flex justify-between items-center border-b border-border-color pb-3">
+											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">RECENTLY VERIFIED PINS</h3>
 										</div>
 
-										<div className="card-body">
-											<div className="pin-list">
+										<div className="flex-1 flex flex-col">
+											<div className="flex flex-col gap-3">
 												{activePins?.map((pin) => {
-													const color = getPinColor(
-														pin.pinTags?.[0]?.tag.title || "",
-													);
+													const color = getPinColor(pin.pinTags?.[0]?.tag.title || "");
 													return (
-														<div key={pin.id} className="pin-list-item">
-															<div className="pin-info-group">
-																<div
-																	className="list-diamond"
-																	style={{
-																		borderColor: color,
-																		backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
-																	}}
+														<div key={pin.id} className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]">
+															<div className="flex items-center gap-4">
+																<div 
+																	className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
+																	style={{ borderColor: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
 																>
-																	<span style={{ color }}>
+																	<span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
 																		{pin.title.charAt(0).toUpperCase()}
 																	</span>
 																</div>
 
-																<div className="pin-text">
-																	<span className="pin-title">{pin.title}</span>
-																	<span className="pin-coords">
-																		By {pin.owner} • {pin.latitude.toFixed(4)},{" "}
-																		{pin.longitude.toFixed(4)}
+																<div className="flex flex-col gap-1">
+																	<span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{pin.title}</span>
+																	<span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
+																		By {pin.owner} • {pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
 																	</span>
 																</div>
 															</div>
 
-															<div
-																className="pin-actions"
-																style={{ display: "flex", gap: "8px" }}
-															>
+															<div className="flex items-center gap-2">
 																<Link
 																	className="locate-btn"
 																	style={{
@@ -726,119 +682,111 @@ export default function AdminDashboard() {
 										</div>
 									</div>
 
-									<div className="module-card">
-										<div className="card-header">
-											<h3>RECENT MODIFICATION REQUESTS</h3>
+									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+										<div className="flex justify-between items-center border-b border-border-color pb-3">
+											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">RECENT MODIFICATION REQUESTS</h3>
 										</div>
 
-										<div className="card-body">
-											<div className="pin-list">
+										<div className="flex-1 flex flex-col">
+											<div className="flex flex-col gap-3">
 												{pendingModifications?.map((mod) => {
 													const color = "var(--text-primary)";
 													return (
-														<div key={mod.id} className="pin-list-item">
-															<div className="pin-info-group">
-																<div
-																	className="list-diamond"
-																	style={{
-																		borderColor: color,
-																		backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
-																	}}
+														<div key={mod.id} className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]">
+															<div className="flex items-center gap-4">
+																<div 
+																	className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
+																	style={{ borderColor: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
 																>
-																	<span style={{ color }}>
+																	<span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
 																		{mod.pin.title.charAt(0).toUpperCase()}
 																	</span>
 																</div>
 
-																<div className="pin-text">
-																	<span className="pin-title">
-																		{mod.pin.title}
-																	</span>
-																	<span className="pin-coords">
+																<div className="flex flex-col gap-1">
+																	<span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{mod.pin.title}</span>
+																	<span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
 																		Modification by {mod.user.name}
 																	</span>
 																</div>
 															</div>
 
-															<div
-																className="pin-actions"
-																style={{ display: "flex", gap: "8px" }}
-															>
+															<div className="flex items-center gap-2">
 																<Link
-																	className="locate-btn"
-																	style={{
-																		background: "transparent",
-																		border: "1px solid var(--border-color)",
-																		borderRadius: "8px",
-																		width: "36px",
-																		height: "36px",
-																		display: "flex",
-																		alignItems: "center",
-																		justifyContent: "center",
-																		color: "var(--text-secondary)",
-																		cursor: "pointer",
-																		transition: "all 0.2s",
-																		flexShrink: "0",
-																	}}
-																	href={`/?pin=${mod.pin.id}`}
-																	target="_blank"
-																>
-																	<svg
-																		width="18"
-																		height="18"
-																		viewBox="0 0 24 24"
-																		fill="none"
-																		stroke="currentColor"
-																		strokeWidth="2.5"
+																		className="locate-btn"
+																		style={{
+																			background: "transparent",
+																			border: "1px solid var(--border-color)",
+																			borderRadius: "8px",
+																			width: "36px",
+																			height: "36px",
+																			display: "flex",
+																			alignItems: "center",
+																			justifyContent: "center",
+																			color: "var(--text-secondary)",
+																			cursor: "pointer",
+																			transition: "all 0.2s",
+																			flexShrink: "0",
+																		}}
+																		href={`/?pin=${mod.pin.id}`}
+																		target="_blank"
 																	>
-																		<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-																	</svg>
-																</Link>
+																		<svg
+																			width="18"
+																			height="18"
+																			viewBox="0 0 24 24"
+																			fill="none"
+																			stroke="currentColor"
+																			strokeWidth="2.5"
+																		>
+																			<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+																		</svg>
+																	</Link>
 
-																<button
-																	type="button"
-																	className="reject-btn"
-																	title="Reject Pin"
-																	onClick={() =>
-																		rejectMod.mutate({ id: mod.id })
-																	}
-																>
-																	<svg
-																		width="18"
-																		height="18"
-																		viewBox="0 0 24 24"
-																		fill="none"
-																		stroke="currentColor"
-																		strokeWidth="2.5"
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
+																	<button
+																		type="button"
+																		className="reject-btn"
+																		title="Reject Pin"
+																		onClick={() =>
+																			rejectMod.mutate({ id: mod.id })
+																		}
 																	>
-																		<line x1="18" y1="6" x2="6" y2="18"></line>
-																		<line x1="6" y1="6" x2="18" y2="18"></line>
-																	</svg>
-																</button>
+																		<svg
+																			width="18"
+																			height="18"
+																			viewBox="0 0 24 24"
+																			fill="none"
+																			stroke="currentColor"
+																			strokeWidth="2.5"
+																			strokeLinecap="round"
+																			strokeLinejoin="round"
+																		>
+																			<line x1="18" y1="6" x2="6" y2="18"></line>
+																			<line x1="6" y1="6" x2="18" y2="18"></line>
+																		</svg>
+																	</button>
 
-																<button
-																	type="button"
-																	className="approve-btn"
-																	title="Verify & Approve Pin"
-																	onClick={() =>
-																		applyMod.mutate({ id: mod.id })
-																	}
-																>
-																	<svg
-																		width="18"
-																		height="18"
-																		viewBox="0 0 24 24"
-																		fill="none"
-																		stroke="currentColor"
-																		strokeWidth="2.5"
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
+																	<button
+																		type="button"
+																		className="approve-btn"
+																		title="Verify & Approve Pin"
+																		onClick={() =>
+																			applyMod.mutate({ id: mod.id })
+																		}
 																	>
-																		<polyline points="20 6 9 17 4 12"></polyline>
-																	</svg>
-																</button>
+																		<svg
+																			width="18"
+																			height="18"
+																			viewBox="0 0 24 24"
+																			fill="none"
+																			stroke="currentColor"
+																			strokeWidth="2.5"
+																			strokeLinecap="round"
+																			strokeLinejoin="round"
+																		>
+																			<polyline points="20 6 9 17 4 12"></polyline>
+																		</svg>
+																	</button>
 															</div>
 														</div>
 													);
@@ -852,9 +800,9 @@ export default function AdminDashboard() {
 							{/* <section id="user-management" className="scroll-mt-6">
 								<h2 className="font-chakra text-[20px] font-bold text-primary tracking-[0.1em] m-0 mb-6 pb-3 border-b border-border-color">USER MANAGEMENT</h2>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-									<div className="module-card">
-										<div className="card-header">
-											<h3>NEWEST USERS</h3>
+									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+										<div className="flex justify-between items-center border-b border-border-color pb-3">
+											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">NEWEST USERS</h3>
 										</div>
 										<div className="card-body">
 											<div className="user-list">
@@ -898,9 +846,9 @@ export default function AdminDashboard() {
 										</div>
 									</div>
 
-									<div className="module-card">
-										<div className="card-header">
-											<h3>TOP USERS BY PINS</h3>
+									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+										<div className="flex justify-between items-center border-b border-border-color pb-3">
+											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">TOP USERS BY PINS</h3>
 										</div>
 										<div className="card-body">
 											<div className="user-list">
@@ -959,397 +907,6 @@ export default function AdminDashboard() {
 					</div>
 				</main>
 			</div>
-
-			<style jsx>{`
-        .module-card {
-          background: var(--bg-panel);
-          border: 1px solid var(--border-color);
-          border-radius: 16px;
-          padding: 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          border-bottom: 1px solid var(--border-color);
-          padding-bottom: 12px;
-        }
-
-        .card-header h3 {
-          font-family: var(--font-chakra);
-          font-size: 14px;
-          font-weight: 800;
-          color: var(--text-secondary);
-          letter-spacing: 0.15em;
-          margin: 0;
-        }
-
-        .status-badge {
-          background: color-mix(in srgb, var(--status-success) 15%, transparent);
-  		  color: var(--status-success);
-  		  border: 1px solid var(--status-success);
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-        }
-
-        .count-badge {
-          background: color-mix(in srgb, var(--status-warning) 15%, transparent);
-		  color: var(--status-warning);
-		  border: 1px solid var(--status-warning);
-          padding: 2px 8px;
-          border-radius: 12px;
-          font-family: var(--font-nunito);
-          font-weight: 800;
-          font-size: 12px;
-        }
-        
-        .card-body {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .placeholder-content {
-          height: 100%;
-          min-height: 200px;
-          border: 1px dashed var(--border-color);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-secondary);
-          font-family: var(--font-chakra);
-          background: var(--bg-panel-hover);
-        }
-
-        /* --- PRESERVED UTILITY CLASSES FROM USER DASHBOARD --- */
-        .stat-label { font-family: var(--font-chakra); font-size: 10px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.15em; }
-        .stat-block { background: var(--bg-panel-hover); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
-        .stat-value { font-family: var(--font-cubao-wide); font-size: 32px; color: var(--text-primary); letter-spacing: 0.05em; }
-        
-        .pin-list { display: flex; flex-direction: column; gap: 12px; }
-        .pin-list-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-panel-hover); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; }
-        .pin-list-item:hover { border-color: color-mix(in srgb, var(--text-secondary) 50%, transparent); background: color-mix(in srgb, var(--bg-panel-hover) 80%, var(--border-color)); }
-        .pin-info-group { display: flex; align-items: center; gap: 16px; }
-        .list-diamond { width: 32px; height: 32px; transform: rotate(45deg); border: 1.5px solid; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px var(--border-color); }
-        .list-diamond span { transform: rotate(-45deg); font-family: var(--font-cubao-wide); font-size: 14px; }
-        .pin-text { display: flex; flex-direction: column; gap: 4px; }
-        .pin-title { font-family: var(--font-chakra); font-size: 14px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; }
-        .pin-coords { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: var(--text-secondary); letter-spacing: 0.05em; }
-
-        .locate-btn { background: transparent; border: 1px solid var(--border-color); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
-        .locate-btn:hover { background: color-mix(in srgb, var(--neon-blue) 15%, transparent); border-color: var(--neon-blue); color: var(--neon-blue); transform: scale(1.05); }
-
-        .telemetry-body {
-          gap: 24px;
-        }
-
-        .stat-label {
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 800;
-          color: var(--text-secondary);
-          letter-spacing: 0.15em;
-        }
-
-        .telemetry-top-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-        }
-
-        .stat-block {
-          background: var(--bg-panel-hover);
-          border: 1px solid var(--border-color);
-          border-radius: 12px;
-          padding: 16px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .stat-value {
-          font-family: var(--font-cubao-wide);
-          font-size: 32px;
-          color: var(--text-primary);
-          letter-spacing: 0.05em;
-        }
-        
-        .integrity-section {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .integrity-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-        }
-
-        .integrity-percent {
-          font-family: var(--font-chakra);
-          font-size: 14px;
-          font-weight: 800;
-          color: var(--neon-green);
-        }
-        
-        .progress-track {
-          height: 6px;
-          background: var(--bg-panel-hover);
-          border-radius: 3px;
-          overflow: hidden;
-        }
-
-        .progress-fill {
-          height: 100%;
-          background: var(--status-success);
-          box-shadow: 0 0 10px color-mix(in srgb, var(--status-success) 50%, transparent);
-          border-radius: 3px;
-          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .integrity-details {
-          display: flex;
-          gap: 12px;
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-        }
-
-        .detail-item.verified { color: var(--status-success); }
-		.detail-item.pending { color: var(--status-warning); }
-		.detail-item.rejected { color: var(--status-danger); }
-
-        /* Category Distribution */
-        .distribution-section {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .category-list {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .category-row {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .cat-info {
-          display: flex;
-          justify-content: space-between;
-          font-family: var(--font-chakra);
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-        }
-
-        .cat-count {
-          color: var(--text-primary);
-          font-family: var(--font-nunito);
-        }
-
-        .cat-track {
-          height: 4px;
-          background: var(--bg-panel-hover);
-          border-radius: 2px;
-          overflow: hidden;
-        }
-
-        .cat-fill {
-          height: 100%;
-          border-radius: 2px;
-          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* Admin Action Buttons */
-        .approve-btn { 
-          background: transparent; 
-          border: 1px solid var(--border-color); 
-          border-radius: 8px; 
-          width: 36px; 
-          height: 36px; 
-          display: flex; 
-          align-items: center; 
-          justify-content: center; 
-          color: var(--text-secondary); 
-          cursor: pointer; 
-          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-          flex-shrink: 0; 
-        }
-        
-        .approve-btn:hover { 
-          background: color-mix(in srgb, var(--status-success) 15%, transparent); 
-		  border-color: var(--status-success); 
-		  color: var(--status-success); 
-		  transform: scale(1.05);
-        }
-        
-        .approve-btn:active { 
-          transform: scale(0.95); 
-        }
-
-       .reject-btn { 
-          background: transparent; 
-          border: 1px solid var(--border-color); 
-          border-radius: 8px; 
-          width: 36px; 
-          height: 36px; 
-          display: flex; 
-          align-items: center; 
-          justify-content: center; 
-          color: var(--text-secondary); 
-          cursor: pointer; 
-          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-          flex-shrink: 0; 
-        }
-        
-        .reject-btn:hover { 
-		  background: color-mix(in srgb, var(--status-danger) 15%, transparent); 
-		  border-color: var(--status-danger); 
-		  color: var(--status-danger); 
-		  transform: scale(1.05); 
-		}
-        
-        .reject-btn:active { 
-          transform: scale(0.95); 
-        } 
-
-        /* --- USER LIST STYLES --- */
-        .user-list {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .user-list-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          background: var(--bg-panel-hover);
-          border: 1px solid var(--border-color);
-          border-radius: 12px;
-          padding: 12px 16px;
-          transition: all 0.2s ease;
-        }
-
-        .user-list-item:hover {
-          border-color: color-mix(in srgb, var(--text-secondary) 50%, transparent);
-          background: color-mix(in srgb, var(--bg-panel-hover) 80%, var(--border-color));
-        }
-
-        .user-info-group {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        /* Circular Avatar Layout */
-        .user-avatar {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          border: 1.5px solid var(--neon-blue);
-          color: var(--neon-blue);
-          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          font-family: var(--font-cubao-wide);
-          font-size: 16px;
-        }
-
-        .user-text {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .user-name {
-          font-family: var(--font-chakra);
-          font-size: 14px;
-          font-weight: 700;
-          color: var(--text-primary);
-          letter-spacing: 0.05em;
-        }
-
-        .user-meta {
-          font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-          font-size: 11px;
-          color: var(--text-secondary);
-        }
-
-        /* Admin Action Buttons */
-        .view-user-btn {
-          background: transparent;
-          border: 1px solid var(--border-color);
-          border-radius: 8px;
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-secondary);
-          cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          flex-shrink: 0;
-        }
-
-        .view-user-btn:hover {
-          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
-          border-color: var(--neon-blue);
-          color: var(--neon-blue);
-          transform: scale(1.05);
-        }
-
-        .view-user-btn:active {
-          transform: scale(0.95);
-        }
-
-        /* Leaderboard Count Alignment */
-        .pin-count-display {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 2px;
-        }
-
-        .count-number {
-          font-family: var(--font-cubao-wide);
-          font-size: 20px;
-          color: var(--text-primary);
-          line-height: 1;
-        }
-
-        .count-label {
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 800;
-          color: var(--text-secondary);
-          letter-spacing: 0.1em;
-        }
-
-        /* Custom Scrollbar */
-        .custom-vertical-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-vertical-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-vertical-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-      `}</style>
 		</div>
 	);
 }
