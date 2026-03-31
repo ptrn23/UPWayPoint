@@ -233,114 +233,6 @@ p {
 	box-shadow: 0 0 20px var(--neon-blue);
 }
 
-/* --- UI LAYER --- */
-.ui-layer {
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-	display: flex;
-	justify-content: space-between;
-	padding: 8px;
-	z-index: 100;
-	overflow: hidden;
-}
-
-/* --- ZONES --- */
-.zone-left,
-.zone-right {
-	pointer-events: auto;
-}
-
-.zone-left {
-	position: absolute;
-	top: 8px;
-	left: 8px;
-	z-index: 20;
-}
-
-.zone-right {
-	position: absolute;
-	top: 8px;
-	right: 8px;
-	bottom: 24px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	width: 44px;
-	z-index: 20;
-}
-
-.zone-center {
-	position: absolute;
-	top: 8px;
-	left: 50%;
-	transform: translateX(-50%);
-	width: max-content;
-	max-width: calc(100vw - 120px);
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	gap: 8px;
-	pointer-events: none;
-	z-index: 10;
-}
-
-/* --- CENTER CONTENTS --- */
-.search-block {
-	position: relative;
-	width: 100%;
-	margin: 0 auto;
-	pointer-events: auto;
-	transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-	display: flex;
-	align-items: center;
-}
-
-.search-block:focus-within {
-	transform: scale(1.05);
-}
-
-.search-input {
-	width: 100%;
-	height: 44px;
-	background: var(--bg-panel);
-	backdrop-filter: blur(12px);
-	border: 1px solid var(--border-color);
-	border-radius: 14px;
-	box-sizing: border-box;
-	padding: 0 40px 0 14px;
-	color: var(--text-primary);
-	font-size: 13px;
-	font-weight: 700;
-	font-family: var(--font-chakra);
-}
-
-.search-input:focus {
-	outline: none;
-	border-color: rgba(255, 255, 255, 0.3);
-}
-
-.search-icon-right {
-	position: absolute;
-	right: 12px;
-	top: 50%;
-	transform: translateY(-50%);
-	color: #aaa;
-	pointer-events: none;
-	z-index: 5;
-}
-
-.filter-row {
-	display: flex;
-	justify-content: center;
-	gap: 8px;
-	width: 100%;
-	overflow-x: auto;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	pointer-events: auto;
-}
-
 .no-scrollbar::-webkit-scrollbar {
 	display: none;
 }
@@ -368,16 +260,6 @@ p {
 .icon-button:active,
 .control-button:active {
 	transform: scale(0.92);
-}
-
-.tool-group {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.bottom-align {
-	margin-top: auto;
 }
 
 .zoom-stack {
@@ -448,25 +330,4 @@ p {
 	transform: scale(1.1);
 	background: var(--bg-panel-hover) !important;
 	color: var(--text-primary) !important;
-}
-
-/* --- HUD & ANIMATIONS --- */
-
-@media (max-width: 768px) {
-	.profile-btn,
-	.theme-toggle {
-		display: none;
-	}
-
-	.zone-left {
-		top: auto;
-		bottom: 24px;
-		display: flex;
-		flex-direction: column-reverse;
-		gap: 12px;
-	}
-
-	.zone-left .transit-system-container {
-		margin-top: 0;
-	}
 }

@@ -84,16 +84,16 @@ export function TopBar({
 	];
 
 	return (
-		<div className="ui-layer">
+		<div className="absolute inset-0 pointer-events-none flex justify-between p-2 z-[100] overflow-hidden">
 			{/* === LEFT ZONE === */}
 			<div
-				className="zone-left"
-				style={{
-					opacity: hideControls ? 0 : 1,
-					pointerEvents: hideControls ? "none" : "auto",
-					transition: "opacity 0.3s ease",
-				}}
-			>
+                className="absolute left-2 z-20 pointer-events-auto bottom-6 top-auto flex flex-col-reverse gap-3 md:top-2 md:bottom-auto md:block"
+                style={{
+                    opacity: hideControls ? 0 : 1,
+                    pointerEvents: hideControls ? "none" : "auto",
+                    transition: "opacity 0.3s ease",
+                }}
+            >
 				<button type="button" onClick={onMenuClick} className="icon-button">
 					<svg
 						width="24"
@@ -228,17 +228,18 @@ export function TopBar({
 				</div>
 			</div>
 
-			{/* === CENTER ZONE (Search + Filters) === */}
-			<div className="zone-center">
-				<div className="search-block">
-					<input
-						type="text"
-						placeholder="Search..."
-						value={searchQuery || ""}
-						onChange={(e) => onSearchChange(e.target.value)}
-						className="search-input"
-					/>
-					<div className="search-icon-right">
+		{/* === CENTER ZONE (Search + Filters) === */}
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-120px)] flex flex-col items-stretch gap-2 pointer-events-none z-10">
+                
+                <div className="relative w-full mx-auto pointer-events-auto flex items-center transition-transform duration-200 focus-within:scale-105">
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchQuery || ""}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                        className="w-full h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] px-3.5 pr-10 text-primary text-[13px] font-bold font-chakra focus:outline-none focus:border-white/30"
+                    />
+					<div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#aaa] pointer-events-none z-10">
 						<svg
 							width="18"
 							height="18"
@@ -255,7 +256,7 @@ export function TopBar({
 					</div>
 				</div>
 
-				<div className="filter-row no-scrollbar">
+				<div className="flex justify-center gap-2 w-full overflow-x-auto py-1 pointer-events-auto no-scrollbar">
 					{filters.map((filter) => {
 						const color = getPinColor(filter);
 						const isActive = activeFilter === filter;
@@ -280,12 +281,12 @@ export function TopBar({
 			</div>
 
 			{/* === RIGHT ZONE (Full Height Tool Stack) === */}
-			<div className="zone-right">
-				{/* Top Group */}
-				<div className="tool-group">
+			<div className="absolute top-2 right-2 bottom-6 flex flex-col justify-between w-11 z-20 pointer-events-auto">
+                {/* Top Group */}
+                <div className="flex flex-col gap-2">
 					<button
 						type="button"
-						className="icon-button profile-btn"
+						className="icon-button profile-btn hidden md:flex"
 						onClick={handleProfileClick}
 						title={sessionData?.user ? "Access Dashboard" : "System Login"}
 					>
@@ -308,7 +309,7 @@ export function TopBar({
 					<button
 						type="button"
 						onClick={toggleTheme}
-						className="icon-button theme-toggle"
+						className="icon-button theme-toggle hidden md:flex"
 					>
 						{theme === "dark" ? (
 							<svg
@@ -350,7 +351,7 @@ export function TopBar({
 
 				{/* Bottom Group */}
 				<div
-					className="tool-group bottom-align"
+					className="flex flex-col gap-2 mt-auto"
 					style={{
 						opacity: hideControls ? 0 : 1,
 						pointerEvents: hideControls ? "none" : "auto",
