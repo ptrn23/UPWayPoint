@@ -255,29 +255,29 @@ export default function Dashboard() {
 
 						{/* --- DASHBOARD GRID --- */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							<div className="module-card operator-card">
-								<div className="card-header">
-									<h3>YOUR PROFILE</h3>
+							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+								<div className="flex justify-between items-center border-b border-border-color pb-3">
+									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">YOUR PROFILE</h3>
 									<span className="bg-status-success/15 text-status-success border border-status-success px-2 py-1 rounded text-[10px] font-chakra font-bold tracking-[0.1em]">
                     {data?.userRole === "admin" ? "ADMIN" : "REGULAR USER"}
                   </span>
 								</div>
 
-								<div className="card-body operator-body">
-									<div className="operator-profile">
-										<div className="avatar-container">
-											<div className="avatar-fallback">
-												{data?.name ? data.name.charAt(0).toUpperCase() : "O"}
-											</div>
+								<div className="flex-1 flex flex-col gap-6">
+									<div className="flex items-center gap-5">
+										<div className="w-[72px] h-[72px] rounded-full border-2 border-[color-mix(in_srgb,var(--neon-blue)_50%,transparent)] p-1 relative after:content-[''] after:absolute after:-inset-[6px] after:rounded-full after:border after:border-dashed after:border-[color-mix(in_srgb,var(--neon-blue)_30%,transparent)] after:animate-spin-slow">
+											<div className="w-full h-full rounded-full bg-neon-blue/15 text-neon-blue flex items-center justify-center font-cubao-wide text-[28px]">
+                        {data?.name ? data.name.charAt(0).toUpperCase() : "O"}
+                      </div>
 										</div>
-										<div className="operator-details">
-											<span className="operator-name">
-												{data?.name || "UNKNOWN NAME"}
-											</span>
-											<span className="operator-email">
-												{(data as any)?.email || "UNKNOWN EMAIL"}
-											</span>
-										</div>
+										<div className="flex flex-col gap-1">
+                      <span className="font-chakra text-[20px] font-bold text-primary tracking-[0.05em]">
+                        {data?.name || "UNKNOWN NAME"}
+                      </span>
+                      <span className="font-mono text-[12px] text-secondary">
+                        {(data as any)?.email || "UNKNOWN EMAIL"}
+                      </span>
+                    </div>
 									</div>
 
 									{/* <div className="bio-section">
@@ -344,55 +344,47 @@ export default function Dashboard() {
 								</div>
 							</div>
 
-							<div className="module-card telemetry-card">
-								<div className="card-header">
-									<h3>YOUR STATISTICS</h3>
+							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+								<div className="flex justify-between items-center border-b border-border-color pb-3">
+									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">YOUR STATISTICS</h3>
 								</div>
 
-								<div className="card-body telemetry-body">
+								<div className="flex-1 flex flex-col gap-6">
 									{/* Top Stats Grid */}
-									<div className="telemetry-top-grid">
-										<div className="stat-block">
-											<span className="stat-label">TOTAL PINS ADDED</span>
-											<span className="stat-value">{stats.totalPins}</span>
+									<div className="grid grid-cols-2 gap-4">
+										<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
+											<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL PINS ADDED</span>
+											<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">{stats.totalPins}</span>
 										</div>
-										<div className="stat-block">
-											<span className="stat-label">TOTAL COMMENTS</span>
-											<span className="stat-value">{stats.comments}</span>
+										<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
+											<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL COMMENTS</span>
+											<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">{stats.comments}</span>
 										</div>
 									</div>
 
 									{/* Verification Integrity Bar */}
-									<div className="integrity-section">
-										<div className="integrity-header">
-											<span className="stat-label">VERIFICATIONS</span>
-											<span className="integrity-percent">
-												{verificationRate}%
-											</span>
+									<div className="flex flex-col gap-2">
+										<div className="flex justify-between items-end">
+											<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">VERIFICATIONS</span>
+                      <span className="font-chakra text-[14px] font-extrabold text-status-success">{verificationRate}%</span>
 										</div>
-										<div className="progress-track">
-											<div
-												className="progress-fill"
-												style={{ width: `${verificationRate}%` }}
-											></div>
-										</div>
-										<div className="integrity-details">
-											<span className="detail-item verified">
-												{stats.verifiedPins} VERIFIED
-											</span>
-											<span className="detail-item pending">
-												{stats.pendingPins} PENDING
-											</span>
-											<span className="detail-item rejected">
-												{stats.rejectedPins} REJECTED
-											</span>
-										</div>
+										<div className="h-[6px] bg-panel-hover rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-status-success shadow-[0_0_10px_color-mix(in_srgb,var(--status-success)_50%,transparent)] rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
+                        style={{ width: `${verificationRate}%` }}
+                      ></div>
+                    </div>
+										<div className="flex gap-3 font-chakra text-[10px] font-bold tracking-[0.05em]">
+                      <span className="text-status-success">{stats.verifiedPins} VERIFIED</span>
+                      <span className="text-status-warning">{stats.pendingPins} PENDING</span>
+                      <span className="text-status-danger">{stats.rejectedPins} REJECTED</span>
+                    </div>
 									</div>
 
 									{/* Category Distribution */}
-									<div className="distribution-section">
-										<span className="stat-label">CATEGORY DISTRIBUTION</span>
-										<div className="category-list">
+									<div className="flex flex-col gap-3">
+                    <span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">CATEGORY DISTRIBUTION</span>
+                    <div className="flex flex-col gap-2.5">
 											{PIN_CATEGORIES.map((category) => {
 												const count =
 													stats.categoryBreakdown[
@@ -404,26 +396,21 @@ export default function Dashboard() {
 														: 0;
 
 												return (
-													<div key={category.id} className="category-row">
-														<div className="cat-info">
-															<span
-																className="cat-name"
-																style={{ color: category.color }}
-															>
-																{category.label}
-															</span>
-															<span className="cat-count">{count}</span>
-														</div>
-														<div className="cat-track">
-															<div
-																className="cat-fill"
-																style={{
-																	width: `${percentage}%`,
-																	backgroundColor: category.color,
-																	boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`,
-																}}
-															></div>
-														</div>
+													<div key={category.id} className="flex flex-col gap-1">
+														<div className="flex justify-between font-chakra text-[11px] font-bold tracking-[0.1em]">
+                              <span style={{ color: category.color }}>{category.label}</span>
+                              <span className="text-primary font-nunito">{count}</span>
+                            </div>
+														<div className="h-1 bg-panel-hover rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
+                              style={{
+                                width: `${percentage}%`,
+                                backgroundColor: category.color,
+                                boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`,
+                              }}
+                            ></div>
+                          </div>
 													</div>
 												);
 											})}
@@ -432,41 +419,37 @@ export default function Dashboard() {
 								</div>
 							</div>
 
-							<div className="module-card pending-card">
-								<div className="card-header">
-									<h3>YOUR PENDING PINS</h3>
-									<span className="count-badge">
+							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+								<div className="flex justify-between items-center border-b border-border-color pb-3">
+									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">YOUR PENDING PINS</h3>
+									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
 										{stats.pendingList?.length}
 									</span>
 								</div>
-								<div className="card-body">
-									<div className="pin-list">
+								<div className="flex-1 flex flex-col">
+                  <div className="flex flex-col gap-3">
 										{stats.pendingList?.map((pin) => {
 											const color = getPinColor(
 												pin.pinTags?.[0]?.tag.title || "",
 											);
 											return (
-												<div key={pin.id} className="pin-list-item">
-													<div className="pin-info-group">
-														<div
-															className="list-diamond"
-															style={{
-																borderColor: color,
-																backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
-															}}
-														>
-															<span style={{ color }}>
+												<div key={pin.id} className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]">
+													<div className="flex items-center gap-4">
+                            <div 
+                              className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
+                              style={{ borderColor: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
+                            >
+                              <span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
 																{pin.title.charAt(0).toUpperCase()}
 															</span>
 														</div>
 
-														<div className="pin-text">
-															<span className="pin-title">{pin.title}</span>
-															<span className="pin-coords">
-																{pin.latitude.toFixed(4)},{" "}
-																{pin.longitude.toFixed(4)}
-															</span>
-														</div>
+														<div className="flex flex-col gap-1">
+                              <span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{pin.title}</span>
+                              <span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
+                                {pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
+                              </span>
+                            </div>
 													</div>
 
 													<Link
@@ -506,41 +489,37 @@ export default function Dashboard() {
 								</div>
 							</div>
 
-							<div className="module-card recent-card">
-								<div className="card-header">
-									<h3>YOUR RECENT PINS</h3>
-									<span className="count-badge">
+							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+								<div className="flex justify-between items-center border-b border-border-color pb-3">
+									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">YOUR RECENT PINS</h3>
+									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
 										{stats.recentList?.length}
 									</span>
 								</div>
-								<div className="card-body">
-									<div className="pin-list">
+								<div className="flex-1 flex flex-col">
+                  <div className="flex flex-col gap-3">
 										{stats.recentList?.map((pin) => {
 											const color = getPinColor(
 												pin.pinTags?.[0]?.tag.title || "",
 											);
 											return (
-												<div key={pin.id} className="pin-list-item">
-													<div className="pin-info-group">
-														<div
-															className="list-diamond"
-															style={{
-																borderColor: color,
-																backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
-															}}
-														>
-															<span style={{ color }}>
+												<div key={pin.id} className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]">
+													<div className="flex items-center gap-4">
+                            <div 
+                              className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
+                              style={{ borderColor: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
+                            >
+                              <span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
 																{pin.title.charAt(0).toUpperCase()}
 															</span>
 														</div>
 
-														<div className="pin-text">
-															<span className="pin-title">{pin.title}</span>
-															<span className="pin-coords">
-																{pin.latitude.toFixed(4)},{" "}
-																{pin.longitude.toFixed(4)}
-															</span>
-														</div>
+														<div className="flex flex-col gap-1">
+                              <span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{pin.title}</span>
+                              <span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
+                                {pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
+                              </span>
+                            </div>
 													</div>
 
 													<Link
@@ -583,476 +562,6 @@ export default function Dashboard() {
 					</div>
 				</main>
 			</div>
-
-			<style jsx>{`
-        .module-card {
-          background: var(--bg-panel);
-          border: 1px solid var(--border-color);
-          border-radius: 16px;
-          padding: 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        /* Card Headers */
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          border-bottom: 1px solid var(--border-color);
-          padding-bottom: 12px;
-        }
-
-        .card-header h3 {
-          font-family: var(--font-chakra);
-          font-size: 14px;
-          font-weight: 800;
-          color: var(--text-secondary);
-          letter-spacing: 0.15em;
-          margin: 0;
-        }
-
-        /* Badges */
-
-        .count-badge {
-          background: color-mix(in srgb, var(--status-warning) 15%, transparent);
-          color: var(--status-warning);
-          border: 1px solid var(--status-warning);
-          padding: 2px 8px;
-          border-radius: 12px;
-          font-family: var(--font-nunito);
-          font-weight: 800;
-          font-size: 12px;
-        }
-        
-        .card-body {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .dummy-avatar {
-          width: 64px; height: 64px;
-          border-radius: 50%;
-          background: var(--bg-panel-hover);
-          margin-bottom: 16px;
-        }
-        
-        .dummy-lines { display: flex; flex-direction: column; gap: 8px; }
-        .line { height: 12px; background: var(--bg-panel-hover); border-radius: 4px; }
-        .line.short { width: 40%; }
-        .line.long { width: 80%; }
-
-        .dummy-stats {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-        .stat-box {
-          height: 60px;
-          background: var(--bg-panel-hover);
-          border-radius: 8px;
-        }
-
-        .dummy-list { display: flex; flex-direction: column; gap: 12px; }
-        .list-item {
-          height: 48px;
-          background: var(--bg-panel-hover);
-          border-radius: 8px;
-        }
-
-        .placeholder-content {
-          height: 300px;
-          border: 1px dashed var(--border-color);
-          border-radius: 16px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-secondary);
-          font-family: var(--font-chakra);
-        }
-
-        /* --- OPERATOR IDENTITY MODULE --- */
-        .operator-body {
-          gap: 24px;
-        }
-
-        .operator-profile {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-        }
-
-        .avatar-container {
-          width: 72px;
-          height: 72px;
-          border-radius: 50%;
-          border: 2px solid color-mix(in srgb, var(--neon-blue) 50%, transparent);
-          padding: 4px;
-          position: relative;
-        }
-
-        .avatar-container::after {
-          content: '';
-          position: absolute;
-          inset: -6px;
-          border-radius: 50%;
-          border: 1px dashed color-mix(in srgb, var(--neon-blue) 30%, transparent);
-          animation: spin 20s linear infinite;
-        }
-
-        .avatar-img, .avatar-fallback {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-
-        .avatar-fallback {
-          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
-          color: var(--neon-blue);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-family: var(--font-cubao-wide);
-          font-size: 28px;
-        }
-
-        .operator-details {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .operator-name {
-          font-family: var(--font-chakra);
-          font-size: 20px;
-          font-weight: 700;
-          color: var(--text-primary);
-          letter-spacing: 0.05em;
-        }
-
-        .operator-email {
-          font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-          font-size: 12px;
-          color: var(--text-secondary);
-        }
-
-        /* Service Bio Section */
-        .bio-section {
-          background: var(--bg-panel-hover);
-          border: 1px solid var(--border-color);
-          border-radius: 12px;
-          padding: 16px;
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .bio-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .bio-label {
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 800;
-          color: var(--text-secondary);
-          letter-spacing: 0.15em;
-        }
-
-        .edit-bio-btn {
-          background: transparent;
-          border: none;
-          color: var(--text-secondary);
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          cursor: pointer;
-          transition: color 0.2s;
-        }
-
-        .edit-bio-btn:hover {
-          color: var(--neon-blue);
-        }
-
-        .bio-text {
-          font-family: var(--font-nunito);
-          font-size: 14px;
-          color: var(--text-primary);
-          line-height: 1.5;
-          margin: 0;
-        }
-
-        .bio-edit-mode {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .bio-input {
-          background: var(--bg-base);
-          border: 1px solid var(--neon-blue);
-          border-radius: 8px;
-          padding: 12px;
-          color: var(--text-primary);
-          font-family: var(--font-nunito);
-          font-size: 14px;
-          resize: none;
-          outline: none;
-          box-shadow: inset 0 0 10px color-mix(in srgb, var(--neon-blue) 10%, transparent);
-        }
-
-        .bio-actions {
-          display: flex;
-          gap: 8px;
-          justify-content: flex-end;
-        }
-
-        .small-btn {
-          padding: 8px 16px;
-          font-size: 11px;
-        }
-
-        /* --- TELEMETRY MODULE STYLES --- */
-        .telemetry-body {
-          gap: 24px;
-        }
-
-        .stat-label {
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 800;
-          color: var(--text-secondary);
-          letter-spacing: 0.15em;
-        }
-
-        .telemetry-top-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-        }
-
-        .stat-block {
-          background: var(--bg-panel-hover);
-          border: 1px solid var(--border-color);
-          border-radius: 12px;
-          padding: 16px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .stat-value {
-          font-family: var(--font-cubao-wide);
-          font-size: 32px;
-          color: var(--text-primary);
-          letter-spacing: 0.05em;
-        }
-
-        /* --- PIN LIST STYLES --- */
-        .pin-list {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .pin-list-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          background: var(--bg-panel-hover);
-          border: 1px solid var(--border-color);
-          border-radius: 12px;
-          padding: 12px 16px;
-          transition: all 0.2s ease;
-        }
-
-        .pin-list-item:hover {
-          border-color: color-mix(in srgb, var(--text-secondary) 50%, transparent);
-          background: color-mix(in srgb, var(--bg-panel-hover) 80%, var(--border-color));
-        }
-
-        .pin-info-group {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .list-diamond {
-          width: 32px;
-          height: 32px;
-          transform: rotate(45deg);
-          border: 1.5px solid;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          box-shadow: 0 4px 10px var(--border-color);
-        }
-
-        .list-diamond span {
-          transform: rotate(-45deg);
-          font-family: var(--font-cubao-wide);
-          font-size: 14px;
-        }
-
-        /* Text Block */
-        .pin-text {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .pin-title {
-          font-family: var(--font-chakra);
-          font-size: 14px;
-          font-weight: 700;
-          color: var(--text-primary);
-          letter-spacing: 0.05em;
-        }
-
-        .pin-coords {
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-          font-size: 11px;
-          color: var(--text-secondary);
-          letter-spacing: 0.05em;
-        }
-
-        /* Locate Button */
-        .locate-btn {
-          background: transparent;
-          border: 1px solid var(--border-color);
-          border-radius: 8px;
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-secondary);
-          cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          flex-shrink: 0;
-        }
-
-        .locate-btn:hover {
-          background: color-mix(in srgb, var(--neon-blue) 15%, transparent);
-          border-color: var(--neon-blue);
-          color: var(--neon-blue);
-          transform: scale(1.05);
-        }
-
-        .locate-btn:active {
-          transform: scale(0.95);
-        }
-
-        /* Verification Integrity */
-        .integrity-section {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .integrity-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-        }
-
-        .integrity-percent {
-          font-family: var(--font-chakra);
-          font-size: 14px;
-          font-weight: 800;
-          color: var(--neon-green);
-        }
-
-        .progress-track {
-          height: 6px;
-          background: var(--bg-panel-hover);
-          border-radius: 3px;
-          overflow: hidden;
-        }
-
-        .progress-fill {
-          height: 100%;
-          background: var(--status-success);
-          box-shadow: 0 0 10px color-mix(in srgb, var(--status-success) 50%, transparent);
-          border-radius: 3px;
-          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .integrity-details {
-          display: flex;
-          gap: 12px;
-          font-family: var(--font-chakra);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-        }
-
-        .detail-item.verified { color: var(--status-success); }
-        .detail-item.pending { color: var(--status-warning); }
-        .detail-item.rejected { color: var(--status-danger); }
-
-        /* Category Distribution */
-        .distribution-section {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .category-list {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .category-row {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .cat-info {
-          display: flex;
-          justify-content: space-between;
-          font-family: var(--font-chakra);
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-        }
-
-        .cat-count {
-          color: var(--text-primary);
-          font-family: var(--font-nunito);
-        }
-
-        .cat-track {
-          height: 4px;
-          background: var(--bg-panel-hover);
-          border-radius: 2px;
-          overflow: hidden;
-        }
-
-        .cat-fill {
-          height: 100%;
-          border-radius: 2px;
-          transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* Custom Scrollbar */
-        .custom-vertical-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-vertical-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-vertical-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-      `}</style>
 		</div>
 	);
 }
