@@ -301,10 +301,7 @@ export default function AdminDashboard() {
 											<div className="flex flex-col gap-2">
 												<div className="flex justify-between items-end">
 													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">GLOBAL VERIFICATION</span>
-													<span
-														className="integrity-percent"
-														style={{ color: "var(--status-success)" }}
-													>
+													<span className="font-chakra text-[14px] font-extrabold text-status-success">
 														{globalVerificationRate}%
 													</span>
 													</div>
@@ -319,16 +316,10 @@ export default function AdminDashboard() {
 														}}
 													></div>
 												</div>
-												<div className="integrity-details">
-													<span className="detail-item verified">
-														{activePinCount} VERIFIED
-													</span>
-													<span className="detail-item pending">
-														{pendingPinCount} PENDING
-													</span>
-													<span className="detail-item rejected">
-														{rejectedPinCount} REJECTED
-													</span>
+												<div className="flex gap-3 font-chakra text-[10px] font-bold tracking-[0.05em] mt-1">
+													<span className="text-status-success">{activePinCount} VERIFIED</span>
+													<span className="text-status-warning">{pendingPinCount} PENDING</span>
+													<span className="text-status-danger">{rejectedPinCount} REJECTED</span>
 												</div>
 											</div>
 
@@ -347,13 +338,10 @@ export default function AdminDashboard() {
 														return (
 															<div key={category.id} className="flex flex-col gap-1">
                     											<div className="flex justify-between font-chakra text-[11px] font-bold tracking-[0.1em]">
-																	<span
-																		className="cat-name"
-																		style={{ color: category.color }}
-																	>
+																	<span style={{ color: category.color }}>
 																		{category.label}
 																	</span>
-																	<span className="cat-count">{count}</span>
+																	<span className="text-primary font-nunito">{count}</span>
 																</div>
 																<div className="h-1 bg-panel-hover rounded-full overflow-hidden">
                          											<div className="h-full rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
@@ -372,64 +360,69 @@ export default function AdminDashboard() {
 										</div>
 									</div>
 
-									<div className="flex-1 flex flex-col gap-6">
-										<div className="grid grid-cols-2 gap-4">
-											<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
-												<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL USERS</span>
-												<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
-													{globalUserStats.totalUsers}
-												</span>
+									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+										<div className="flex justify-between items-center border-b border-border-color pb-3">
+											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">OVERALL USER STATISTICS</h3>
+										</div>
+										<div className="flex-1 flex flex-col gap-6">
+											<div className="grid grid-cols-2 gap-4">
+												<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
+													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL USERS</span>
+													<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
+														{globalUserStats.totalUsers}
+													</span>
+												</div>
+												<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
+													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL COMMENTS</span>
+													<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
+														{globalUserStats.totalComments}
+													</span>
+												</div>
+												{/* <div className="stat-block">
+														<span className="stat-label">
+															AVERAGE PINS / USER
+														</span>
+														<span
+															className="stat-value"
+															style={{ fontSize: "24px" }}
+														>
+															{globalUserStats.avgPins}
+														</span>
+													</div>
+													<div className="stat-block">
+														<span className="stat-label">
+															AVERAGE COMMENTS / USER
+														</span>
+														<span
+															className="stat-value"
+															style={{ fontSize: "24px" }}
+														>
+															{globalUserStats.avgComments}
+														</span>
+													</div>
+													<div className="stat-block">
+														<span className="stat-label">
+															NEW USERS FOR THE LAST WEEK
+														</span>
+														<span
+															className="stat-value"
+															style={{ fontSize: "24px" }}
+														>
+															{globalUserStats.newUsers7Days}
+														</span>
+													</div>
+													<div className="stat-block">
+														<span className="stat-label">
+															NEW USERS FOR THE LAST MONTH
+														</span>
+														<span
+															className="stat-value"
+															style={{ fontSize: "24px" }}
+														>
+															{globalUserStats.newUsers30Days}
+														</span>
+													</div> */}
 											</div>
-											<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
-												<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">TOTAL COMMENTS</span>
-												<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
-													{globalUserStats.totalComments}
-												</span>
-											</div>
-											{/* <div className="stat-block">
-													<span className="stat-label">
-														AVERAGE PINS / USER
-													</span>
-													<span
-														className="stat-value"
-														style={{ fontSize: "24px" }}
-													>
-														{globalUserStats.avgPins}
-													</span>
-												</div>
-												<div className="stat-block">
-													<span className="stat-label">
-														AVERAGE COMMENTS / USER
-													</span>
-													<span
-														className="stat-value"
-														style={{ fontSize: "24px" }}
-													>
-														{globalUserStats.avgComments}
-													</span>
-												</div>
-												<div className="stat-block">
-													<span className="stat-label">
-														NEW USERS FOR THE LAST WEEK
-													</span>
-													<span
-														className="stat-value"
-														style={{ fontSize: "24px" }}
-													>
-														{globalUserStats.newUsers7Days}
-													</span>
-												</div>
-												<div className="stat-block">
-													<span className="stat-label">
-														NEW USERS FOR THE LAST MONTH
-													</span>
-													<span
-														className="stat-value"
-														style={{ fontSize: "24px" }}
-													>
-														{globalUserStats.newUsers30Days}
-													</span>
-												</div> */}
 										</div>
 									</div>
 								</div>
@@ -443,8 +436,8 @@ export default function AdminDashboard() {
 											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">PENDING PIN VERIFICATIONS</h3>
 										</div>
 
-										<div className="card-body">
-											<div className="flex flex-col gap-3">
+										<div className="flex-1 flex flex-col">
+    										<div className="flex flex-col gap-3">
 												{pendingPins?.map((pin) => {
 													const color = getPinColor(
 														pin.pinTags?.[0]?.tag.title || "",
@@ -509,7 +502,7 @@ export default function AdminDashboard() {
 
 																<button
 																	type="button"
-																	className="approve-btn"
+																	className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-success/15 hover:border-status-success hover:text-status-success hover:scale-105 active:scale-95"
 																	title="Verify & Approve Pin"
 																	onClick={() =>
 																		approvePin.mutate({ id: pin.id })
@@ -566,25 +559,7 @@ export default function AdminDashboard() {
 															</div>
 
 															<div className="flex items-center gap-2">
-																<Link
-																	className="locate-btn"
-																	style={{
-																		background: "transparent",
-																		border: "1px solid var(--border-color)",
-																		borderRadius: "8px",
-																		width: "36px",
-																		height: "36px",
-																		display: "flex",
-																		alignItems: "center",
-																		justifyContent: "center",
-																		color: "var(--text-secondary)",
-																		cursor: "pointer",
-																		transition: "all 0.2s",
-																		flexShrink: "0",
-																	}}
-																	href={`/?pin=${pin.id}`}
-																	target="_blank"
-																>
+																<Link className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95" href={`/?pin=${pin.id}`} target="_blank">
 																	<svg
 																		width="18"
 																		height="18"
@@ -600,7 +575,7 @@ export default function AdminDashboard() {
 																	<>
 																		<button
 																			type="button"
-																			className="reject-btn"
+																			className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-danger/15 hover:border-status-danger hover:text-status-danger hover:scale-105 active:scale-95"
 																			title="Reject Pin"
 																			onClick={() => setIsDeletingPin(false)}
 																		>
@@ -631,7 +606,7 @@ export default function AdminDashboard() {
 
 																		<button
 																			type="button"
-																			className="approve-btn"
+																			className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-success/15 hover:border-status-success hover:text-status-success hover:scale-105 active:scale-95"
 																			title="Verify & Approve Pin"
 																			onClick={() =>
 																				deletePin.mutate({ id: pin.id })
@@ -654,7 +629,7 @@ export default function AdminDashboard() {
 																) : (
 																	<button
 																		type="button"
-																		className="reject-btn"
+																		className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-danger/15 hover:border-status-danger hover:text-status-danger hover:scale-105 active:scale-95"
 																		onClick={() => {
 																			setIsDeletingPin(true);
 																		}}
@@ -713,21 +688,7 @@ export default function AdminDashboard() {
 
 															<div className="flex items-center gap-2">
 																<Link
-																		className="locate-btn"
-																		style={{
-																			background: "transparent",
-																			border: "1px solid var(--border-color)",
-																			borderRadius: "8px",
-																			width: "36px",
-																			height: "36px",
-																			display: "flex",
-																			alignItems: "center",
-																			justifyContent: "center",
-																			color: "var(--text-secondary)",
-																			cursor: "pointer",
-																			transition: "all 0.2s",
-																			flexShrink: "0",
-																		}}
+																		className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95"
 																		href={`/?pin=${mod.pin.id}`}
 																		target="_blank"
 																	>
@@ -745,7 +706,7 @@ export default function AdminDashboard() {
 
 																	<button
 																		type="button"
-																		className="reject-btn"
+																		className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-danger/15 hover:border-status-danger hover:text-status-danger hover:scale-105 active:scale-95"
 																		title="Reject Pin"
 																		onClick={() =>
 																			rejectMod.mutate({ id: mod.id })
@@ -768,7 +729,7 @@ export default function AdminDashboard() {
 
 																	<button
 																		type="button"
-																		className="approve-btn"
+																		className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-success/15 hover:border-status-success hover:text-status-success hover:scale-105 active:scale-95"
 																		title="Verify & Approve Pin"
 																		onClick={() =>
 																			applyMod.mutate({ id: mod.id })
