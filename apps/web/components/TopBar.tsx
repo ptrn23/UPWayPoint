@@ -87,7 +87,7 @@ export function TopBar({
 		<div className="absolute inset-0 pointer-events-none flex justify-between p-2 z-[100] overflow-hidden">
 			{/* === LEFT ZONE === */}
 			<div
-                className="absolute left-2 z-20 pointer-events-auto bottom-6 top-auto flex flex-col-reverse gap-3 md:top-2 md:bottom-auto md:block"
+                className="absolute left-2 z-20 pointer-events-auto bottom-6 top-auto flex flex-col-reverse gap-2 md:top-2 md:bottom-auto md:flex-col"
                 style={{
                     opacity: hideControls ? 0 : 1,
                     pointerEvents: hideControls ? "none" : "auto",
@@ -111,10 +111,10 @@ export function TopBar({
 					</svg>
 				</button>
 
-				<div className="transit-system-container">
+				<div className="relative flex items-center">
 					<button
 						type="button"
-						className={`icon-button transit-btn ${isTransitMenuOpen ? "active" : ""}`}
+						className={`icon-button ${isTransitMenuOpen ? "bg-neon-blue/15 text-neon-blue border-neon-blue" : ""}`}
 						title="Toggle Transit Routes"
 						onClick={() => setIsTransitMenuOpen(!isTransitMenuOpen)}
 					>
@@ -139,7 +139,7 @@ export function TopBar({
 
 					{/* Extruding Route Nodes */}
 					{isTransitMenuOpen && (
-						<div className="extruded-menu">
+						<div className="absolute left-full ml-3 flex gap-2 bg-panel backdrop-blur-md border border-border-color rounded-full p-1.5 animate-extrude">
 							{JEEPNEY_ROUTES.map((route) => {
 								const isActive = activeRoutes.includes(route.id);
 								const initial = route.name
@@ -152,7 +152,7 @@ export function TopBar({
 										key={route.id}
 										type="button"
 										onClick={() => onToggleRoute(route.id)}
-										className="route-node"
+										className="w-8 h-8 rounded-full flex items-center justify-center font-chakra font-bold text-[14px] cursor-pointer border border-transparent transition-all duration-200 hover:scale-110 hover:!bg-panel-hover hover:!text-primary"
 										title={route.name}
 										style={{
 											backgroundColor: isActive
@@ -173,10 +173,10 @@ export function TopBar({
 					)}
 				</div>
 
-				<div className="transit-system-container">
+				<div className="relative flex items-center">
 					<button
 						type="button"
-						className={`icon-button transit-btn ${isZoneMenuOpen ? "active" : ""}`}
+						className={`icon-button ${isZoneMenuOpen ? "bg-neon-blue/15 text-neon-blue border-neon-blue" : ""}`}
 						title="Toggle Zone Layers"
 						onClick={() => {
 							setIsZoneMenuOpen(!isZoneMenuOpen);
@@ -197,7 +197,7 @@ export function TopBar({
 					</button>
 
 					{isZoneMenuOpen && (
-						<div className="extruded-menu">
+						<div className="absolute left-full ml-3 flex gap-2 bg-panel backdrop-blur-md border border-border-color rounded-full p-1.5 animate-extrude">
 							{ZONE_CATEGORIES.map((category) => {
 								const isActive = activeZoneCategories.includes(category.id);
 
@@ -206,7 +206,7 @@ export function TopBar({
 										key={category.id}
 										type="button"
 										onClick={() => onToggleZoneCategory(category.id)}
-										className="route-node"
+										className="w-8 h-8 rounded-full flex items-center justify-center font-chakra font-bold text-[14px] cursor-pointer border border-transparent transition-all duration-200 hover:scale-110 hover:!bg-panel-hover hover:!text-primary"
 										title={category.label}
 										style={{
 											backgroundColor: isActive
@@ -265,7 +265,9 @@ export function TopBar({
 								type="button"
 								key={filter}
 								onClick={() => onFilterChange(filter)}
-								className={`filter-chip ${isActive ? "active" : ""}`}
+								className={`px-3.5 py-1.5 border rounded-full text-[10px] font-black whitespace-nowrap cursor-pointer font-chakra transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${
+									isActive ? "scale-110" : "scale-100"
+								}`}
 								style={{
 									borderColor: isActive ? color : "var(--border-color)",
 									color: isActive ? "var(--bg-base)" : color,
@@ -376,7 +378,7 @@ export function TopBar({
 						</svg>
 					</button>
 
-					<div className="zoom-stack">
+					<div className="flex flex-col bg-panel backdrop-blur-md border border-border-color rounded-xl overflow-hidden">
 						<button
 							type="button"
 							className="control-button zoom-in"
@@ -395,7 +397,7 @@ export function TopBar({
 								<line x1="5" y1="12" x2="19" y2="12"></line>
 							</svg>
 						</button>
-						<div className="divider"></div>
+						<div className="h-[1px] bg-border-color w-4/5 mx-auto"></div>
 						<button
 							type="button"
 							className="control-button zoom-out"

@@ -237,20 +237,6 @@ p {
 	display: none;
 }
 
-.filter-chip {
-	padding: 6px 14px;
-	border: 1px solid;
-	border-radius: 18px;
-	font-size: 10px;
-	font-weight: 900;
-	white-space: nowrap;
-	cursor: pointer;
-	font-family: var(--font-chakra);
-	transition:
-		transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-		background 0.2s;
-}
-
 /* --- SIDE CONTROLS --- */
 .icon-button,
 .control-button {
@@ -262,72 +248,6 @@ p {
 	transform: scale(0.92);
 }
 
-.zoom-stack {
-	display: flex;
-	flex-direction: column;
-	background: var(--bg-panel);
-	backdrop-filter: blur(12px);
-	border: 1px solid var(--border-color);
-	border-radius: 12px;
-	overflow: hidden;
-}
-
 .control-button {
     @apply border-none rounded-none;
-}
-
-.divider {
-	height: 1px;
-	background: var(--border-color);
-	width: 80%;
-	margin: 0 auto;
-}
-
-.transit-system-container {
-	position: relative;
-	margin-top: 12px;
-	display: flex;
-	align-items: center;
-}
-
-.transit-btn.active {
-	background: rgba(0, 229, 255, 0.15);
-	color: var(--neon-blue, #00e5ff);
-	border-color: var(--neon-blue, #00e5ff);
-}
-
-.extruded-menu {
-	position: absolute;
-	left: 100%;
-	margin-left: 12px;
-	display: flex;
-	gap: 8px;
-	background: var(--bg-panel);
-	backdrop-filter: blur(12px);
-	-webkit-backdrop-filter: blur(12px);
-	border: 1px solid var(--border-color);
-	border-radius: 20px;
-	padding: 6px;
-	animation: extrudeRight 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-.route-node {
-	width: 32px;
-	height: 32px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-family: var(--font-chakra), sans-serif;
-	font-weight: 700;
-	font-size: 14px;
-	cursor: pointer;
-	border: 1px solid transparent;
-	transition: all 0.2s ease;
-}
-
-.route-node:hover {
-	transform: scale(1.1);
-	background: var(--bg-panel-hover) !important;
-	color: var(--text-primary) !important;
 }
