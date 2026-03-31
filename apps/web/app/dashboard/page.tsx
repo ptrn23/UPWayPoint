@@ -217,15 +217,11 @@ export default function Dashboard() {
 				</div>
 			</aside>
 
-			<div className="main-wrapper">
+			<div className="flex-1 flex flex-col min-w-0">
 				{/* --- HEADER --- */}
-				<header className="dashboard-header">
-					<div className="header-left">
-						<button
-							type="button"
-							className="hamburger-btn"
-							onClick={() => setIsSidebarOpen(true)}
-						>
+				<header className="h-[72px] bg-panel border-b border-border-color flex items-center justify-between px-4 md:px-8 shrink-0">
+					<div className="flex items-center gap-4">
+						<button type="button" className="md:hidden bg-transparent border-none text-primary cursor-pointer p-1 flex items-center justify-center" onClick={() => setIsSidebarOpen(true)}>
 							<svg
 								width="24"
 								height="24"
@@ -241,24 +237,24 @@ export default function Dashboard() {
 								<line x1="3" y1="18" x2="21" y2="18"></line>
 							</svg>
 						</button>
-						<h1 className="header-title">User Dashboard</h1>
+						<h1 className="font-chakra text-[16px] font-bold text-primary m-0 tracking-[0.05em]">User Dashboard</h1>
 					</div>
 				</header>
 
 				{/* --- MAIN --- */}
-				<main className="content-area custom-vertical-scrollbar">
-					<div className="content-container">
-						<div className="greeting-section">
-							<h2 className="greeting-title">
+				<main className="flex-1 p-6 md:p-8 bg-base overflow-y-auto custom-vertical-scrollbar">
+					<div className="max-w-[1200px] mx-auto flex flex-col gap-8">
+						<div className="flex flex-col gap-2">
+							<h2 className="font-chakra text-[28px] font-extrabold text-primary m-0">
 								{isLoading
 									? "LOADING..."
 									: `Welcome, ${data?.name ? data.name.toUpperCase() : "UNKNOWN"}!`}
 							</h2>
-							<p className="greeting-subtitle">You made it!</p>
+							<p className="font-nunito text-[15px] text-secondary m-0">You made it!</p>
 						</div>
 
 						{/* --- DASHBOARD GRID --- */}
-						<div className="dashboard-grid">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div className="module-card operator-card">
 								<div className="card-header">
 									<h3>YOUR PROFILE</h3>
@@ -589,92 +585,6 @@ export default function Dashboard() {
 			</div>
 
 			<style jsx>{`
-        /* --- MAIN AREA --- */
-        .main-wrapper {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          min-width: 0; /* Prevents flex blowout */
-        }
-
-        .dashboard-header {
-          height: 72px;
-          background-color: var(--bg-panel);
-          border-bottom: 1px solid var(--border-color);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 32px;
-          flex-shrink: 0;
-        }
-
-        .header-left {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .hamburger-btn {
-          display: none; /* Hidden on desktop */
-          background: transparent;
-          border: none;
-          color: var(--text-primary);
-          cursor: pointer;
-          padding: 4px;
-        }
-
-        .header-title {
-          font-family: var(--font-chakra);
-          font-size: 16px;
-          font-weight: 700;
-          color: var(--text-primary);
-          margin: 0;
-          letter-spacing: 0.05em;
-        }
-
-        .content-area {
-          flex: 1;
-          padding: 32px;
-          background-color: var(--bg-base);
-          overflow-y: auto;
-        }
-
-        .content-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          display: flex;
-          flex-direction: column;
-          gap: 32px;
-        }
-
-        .greeting-section {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .greeting-title {
-          font-family: var(--font-chakra);
-          font-size: 28px;
-          font-weight: 800;
-          color: var(--text-primary);
-          margin: 0;
-        }
-
-        .greeting-subtitle {
-          font-family: var(--font-nunito);
-          font-size: 15px;
-          color: var(--text-secondary);
-          margin: 0;
-        }
-
-        /* --- DASHBOARD GRID & CARDS --- */
-        .dashboard-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 24px;
-        }
-
         .module-card {
           background: var(--bg-panel);
           border: 1px solid var(--border-color);
@@ -1142,36 +1052,6 @@ export default function Dashboard() {
         .custom-vertical-scrollbar::-webkit-scrollbar { width: 8px; }
         .custom-vertical-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-vertical-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 768px) {
-          
-          .mobile-overlay {
-            position: fixed;
-            inset: 0;
-            background: var(--border-color);
-            backdrop-filter: blur(4px);
-            z-index: 99;
-          }
-
-          .hamburger-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .dashboard-header {
-            padding: 0 16px;
-          }
-
-          .dashboard-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .content-area {
-            padding: 24px 16px;
-          }
-        }
       `}</style>
 		</div>
 	);
