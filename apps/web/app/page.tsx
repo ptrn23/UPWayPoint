@@ -136,13 +136,7 @@ export default function Home() {
 
 	return (
 		<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
-			<main
-				style={{
-					width: "100vw",
-					height: "100vh",
-					position: "relative",
-				}}
-			>
+			<main className="relative w-screen h-screen">
 				{/* MAP LAYER */}
 				<GoogleMap
 					center={cameraProps.center}
@@ -279,21 +273,7 @@ export default function Home() {
 				{isAddingPin && (
 					<div
 						ref={cursorRef}
-						style={{
-							position: "fixed",
-							top: 0,
-							left: 0,
-							width: "48px",
-							height: "48px",
-							pointerEvents: "none", // Critical: Allows clicks to pass through to the map
-							zIndex: 100,
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							color: "var(--neon-blue)",
-							filter: "drop-shadow(0 0 8px var(--neon-blue))",
-							transition: "opacity 0.2s ease",
-						}}
+						className="fixed top-0 left-0 w-[48px] h-[48px] pointer-events-none z-[100] flex items-center justify-center text-neon-blue drop-shadow-[0_0_8px_var(--neon-blue)] transition-opacity duration-200 ease-in"
 					>
 						{/* Tactical Crosshair SVG */}
 						<svg
