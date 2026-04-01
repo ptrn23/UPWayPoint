@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type { Database } from "../db/database";
 import { pinTags } from "../db/schema";
 import type { CreatePinTags, PinTags } from "../db/types";
