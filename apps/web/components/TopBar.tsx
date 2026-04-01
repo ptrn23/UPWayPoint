@@ -266,7 +266,7 @@ export function TopBar({
 								key={filter}
 								onClick={() => onFilterChange(filter)}
 								className={`px-3.5 py-1.5 border rounded-full text-[10px] font-black whitespace-nowrap cursor-pointer font-chakra transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${
-									isActive ? "scale-110" : "scale-100"
+									isActive ? "scale-101" : "scale-100"
 								}`}
 								style={{
 									borderColor: isActive ? color : "var(--border-color)",
