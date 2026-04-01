@@ -3,11 +3,11 @@ import { createContext } from "@repo/api";
 import { appRouter } from "@repo/api";
 
 const handler = (req: Request) =>
-	fetchRequestHandler({
-		endpoint: "/api/trpc",
-		req,
-		router: appRouter,
-		createContext: () => createContext({ req }),
-	});
+  fetchRequestHandler({
+    endpoint: "/api/trpc",
+    req,
+    router: appRouter,
+    createContext: () => createContext({ req }),
+  });
 
 export { handler as GET, handler as POST };

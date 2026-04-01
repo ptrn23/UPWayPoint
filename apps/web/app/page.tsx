@@ -1,11 +1,11 @@
 "use client";
 
 import {
-	APIProvider,
-	Map as GoogleMap,
-	AdvancedMarker,
-	ColorScheme,
-	MapCameraChangedEvent,
+  APIProvider,
+  Map as GoogleMap,
+  AdvancedMarker,
+  ColorScheme,
+  MapCameraChangedEvent,
 } from "@vis.gl/react-google-maps";
 import { HeadsUpDisplay } from "@/components/HeadsUpDisplay";
 import { NeonPin } from "@/components/NeonPin";
@@ -18,9 +18,9 @@ import { Polyline } from "@/components/Polyline";
 import { Polygon } from "@/components/Polygon";
 import { Sidebar } from "@/components/Sidebar";
 import {
-	JEEPNEY_ROUTES,
-	CAMPUS_ZONES,
-	ZONE_CATEGORIES,
+  JEEPNEY_ROUTES,
+  CAMPUS_ZONES,
+  ZONE_CATEGORIES,
 } from "@/data/map-layers";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useTheme } from "@/lib/ThemeContext";
@@ -30,297 +30,299 @@ import { useSession } from "@/lib/auth-client";
 import { skipToken } from "@tanstack/react-query";
 
 export default function Home() {
-	const session = useSession();
-	const params = useSearchParams();
+  const session = useSession();
+  const params = useSearchParams();
 
-	const [hasPreselected, setHasPreselected] = useState(false);
+  const [hasPreselected, setHasPreselected] = useState(false);
 
-	const { data: pins } = trpc.pin.getAll.useQuery(undefined, {
-		refetchOnWindowFocus: false,
-	});
+  const { data: pins } = trpc.pin.getAll.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
-	const { data: currentUser } = trpc.user.getCurrent.useQuery(
-		session ? undefined : skipToken,
-	);
+  const { data: currentUser } = trpc.user.getCurrent.useQuery(
+    session ? undefined : skipToken,
+  );
 
-	const {
-		mode,
-		selectedPinId,
-		selectPin,
-		clearSelection,
-		expandDetails,
-		toggleMenu,
-		toggleLock,
-	} = useWaypointState();
-	const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-	const [searchQuery, setSearchQuery] = useState("");
-	const [isAddingPin, setIsAddingPin] = useState(false);
+  const {
+    mode,
+    selectedPinId,
+    selectPin,
+    clearSelection,
+    expandDetails,
+    toggleMenu,
+    toggleLock,
+  } = useWaypointState();
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isAddingPin, setIsAddingPin] = useState(false);
 
-	const [activeRoutes, setActiveRoutes] = useState<string[]>([]);
+  const [activeRoutes, setActiveRoutes] = useState<string[]>([]);
 
-	const handleToggleRoute = (routeId: string) => {
-		setActiveRoutes((prev) =>
-			prev.includes(routeId)
-				? prev.filter((id) => id !== routeId)
-				: [...prev, routeId],
-		);
-	};
+  const handleToggleRoute = (routeId: string) => {
+    setActiveRoutes((prev) =>
+      prev.includes(routeId)
+        ? prev.filter((id) => id !== routeId)
+        : [...prev, routeId],
+    );
+  };
 
-	const [activeZoneCategories, setActiveZoneCategories] = useState<string[]>(
-		[],
-	);
+  const [activeZoneCategories, setActiveZoneCategories] = useState<string[]>(
+    [],
+  );
 
-	const handleToggleZoneCategory = (categoryId: string) => {
-		setActiveZoneCategories((prev) =>
-			prev.includes(categoryId)
-				? prev.filter((id) => id !== categoryId)
-				: [...prev, categoryId],
-		);
-	};
+  const handleToggleZoneCategory = (categoryId: string) => {
+    setActiveZoneCategories((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId],
+    );
+  };
 
-	const [cameraProps, setCameraProps] = useState({
-		center: { lat: 14.6549, lng: 121.0645 },
-		zoom: 19,
-	});
+  const [cameraProps, setCameraProps] = useState({
+    center: { lat: 14.6549, lng: 121.0645 },
+    zoom: 19,
+  });
 
-	const handleCameraChange = useCallback((ev: MapCameraChangedEvent) => {
-		setCameraProps({
-			center: ev.detail.center,
-			zoom: ev.detail.zoom,
-		});
-	}, []);
+  const handleCameraChange = useCallback((ev: MapCameraChangedEvent) => {
+    setCameraProps({
+      center: ev.detail.center,
+      zoom: ev.detail.zoom,
+    });
+  }, []);
 
-	const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
-	const mockHeading = 45;
+  const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
+  const mockHeading = 45;
 
-	const { theme } = useTheme();
+  const { theme } = useTheme();
 
-	const [pendingPinCoords, setPendingPinCoords] = useState<{
-		lat: number;
-		lng: number;
-	} | null>(null);
-	const cursorRef = useRef<HTMLDivElement>(null);
+  const [pendingPinCoords, setPendingPinCoords] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
 
-	const pinsParsed = useMemo(() => {
-		return (
-			pins
-				?.filter((p) => p !== null)
-				.filter((p) => p.id && p.latitude && p.longitude) || []
-		);
-	}, [pins]);
+  const pinsParsed = useMemo(() => {
+    return (
+      pins
+        ?.filter((p) => p !== null)
+        .filter((p) => p.id && p.latitude && p.longitude) || []
+    );
+  }, [pins]);
 
-	const activePinObj = useMemo(() => {
-		return pinsParsed.find((p) => p.id === selectedPinId);
-	}, [pinsParsed, selectedPinId]);
+  const activePinObj = useMemo(() => {
+    return pinsParsed.find((p) => p.id === selectedPinId);
+  }, [pinsParsed, selectedPinId]);
 
-	useEffect(() => {
-		if (!isAddingPin) return;
-		const handleMouseMove = (e: MouseEvent) => {
-			if (cursorRef.current) {
-				cursorRef.current.style.transform = `translate(${e.clientX - 24}px, ${e.clientY - 24}px)`;
-			}
-		};
+  useEffect(() => {
+    if (!isAddingPin) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${e.clientX - 24}px, ${e.clientY - 24}px)`;
+      }
+    };
 
-		window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
 
-		return () => window.removeEventListener("mousemove", handleMouseMove);
-	}, [isAddingPin]);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [isAddingPin]);
 
-	useEffect(() => {
-		if (params.has("pin") && !hasPreselected) {
-			const preselectedPin = params.get("pin") as string;
-			selectPin(preselectedPin);
-			setHasPreselected(true);
-		}
-	}, [params, selectPin, hasPreselected]);
+  useEffect(() => {
+    if (params.has("pin") && !hasPreselected) {
+      const preselectedPin = params.get("pin") as string;
+      selectPin(preselectedPin);
+      setHasPreselected(true);
+    }
+  }, [params, selectPin, hasPreselected]);
 
-	return (
-		<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
-			<main className="relative w-screen h-screen">
-				{/* MAP LAYER */}
-				<GoogleMap
-					center={cameraProps.center}
-					zoom={cameraProps.zoom}
-					onCameraChanged={handleCameraChange}
-					minZoom={17}
-					mapId={process.env.NEXT_PUBLIC_MAP_ID || "71238adec955b8c6d66f595a"}
-					colorScheme={theme === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
-					gestureHandling={"greedy"}
-					disableDefaultUI={true}
-					onClick={(e) => {
-						if (isAddingPin) {
-							const lat = e.detail.latLng?.lat;
-							const lng = e.detail.latLng?.lng;
+  return (
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || ""}>
+      <main className="relative w-screen h-screen">
+        {/* MAP LAYER */}
+        <GoogleMap
+          center={cameraProps.center}
+          zoom={cameraProps.zoom}
+          onCameraChanged={handleCameraChange}
+          minZoom={17}
+          mapId={process.env.NEXT_PUBLIC_MAP_ID || "71238adec955b8c6d66f595a"}
+          colorScheme={theme === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
+          gestureHandling={"greedy"}
+          disableDefaultUI={true}
+          onClick={(e) => {
+            if (isAddingPin) {
+              const lat = e.detail.latLng?.lat;
+              const lng = e.detail.latLng?.lng;
 
-							if (lat && lng) {
-								setPendingPinCoords({ lat, lng });
-								setIsAddingPin(false);
-							}
-						} else {
-							clearSelection();
-						}
-					}}
-					restriction={{
-						latLngBounds: {
-							north: 14.663668,
-							south: 14.645343,
-							east: 121.075583,
-							west: 121.05536,
-						},
-						strictBounds: false,
-					}}
-				>
-					{pinsParsed.map((pinData) => {
-						const matchesCategory =
-							activeFilter === "all" ||
-							pinData.pinTags.map((t) => t.tag.title).includes(activeFilter);
-						const matchesSearch =
-							pinData.title
-								?.toLowerCase()
-								.includes(searchQuery.toLowerCase()) ||
-							pinData.description
-								?.toLowerCase()
-								.includes(searchQuery.toLowerCase());
+              if (lat && lng) {
+                setPendingPinCoords({ lat, lng });
+                setIsAddingPin(false);
+              }
+            } else {
+              clearSelection();
+            }
+          }}
+          restriction={{
+            latLngBounds: {
+              north: 14.663668,
+              south: 14.645343,
+              east: 121.075583,
+              west: 121.05536,
+            },
+            strictBounds: false,
+          }}
+        >
+          {pinsParsed.map((pinData) => {
+            const matchesCategory =
+              activeFilter === "all" ||
+              pinData.pinTags.map((t) => t.tag.title).includes(activeFilter);
+            const matchesSearch =
+              pinData.title
+                ?.toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              pinData.description
+                ?.toLowerCase()
+                .includes(searchQuery.toLowerCase());
 
-						const isVisible =
-							!!(matchesCategory && matchesSearch) &&
-							(currentUser?.userRole === "admin"
-								? pinData.status !== "DELETED"
-								: currentUser?.userRole === "user" &&
-										pinData.ownerId === currentUser?.id
-									? pinData.status !== "DELETED"
-									: pinData.status === "ACTIVE");
+            const isVisible =
+              !!(matchesCategory && matchesSearch) &&
+              (currentUser?.userRole === "admin"
+                ? pinData.status !== "DELETED"
+                : currentUser?.userRole === "user" &&
+                    pinData.ownerId === currentUser?.id
+                  ? pinData.status !== "DELETED"
+                  : pinData.status === "ACTIVE");
 
-						return (
-							<AdvancedMarker
-								key={pinData.id}
-								position={{ lat: pinData.latitude, lng: pinData.longitude }}
-								zIndex={isVisible ? 10 : 0}
-							>
-								<NeonPin
-									pin={pinData}
-									isSelected={selectedPinId === pinData.id}
-									isLocked={mode === "LOCKED" && selectedPinId === pinData.id}
-									isVisible={isVisible}
-									onClick={() => selectPin(pinData.id || "")}
-								/>
-							</AdvancedMarker>
-						);
-					})}
+            return (
+              <AdvancedMarker
+                key={pinData.id}
+                position={{ lat: pinData.latitude, lng: pinData.longitude }}
+                zIndex={isVisible ? 10 : 0}
+              >
+                <NeonPin
+                  pin={pinData}
+                  isSelected={selectedPinId === pinData.id}
+                  isLocked={mode === "LOCKED" && selectedPinId === pinData.id}
+                  isVisible={isVisible}
+                  onClick={() => selectPin(pinData.id || "")}
+                />
+              </AdvancedMarker>
+            );
+          })}
 
-					<AdvancedMarker position={mockUserLocation} zIndex={50}>
-						<MapCursor heading={mockHeading} />
-					</AdvancedMarker>
+          <AdvancedMarker position={mockUserLocation} zIndex={50}>
+            <MapCursor heading={mockHeading} />
+          </AdvancedMarker>
 
-					{activePinObj && (
-						<TargetLine
-							start={mockUserLocation}
-							end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
-							color="var(--neon-blue)"
-						/>
-					)}
+          {activePinObj && (
+            <TargetLine
+              start={mockUserLocation}
+              end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
+              color="var(--neon-blue)"
+            />
+          )}
 
-					{CAMPUS_ZONES.map((zone) => {
-						if (!activeZoneCategories.includes(zone.categoryId)) return null;
+          {CAMPUS_ZONES.map((zone) => {
+            if (!activeZoneCategories.includes(zone.categoryId)) return null;
 
-						const categoryDef = ZONE_CATEGORIES.find(
-							(c) => c.id === zone.categoryId,
-						);
-						const zoneColor = categoryDef ? categoryDef.color : "var(--bg-panel)";
+            const categoryDef = ZONE_CATEGORIES.find(
+              (c) => c.id === zone.categoryId,
+            );
+            const zoneColor = categoryDef
+              ? categoryDef.color
+              : "var(--bg-panel)";
 
-						return (
-							<Polygon
-								key={zone.id}
-								paths={zone.paths}
-								fillColor={zoneColor}
-								strokeColor={zoneColor}
-								isPulsating={true}
-							/>
-						);
-					})}
+            return (
+              <Polygon
+                key={zone.id}
+                paths={zone.paths}
+                fillColor={zoneColor}
+                strokeColor={zoneColor}
+                isPulsating={true}
+              />
+            );
+          })}
 
-					{JEEPNEY_ROUTES.map((route) => {
-						if (!activeRoutes.includes(route.id)) return null;
+          {JEEPNEY_ROUTES.map((route) => {
+            if (!activeRoutes.includes(route.id)) return null;
 
-						return (
-							<Polyline
-								key={route.id}
-								path={route.path}
-								color={route.color}
-								weight={10}
-								animateDirection="forward"
-							/>
-						);
-					})}
-				</GoogleMap>
+            return (
+              <Polyline
+                key={route.id}
+                path={route.path}
+                color={route.color}
+                weight={10}
+                animateDirection="forward"
+              />
+            );
+          })}
+        </GoogleMap>
 
-				{/* TOP BAR */}
-				<TopBar
-					onMenuClick={toggleMenu}
-					activeFilter={activeFilter}
-					onFilterChange={setActiveFilter}
-					searchQuery={searchQuery}
-					onSearchChange={setSearchQuery}
-					activeRoutes={activeRoutes}
-					onToggleRoute={handleToggleRoute}
-					activeZoneCategories={activeZoneCategories}
-					onToggleZoneCategory={handleToggleZoneCategory}
-					userLocation={mockUserLocation}
-					hideControls={!!selectedPinId}
-				/>
+        {/* TOP BAR */}
+        <TopBar
+          onMenuClick={toggleMenu}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          activeRoutes={activeRoutes}
+          onToggleRoute={handleToggleRoute}
+          activeZoneCategories={activeZoneCategories}
+          onToggleZoneCategory={handleToggleZoneCategory}
+          userLocation={mockUserLocation}
+          hideControls={!!selectedPinId}
+        />
 
-				{/* TARGETING CROSSHAIR (Only visible when armed) */}
-				{isAddingPin && (
-					<div
-						ref={cursorRef}
-						className="fixed top-0 left-0 w-[48px] h-[48px] pointer-events-none z-[100] flex items-center justify-center text-neon-blue drop-shadow-[0_0_8px_var(--neon-blue)] transition-opacity duration-200 ease-in"
-					>
-						{/* Tactical Crosshair SVG */}
-						<svg
-							width="48"
-							height="48"
-							viewBox="0 0 48 48"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="1.5"
-						>
-							<circle cx="24" cy="24" r="10" strokeDasharray="4 4" />
-							<line x1="24" y1="2" x2="24" y2="10" />
-							<line x1="24" y1="38" x2="24" y2="46" />
-							<line x1="2" y1="24" x2="10" y2="24" />
-							<line x1="38" y1="24" x2="46" y2="24" />
-							<circle cx="24" cy="24" r="2" fill="currentColor" />
-						</svg>
-					</div>
-				)}
+        {/* TARGETING CROSSHAIR (Only visible when armed) */}
+        {isAddingPin && (
+          <div
+            ref={cursorRef}
+            className="fixed top-0 left-0 w-[48px] h-[48px] pointer-events-none z-[100] flex items-center justify-center text-neon-blue drop-shadow-[0_0_8px_var(--neon-blue)] transition-opacity duration-200 ease-in"
+          >
+            {/* Tactical Crosshair SVG */}
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 48 48"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <circle cx="24" cy="24" r="10" strokeDasharray="4 4" />
+              <line x1="24" y1="2" x2="24" y2="10" />
+              <line x1="24" y1="38" x2="24" y2="46" />
+              <line x1="2" y1="24" x2="10" y2="24" />
+              <line x1="38" y1="24" x2="46" y2="24" />
+              <circle cx="24" cy="24" r="2" fill="currentColor" />
+            </svg>
+          </div>
+        )}
 
-				{/* UI LAYER */}
-				<HeadsUpDisplay
-					selectedPinId={selectedPinId}
-					isLocked={mode === "LOCKED"}
-					onLockClick={toggleLock}
-					onClearSelection={clearSelection}
-					onAddPinClick={() => {
-						clearSelection();
-						setIsAddingPin(true);
-					}}
-				/>
+        {/* UI LAYER */}
+        <HeadsUpDisplay
+          selectedPinId={selectedPinId}
+          isLocked={mode === "LOCKED"}
+          onLockClick={toggleLock}
+          onClearSelection={clearSelection}
+          onAddPinClick={() => {
+            clearSelection();
+            setIsAddingPin(true);
+          }}
+        />
 
-				<Sidebar isOpen={mode === "MENU"} onClose={toggleMenu} />
+        <Sidebar isOpen={mode === "MENU"} onClose={toggleMenu} />
 
-				{pendingPinCoords && (
-					<AddPinModal
-						coords={pendingPinCoords}
-						onCancel={() => setPendingPinCoords(null)}
-						onSave={(newPinId) => {
-							// HANDLE NEW PIN WITH INVALIDATE
-							// setPins((prev) => [...prev, newPin]);
-							selectPin(newPinId);
-							setPendingPinCoords(null);
-						}}
-					/>
-				)}
-			</main>
-		</APIProvider>
-	);
+        {pendingPinCoords && (
+          <AddPinModal
+            coords={pendingPinCoords}
+            onCancel={() => setPendingPinCoords(null)}
+            onSave={(newPinId) => {
+              // HANDLE NEW PIN WITH INVALIDATE
+              // setPins((prev) => [...prev, newPin]);
+              selectPin(newPinId);
+              setPendingPinCoords(null);
+            }}
+          />
+        )}
+      </main>
+    </APIProvider>
+  );
 }

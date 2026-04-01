@@ -4,16 +4,16 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
 export default function SignIn() {
-	const handleLogin = async () => {
-		await authClient.signIn.social({
-			provider: "google",
-			callbackURL: "/dashboard",
-		});
-	};
+  const handleLogin = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+  };
 
-	const router = useRouter();
+  const router = useRouter();
 
-	const goToMap = () => router.push("/");
+  const goToMap = () => router.push("/");
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#0f1115] overflow-hidden p-4">
@@ -22,7 +22,6 @@ export default function SignIn() {
 
       {/* LOGIN CARD */}
       <div className="relative z-10 w-full max-w-[380px] rounded-[24px] border border-white/10 bg-[#0a0a0c]/60 backdrop-blur-[20px] p-8 shadow-[0_30px_60px_rgba(0,0,0,0.8)] animate-fade-up">
-        
         {/* HEADER SECTION */}
         <div className="text-center mb-8">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-neon-blue/50 bg-neon-blue/10 shadow-[0_0_20px_var(--shadow-glow)]">
@@ -68,9 +67,9 @@ export default function SignIn() {
           </button>
 
           {/* AUTH BUTTON */}
-          <button 
-            type="button" 
-            className="relative flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 p-[14px_24px] font-chakra text-[14px] font-semibold text-white cursor-pointer transition-all duration-200 tracking-[0.05em] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]" 
+          <button
+            type="button"
+            className="relative flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 p-[14px_24px] font-chakra text-[14px] font-semibold text-white cursor-pointer transition-all duration-200 tracking-[0.05em] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]"
             onClick={handleLogin}
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -94,10 +93,13 @@ export default function SignIn() {
             Continue with Google
           </button>
         </div>
-        
+
         {/* FOOTER */}
         <div className="mt-8 text-center font-nunito text-[12px] text-[#555] leading-relaxed">
-          <a href="https://github.com/ptrn23/UPWayPoint" className="text-[#555] hover:text-[#888] transition-colors">
+          <a
+            href="https://github.com/ptrn23/UPWayPoint"
+            className="text-[#555] hover:text-[#888] transition-colors"
+          >
             Source code available here
           </a>
           <br />

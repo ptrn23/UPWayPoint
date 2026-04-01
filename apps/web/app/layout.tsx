@@ -6,15 +6,15 @@ import { TRPCProvider } from "@/components/TRPCProvider";
 import { ThemeProvider } from "@/lib/ThemeContext";
 
 const chakra = Chakra_Petch({
-	weight: ["300", "400", "500", "600", "700"],
-	subsets: ["latin"],
-	variable: "--font-chakra",
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-chakra",
 });
 
 const nunito = Nunito({
-	weight: ["400", "700"],
-	subsets: ["latin"],
-	variable: "--font-nunito",
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-nunito",
 });
 
 const cubaoFree = localFont({
@@ -36,24 +36,25 @@ const cubaoFreeWide = localFont({
 });
 
 export const metadata: Metadata = {
-	title: "UP WayPoint",
-	description: "Lead the way!",
+  title: "UP WayPoint",
+  description: "Lead the way!",
 };
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <TRPCProvider>
-            <html lang="en">
-                <body suppressHydrationWarning className={`${chakra.variable} ${nunito.variable} ${cubaoFree.variable} ${cubaoFreeNarrow.variable} ${cubaoFreeWide.variable}`}>
-                    <ThemeProvider>
-                        {children}
-                    </ThemeProvider>
-                </body>
-            </html>
-        </TRPCProvider>
-    );
+  return (
+    <TRPCProvider>
+      <html lang="en">
+        <body
+          suppressHydrationWarning
+          className={`${chakra.variable} ${nunito.variable} ${cubaoFree.variable} ${cubaoFreeNarrow.variable} ${cubaoFreeWide.variable}`}
+        >
+          <ThemeProvider>{children}</ThemeProvider>
+        </body>
+      </html>
+    </TRPCProvider>
+  );
 }
