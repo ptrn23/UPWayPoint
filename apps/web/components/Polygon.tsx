@@ -61,8 +61,6 @@ export function Polygon({
       const time = Date.now();
       const speed = 800;
       const sineValue = Math.sin(time / speed);
-      const variance = 0.1;
-      const currentOpacity = fillOpacity + sineValue * variance;
 
       polygonRef.current.setOptions({
         fillOpacity: fillOpacity,
