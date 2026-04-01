@@ -63,38 +63,13 @@ export default function AdminDashboard() {
 
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 	const { theme, toggleTheme } = useTheme();
-	const [activeSection, setActiveSection] = useState("overview");
 
 	const [isDeletingPin, setIsDeletingPin] = useState(false);
 
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						setActiveSection(entry.target.id);
-					}
-				});
-			},
-			{
-				root: document.querySelector(".content-area"),
-				rootMargin: "-10% 0px -70% 0px",
-			},
-		);
-
-		const sections = document.querySelectorAll(".dashboard-section");
-		sections.forEach((section) => {
-			observer.observe(section);
-		});
-
-		return () => observer.disconnect();
-	}, []);
-
 	const scrollToSection = (sectionId: string) => {
-		const element = document.getElementById(sectionId);
+    const element = document.getElementById(sectionId);
 		if (element) {
 			element.scrollIntoView({ behavior: "smooth", block: "start" });
-			setActiveSection(sectionId);
 			if (window.innerWidth <= 768) setIsSidebarOpen(false);
 		}
 	};
@@ -154,11 +129,7 @@ export default function AdminDashboard() {
 
 						<button
 							type="button"
-							className={`text-left px-4 py-3 font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 ${
-								activeSection === "overview" 
-									? "bg-pin-social/10 text-pin-social border-l-[3px] border-pin-social rounded-r-lg" 
-									: "bg-transparent text-secondary border-none rounded-lg hover:bg-panel-hover hover:text-primary"
-							}`}
+							className="text-left px-4 py-3 font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 bg-transparent text-secondary border-none rounded-lg hover:bg-panel-hover hover:text-primary"
 							onClick={() => scrollToSection("overview")}
 						>
 							OVERVIEW
@@ -166,11 +137,7 @@ export default function AdminDashboard() {
 
 						<button
 							type="button"
-							className={`text-left px-4 py-3 font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 ${
-								activeSection === "overview" 
-									? "bg-pin-social/10 text-pin-social border-l-[3px] border-pin-social rounded-r-lg" 
-									: "bg-transparent text-secondary border-none rounded-lg hover:bg-panel-hover hover:text-primary"
-							}`}
+							className="text-left px-4 py-3 font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 bg-transparent text-secondary border-none rounded-lg hover:bg-panel-hover hover:text-primary"
 							onClick={() => scrollToSection("pin-management")}
 						>
 							PIN MANAGEMENT
