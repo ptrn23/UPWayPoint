@@ -54,10 +54,15 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <div className="flex flex-col gap-3">
                         <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">SYSTEM ACCESS</span>
                         <button 
-                            className="tactical-button w-full text-left p-4 text-[14px] flex justify-start bg-panel border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-base hover:shadow-[0_0_15px_var(--shadow-glow)]"
+                            type="button"
+                            className="w-full flex justify-between items-center px-4 py-3 bg-neon-blue/10 border border-neon-blue/30 text-neon-blue rounded-lg font-chakra text-[13px] font-bold tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-neon-blue hover:text-base hover:shadow-[0_0_15px_var(--shadow-glow)]"
                             onClick={() => handleNavigation(sessionData?.user ? "/dashboard" : "/sign-in")}
                         >
-                            {sessionData?.user ? "DASHBOARD" : "LOGIN"}
+                            <span>{sessionData?.user ? "ACCESS DASHBOARD" : "SYSTEM LOGIN"}</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
                         </button>
                     </div>
 
@@ -95,17 +100,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                     </>
                                 )}
                             </div>
-                        </button>
-                    </div>
-
-                    {/* PLACEHOLDERS */}
-                    <div className="flex flex-col gap-3">
-                        <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">DATABASE</span>
-                        <button className="tactical-button w-full text-left p-4 text-[14px] flex justify-start !bg-transparent hover:!bg-panel-hover" onClick={() => {}}>
-                            SAVED WAYPOINTS
-                        </button>
-                        <button className="tactical-button w-full text-left p-4 text-[14px] flex justify-start !bg-transparent hover:!bg-panel-hover" onClick={() => {}}>
-                            ABOUT US
                         </button>
                     </div>
                 </div>
