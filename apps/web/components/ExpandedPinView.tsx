@@ -62,97 +62,61 @@ const CommentNode = ({
 	}
 
 	return (
-		<div className={`comment-node ${depth > 0 ? "is-reply" : ""}`}>
-			<div className="comment-header">
-				<span className="comment-author">{comment.authorName}</span>
-				<span className="comment-time">
-					{new Date(comment.createdAt).toLocaleString("default")}
-				</span>
-			</div>
+        <div className={`mt-4 ${depth > 0 ? "ml-4 pl-4 border-l-[2px] border-border-color mt-3" : ""}`}>
+            <div className="flex items-center gap-3 mb-1">
+                <span className="font-chakra font-bold text-[13px] text-primary">{comment.authorName}</span>
+                <span className="font-nunito text-[11px] text-secondary">
+                	{new Date(comment.createdAt).toLocaleString("default")}
+                </span>
+            </div>
 
-			<p className="comment-text">{comment.message}</p>
+            <p className="font-nunito text-[14px] text-primary leading-relaxed my-1">{comment.message}</p>
 
-			<div className="comment-actions">
-				{!isReplying ? (
-					sessionData &&
-					depth < 3 && (
-						<button
-							type="button"
-							className="action-btn"
-							onClick={() => setIsReplying(true)}
-						>
-							REPLY
-						</button>
-					)
-				) : (
-					<form
-						onSubmit={formMethods.handleSubmit(onSubmit)}
-						className="reply-form"
-					>
-						<input
-							{...formMethods.register("message")}
-							placeholder="Write a reply..."
-							className="reply-input"
-						/>
-						<button type="submit" className="tactical-button-primary form-btn">
-							Send
-						</button>
-						<button
-							type="button"
-							className="tactical-button form-btn"
-							onClick={() => setIsReplying(false)}
-						>
-							Cancel
-						</button>
-					</form>
-				)}
-			</div>
+            <div className="flex gap-4 items-center mt-2">
+                {!isReplying ? (
+                    sessionData &&
+                    depth < 3 && (
+                        <button
+                            type="button"
+                            className="bg-transparent border-none text-secondary font-chakra text-[11px] font-bold cursor-pointer flex items-center gap-1 p-0 transition-colors duration-200 hover:text-primary"
+                            onClick={() => setIsReplying(true)}
+                        >
+                            REPLY
+                        </button>
+                    )
+                ) : (
+                    <form
+                        onSubmit={formMethods.handleSubmit(onSubmit)}
+                        className="flex gap-2 w-full items-center mt-2"
+                    >
+                        <input
+                            {...formMethods.register("message")}
+                            placeholder="Write a reply..."
+                            className="flex-1 bg-base border border-border-color rounded-md py-2 px-3 text-primary font-nunito text-[13px] outline-none focus:border-neon-blue"
+                        />
+                        <button type="submit" className="tactical-button-primary px-3 py-1.5 text-[11px] rounded-md">
+                            Send
+                        </button>
+                        <button
+                            type="button"
+                            className="tactical-button px-3 py-1.5 text-[11px] rounded-md"
+                            onClick={() => setIsReplying(false)}
+                        >
+                            Cancel
+                        </button>
+                    </form>
+                )}
+            </div>
 
-			{comment.replies && comment.replies.length > 0 && (
-				<div className="replies-container">
-					{comment.replies.map((reply) => (
-						<CommentNode key={reply.id} comment={reply} depth={depth + 1} />
-					))}
-				</div>
-			)}
-
-			<style jsx>{`
-        .comment-node { margin-top: 16px; }
-        .comment-node.is-reply {
-          margin-left: 16px; 
-          padding-left: 16px; 
-          border-left: 2px solid var(--border-color); 
-          margin-top: 12px;
-        }
-        .comment-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
-        .comment-author { font-family: var(--font-chakra); font-weight: 700; font-size: 13px; color: var(--text-primary); }
-        .comment-time { font-family: var(--font-nunito); font-size: 11px; color: var(--text-secondary); }
-        
-        .comment-text { font-family: var(--font-nunito); font-size: 14px; color: var(--text-primary); line-height: 1.5; margin: 4px 0; }
-        .comment-actions { display: flex; gap: 16px; align-items: center; margin-top: 8px; }
-        .action-btn {
-          background: none; border: none; color: var(--text-secondary); font-family: var(--font-chakra); font-size: 11px;
-          font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0; transition: color 0.2s;
-        }
-        .action-btn:hover { color: var(--text-primary); }
-
-        .reply-form { display: flex; gap: 8px; width: 100%; align-items: center; margin-top: 8px; }
-        .reply-input {
-            flex: 1;
-            background: var(--bg-base);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            color: var(--text-primary);
-            font-family: var(--font-nunito);
-            font-size: 13px;
-            outline: none;
-        }
-        .reply-input:focus { border-color: var(--neon-blue); }
-        .form-btn { padding: 6px 12px; font-size: 11px; border-radius: 6px; }
-      `}</style>
-		</div>
-	);
+            {comment.replies && comment.replies.length > 0 && (
+                <div className="mt-2">
+                    {comment.replies.map((reply) => (
+                        <CommentNode key={reply.id} comment={reply} depth={depth + 1} />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 };
 
 export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
