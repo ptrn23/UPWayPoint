@@ -1,9 +1,9 @@
-import type { Database, UserRepository } from "@repo/db";
+import type { UserRepository } from "@repo/db";
 import type { GetAllUsersOptions, GetUserCountOptions } from "@repo/db";
 
 export function makeUserService(
   repositories: { user: UserRepository },
-  db: Database,
+  // db: Database,
 ) {
   async function getById(id: string) {
     return await repositories.user.getById(id);

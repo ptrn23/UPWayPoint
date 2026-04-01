@@ -1,8 +1,8 @@
-import type { Database, TagRepository } from "@repo/db";
+import type { TagRepository } from "@repo/db";
 
 export function makeTagService(
   repositories: { tag: TagRepository },
-  db: Database,
+  // db: Database,
 ) {
   async function getAll() {
     return await repositories.tag.getAll();

@@ -1,6 +1,6 @@
 import type {
   CommentRepository,
-  Database,
+  // Database,
   Comment,
   CommentWithReplies,
   CreateComment,
