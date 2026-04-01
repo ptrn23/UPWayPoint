@@ -11,12 +11,12 @@ interface PolylineProps {
   speed?: number;
 }
 
-export function Polyline({ 
-  path, 
-  color = "var(--pin-transit)", 
-  weight = 5, 
+export function Polyline({
+  path,
+  color = "var(--pin-transit)",
+  weight = 5,
   animateDirection = "forward",
-  speed = 0.8
+  speed = 0.8,
 }: PolylineProps) {
   const map = useMap();
   const isLoaded = useApiIsLoaded();
@@ -30,16 +30,17 @@ export function Polyline({
     const clusterSpacing = 120;
     const tailLength = 4;
     const chevronSpacing = 8;
-    
+
     const icons = [];
     if (animateDirection !== "none") {
       for (let i = 0; i < tailLength; i++) {
-        const opacity = (i + 1) / tailLength; 
+        const opacity = (i + 1) / tailLength;
 
         const chevronShape = {
-          path: animateDirection === "reverse" 
-            ? window.google.maps.SymbolPath.BACKWARD_OPEN_ARROW 
-            : window.google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+          path:
+            animateDirection === "reverse"
+              ? window.google.maps.SymbolPath.BACKWARD_OPEN_ARROW
+              : window.google.maps.SymbolPath.FORWARD_OPEN_ARROW,
           scale: 2.5,
           strokeColor: color,
           strokeWeight: 4,
@@ -59,7 +60,7 @@ export function Polyline({
         path,
         strokeColor: color,
         strokeWeight: weight,
-        strokeOpacity: baseOpacity, 
+        strokeOpacity: baseOpacity,
         icons: icons,
         map,
       });
@@ -80,31 +81,32 @@ export function Polyline({
       if (!polylineRef.current || animateDirection === "none") return;
 
       if (animateDirection === "forward") {
-         offsetStep = (offsetStep + speed) % clusterSpacing;
+        offsetStep = (offsetStep + speed) % clusterSpacing;
       } else {
-         offsetStep = (offsetStep - speed) % clusterSpacing;
-         if (offsetStep < 0) offsetStep += clusterSpacing; 
+        offsetStep = (offsetStep - speed) % clusterSpacing;
+        if (offsetStep < 0) offsetStep += clusterSpacing;
       }
 
       const currentIcons = polylineRef.current.get("icons");
       if (currentIcons && currentIcons.length === tailLength) {
-         for (let i = 0; i < tailLength; i++) {
-            
-            const relativeOffset = animateDirection === "forward" 
-                ? i * chevronSpacing 
-                : (tailLength - 1 - i) * chevronSpacing;
+        for (let i = 0; i < tailLength; i++) {
+          const relativeOffset =
+            animateDirection === "forward"
+              ? i * chevronSpacing
+              : (tailLength - 1 - i) * chevronSpacing;
 
-            currentIcons[i].offset = `${(offsetStep + relativeOffset) % clusterSpacing}px`;
-         }
-         polylineRef.current.set("icons", currentIcons);
+          currentIcons[i].offset =
+            `${(offsetStep + relativeOffset) % clusterSpacing}px`;
+        }
+        polylineRef.current.set("icons", currentIcons);
       }
 
       animationRef.current = requestAnimationFrame(animateLoop);
     };
 
     if (animateDirection !== "none") {
-        cancelAnimationFrame(animationRef.current); 
-        animationRef.current = requestAnimationFrame(animateLoop);
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = requestAnimationFrame(animateLoop);
     }
 
     return () => {

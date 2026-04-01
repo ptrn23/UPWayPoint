@@ -4,25 +4,25 @@ import type { Comment, CreateComment } from "../db/types";
 import { comment } from "../db/schema";
 
 export function makeCommentRepository(db: Database) {
-	async function create(data: CreateComment) {
-		const [c] = await db.insert(comment).values(data).returning();
-		return c;
-	}
+  async function create(data: CreateComment) {
+    const [c] = await db.insert(comment).values(data).returning();
+    return c;
+  }
 
-	async function getByUserId(id: string) {
-		const query = await db.query.comment.findMany({
-			where: eq(comment.ownerId, id),
-		});
+  async function getByUserId(id: string) {
+    const query = await db.query.comment.findMany({
+      where: eq(comment.ownerId, id),
+    });
 
-		return query;
-	}
+    return query;
+  }
 
-	async function getByPinId(
-		pinId: string,
-		maxDepth: number = 3,
-	): Promise<(Comment & { authorName: string })[]> {
-		try {
-			const result = await db.execute(sql`
+  async function getByPinId(
+    pinId: string,
+    maxDepth: number = 3,
+  ): Promise<(Comment & { authorName: string })[]> {
+    try {
+      const result = await db.execute(sql`
     WITH RECURSIVE comment_tree AS (
       -- Base case: top-level comment (no parent)
       SELECT
@@ -49,36 +49,36 @@ export function makeCommentRepository(db: Database) {
     ORDER BY depth, created_at DESC
   `);
 
-			return result.map((row) => {
-				return {
-					id: row.id,
-					message: row.message,
-					pinId: row.pin_id,
-					parentId: row.parent_id,
-					ownerId: row.owner_id,
-					authorName: row.author_name,
-					createdAt: row.created_at,
-					updatedAt: row.updated_at,
-					deletedAt: row.deleted_at,
-				} as Comment & { authorName: string };
-			});
-		} catch (e) {
-			console.error("Raw DB error:", e);
-			throw e;
-		}
-	}
+      return result.map((row) => {
+        return {
+          id: row.id,
+          message: row.message,
+          pinId: row.pin_id,
+          parentId: row.parent_id,
+          ownerId: row.owner_id,
+          authorName: row.author_name,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at,
+          deletedAt: row.deleted_at,
+        } as Comment & { authorName: string };
+      });
+    } catch (e) {
+      console.error("Raw DB error:", e);
+      throw e;
+    }
+  }
 
-	async function getCount(): Promise<number> {
-		const result = await db.select({ count: count() }).from(comment);
-		return result[0]?.count ?? 0;
-	}
+  async function getCount(): Promise<number> {
+    const result = await db.select({ count: count() }).from(comment);
+    return result[0]?.count ?? 0;
+  }
 
-	return {
-		create,
-		getByPinId,
-		getByUserId,
-		getCount,
-	};
+  return {
+    create,
+    getByPinId,
+    getByUserId,
+    getCount,
+  };
 }
 
 export type CommentRepository = ReturnType<typeof makeCommentRepository>;

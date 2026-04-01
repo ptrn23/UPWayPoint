@@ -17,12 +17,12 @@ interface PolygonProps {
 export function Polygon({
   paths,
   fillColor = "var(--neon-green)",
-  fillOpacity = 0.05, 
+  fillOpacity = 0.05,
   strokeColor = "var(--neon-green)",
   strokeOpacity = 0.8,
   strokeWeight = 2,
   zIndex = 1,
-  isPulsating = true
+  isPulsating = true,
 }: PolygonProps) {
   const map = useMap();
   const isLoaded = useApiIsLoaded();
@@ -51,7 +51,7 @@ export function Polygon({
         strokeOpacity,
         strokeWeight,
         zIndex,
-        map, 
+        map,
       });
     }
 
@@ -61,13 +61,10 @@ export function Polygon({
       const time = Date.now();
       const speed = 800;
       const sineValue = Math.sin(time / speed);
-      const variance = 0.10; 
-      const currentOpacity = fillOpacity + (sineValue * variance);
-      const clampedOpacity = Math.max(0.05, Math.min(0.4, currentOpacity));
 
       polygonRef.current.setOptions({
         fillOpacity: fillOpacity,
-        strokeOpacity: 0.6 + (sineValue * 0.3) 
+        strokeOpacity: 0.6 + sineValue * 0.3,
       });
 
       animationRef.current = requestAnimationFrame(animatePulse);
@@ -86,7 +83,18 @@ export function Polygon({
         polygonRef.current.setMap(null);
       }
     };
-  }, [map, isLoaded, paths, fillColor, fillOpacity, strokeColor, strokeOpacity, strokeWeight, zIndex, isPulsating]);
+  }, [
+    map,
+    isLoaded,
+    paths,
+    fillColor,
+    fillOpacity,
+    strokeColor,
+    strokeOpacity,
+    strokeWeight,
+    zIndex,
+    isPulsating,
+  ]);
 
   return null;
 }

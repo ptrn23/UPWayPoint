@@ -5,191 +5,155 @@ import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
 interface SidebarProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
-    const { theme, toggleTheme } = useTheme();
-    const { data: sessionData } = useSession();
-    const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
+  const { data: sessionData } = useSession();
+  const router = useRouter();
 
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    const handleNavigation = (path: string) => {
-        onClose();
-        router.push(path);
-    };
+  const handleNavigation = (path: string) => {
+    onClose();
+    router.push(path);
+  };
 
-    return (
-        <>
-            <div className="sidebar-overlay" onClick={onClose}></div>
+  return (
+    <>
+      {/* OVERLAY */}
+      <div
+        className="fixed inset-0 bg-border-color backdrop-blur-[4px] z-[400] animate-fade-in"
+        onClick={onClose}
+      ></div>
 
-            <div className="sidebar-panel">
-                <div className="sidebar-header">
-                    <h2 className="brand-title">UP WAYPOINT</h2>
-                    <button type="button" onClick={onClose} className="close-btn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
+      {/* SIDEBAR PANEL */}
+      <div className="fixed top-0 left-0 h-screen w-full max-w-[320px] bg-panel border-r border-border-color z-[401] flex flex-col shadow-[20px_0_50px_var(--border-color)] animate-slide-right">
+        {/* HEADER */}
+        <div className="flex justify-between items-center p-6 border-b border-border-color">
+          <h2 className="m-0 font-cubao-wide text-[20px] tracking-[0.1em] text-primary">
+            UP WAYPOINT
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-transparent border-none text-secondary cursor-pointer flex items-center justify-center p-1 transition-colors duration-200 hover:text-primary shrink-0"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
 
-                <div className="sidebar-content custom-vertical-scrollbar">
-                    {/* PRIMARY ACTIONS */}
-                    <div className="menu-group">
-                        <span className="group-label">SYSTEM ACCESS</span>
-                        <button 
-                            className="tactical-button menu-item primary-action"
-                            onClick={() => handleNavigation(sessionData?.user ? "/dashboard" : "/sign-in")}
-                        >
-                            {sessionData?.user ? "DASHBOARD" : "LOGIN"}
-                        </button>
-                    </div>
+        {/* CONTENT */}
+        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-8 custom-vertical-scrollbar">
+          {/* PRIMARY ACTIONS */}
+          <div className="flex flex-col gap-3">
+            <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">
+              SYSTEM ACCESS
+            </span>
+            <button
+              type="button"
+              className="w-full flex justify-between items-center px-4 py-3 bg-neon-blue/10 border border-neon-blue/30 text-neon-blue rounded-lg font-chakra text-[13px] font-bold tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-neon-blue hover:text-base hover:shadow-[0_0_15px_var(--shadow-glow)]"
+              onClick={() =>
+                handleNavigation(sessionData?.user ? "/dashboard" : "/sign-in")
+              }
+            >
+              <span>
+                {sessionData?.user ? "ACCESS DASHBOARD" : "SYSTEM LOGIN"}
+              </span>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
 
-                    {/* SETTINGS */}
-                    <div className="menu-group">
-                        <span className="group-label">DISPLAY SETTINGS</span>
-                        <button className="tactical-button menu-item" onClick={toggleTheme}>
-                            SWITCH TO {theme === "dark" ? "DAY" : "NIGHT"} MODE
-                        </button>
-                    </div>
+          {/* SETTINGS */}
+          <div className="flex flex-col gap-3">
+            <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">
+              DISPLAY SETTINGS
+            </span>
+            <button
+              type="button"
+              className="w-full text-left px-4 py-3 bg-transparent border-none rounded-lg text-secondary font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-panel-hover hover:text-primary flex justify-between items-center"
+              onClick={toggleTheme}
+            >
+              <span>UI THEME</span>
+              <div className="flex items-center gap-1.5 font-chakra text-[11px] font-extrabold">
+                {theme === "dark" ? (
+                  <>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="var(--theme-moon)"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <span style={{ color: "var(--theme-moon)" }}>NIGHT</span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="var(--theme-sun)"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="5"></circle>
+                      <line x1="12" y1="1" x2="12" y2="3"></line>
+                      <line x1="12" y1="21" x2="12" y2="23"></line>
+                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                      <line x1="1" y1="12" x2="3" y2="12"></line>
+                      <line x1="21" y1="12" x2="23" y2="12"></line>
+                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <span style={{ color: "var(--theme-sun)" }}>DAY</span>
+                  </>
+                )}
+              </div>
+            </button>
+          </div>
+        </div>
 
-                    {/* PLACEHOLDERS */}
-                    <div className="menu-group">
-                        <span className="group-label">DATABASE</span>
-                        <button className="tactical-button menu-item" onClick={() => {}}>
-                            SAVED WAYPOINTS
-                        </button>
-                        <button className="tactical-button menu-item" onClick={() => {}}>
-                            ABOUT US
-                        </button>
-                    </div>
-                </div>
-
-                <div className="sidebar-footer">
-                    <span>UP WAYPOINT v1.3.0</span>
-                    <span>SYSTEM ONLINE</span>
-                </div>
-            </div>
-
-            <style jsx>{`
-                .sidebar-overlay {
-                    position: fixed;
-                    inset: 0;
-                    background: var(--border-color);
-                    backdrop-filter: blur(4px);
-                    -webkit-backdrop-filter: blur(4px);
-                    z-index: 400;
-                    animation: fadeIn 0.2s ease-out;
-                }
-
-                .sidebar-panel {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    height: 100vh;
-                    width: 100%;
-                    max-width: 320px;
-                    background: var(--bg-panel);
-                    border-right: 1px solid var(--border-color);
-                    z-index: 401;
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: 20px 0 50px var(--border-color);
-                    animation: slideRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                }
-
-                .sidebar-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 24px;
-                    border-bottom: 1px solid var(--border-color);
-                }
-
-                .brand-title {
-                    margin: 0;
-                    font-family: var(--font-cubao-wide);
-                    font-size: 20px;
-                    letter-spacing: 0.1em;
-                    color: var(--text-primary);
-                }
-
-                .close-btn {
-                    background: transparent;
-                    border: none;
-                    color: var(--text-secondary);
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 4px;
-                    transition: color 0.2s;
-                }
-
-                .close-btn:hover { color: var(--text-primary); }
-
-                .sidebar-content {
-                    flex: 1;
-                    overflow-y: auto;
-                    padding: 24px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 32px;
-                }
-
-                .menu-group {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                }
-
-                .group-label {
-                    font-family: var(--font-chakra);
-                    font-size: 11px;
-                    font-weight: 800;
-                    color: var(--text-secondary);
-                    letter-spacing: 0.15em;
-                }
-
-                .menu-item {
-                    width: 100%;
-                    text-align: left;
-                    padding: 16px;
-                    font-size: 14px;
-                    display: flex;
-                    justify-content: flex-start;
-                    background: transparent;
-                }
-
-                .primary-action {
-                    background: var(--bg-panel);
-                    border-color: var(--neon-blue);
-                    color: var(--neon-blue);
-                }
-
-                .primary-action:hover {
-                    background: var(--neon-blue);
-                    color: var(--bg-base);
-                    box-shadow: 0 0 15px var(--shadow-glow);
-                }
-
-                .sidebar-footer {
-                    padding: 20px 24px;
-                    border-top: 1px solid var(--border-color);
-                    display: flex;
-                    justify-content: space-between;
-                    font-family: var(--font-chakra);
-                    font-size: 10px;
-                    font-weight: 700;
-                    color: var(--text-secondary);
-                    letter-spacing: 0.1em;
-                }
-
-                
-            `}</style>
-        </>
-    );
+        {/* FOOTER */}
+        <div className="py-5 px-6 border-t border-border-color flex justify-between font-chakra text-[10px] font-bold text-secondary tracking-[0.1em]">
+          <span>UP WAYPOINT v1.3.0</span>
+          <span>SYSTEM ONLINE</span>
+        </div>
+      </div>
+    </>
+  );
 }

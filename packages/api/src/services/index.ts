@@ -8,11 +8,11 @@ import { makeModificationService } from "./modification.service";
 const commentService = makeCommentService(repositories, db);
 
 export const services = {
-	user: makeUserService(repositories, db),
-	pin: makePinService(repositories, { comment: commentService }, db),
-	tag: makeTagService(repositories, db),
-	comment: commentService,
-	modification: makeModificationService(repositories, db),
+  user: makeUserService(repositories, db),
+  pin: makePinService(repositories, { comment: commentService }, db),
+  tag: makeTagService(repositories, db),
+  comment: commentService,
+  modification: makeModificationService(repositories, db),
 };
 
 export type Services = typeof services;
