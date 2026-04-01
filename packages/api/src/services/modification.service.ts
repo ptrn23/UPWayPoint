@@ -1,8 +1,8 @@
-import type { Database, ModificationRepository } from "@repo/db";
+import type { ModificationRepository } from "@repo/db";
 
 export function makeModificationService(
   repositories: { modification: ModificationRepository },
-  db: Database,
+  // db: Database,
 ) {
   async function getAllPending() {
     return await repositories.modification.getPending();

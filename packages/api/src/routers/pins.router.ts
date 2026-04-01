@@ -1,4 +1,4 @@
-import { inferRouterInputs, inferRouterOutputs, TRPCError } from "@trpc/server";
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import {
   adminProcedure,
   publicProcedure,

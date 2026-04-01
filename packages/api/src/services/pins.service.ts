@@ -1,6 +1,6 @@
 import type {
   CreatePin,
-  Database,
+  // Database,
   PinImagesRepository,
   PinRepository,
   PinTagsRepository,
@@ -20,7 +20,7 @@ export function makePinService(
     modification: ModificationRepository;
   },
   services: { comment: CommentService },
-  db: Database,
+  // db: Database,
 ) {
   async function getAll() {
     return await repositories.pin.getAll();
@@ -54,7 +54,7 @@ export function makePinService(
         message: "Failed to create pin",
         code: "BAD_REQUEST",
       });
-    const { status, ...dataWithoutStatus } = data;
+    const { ...dataWithoutStatus } = data;
     await repositories.modification.create({
       userId: data.ownerId,
       pinId: res.id,
@@ -200,7 +200,7 @@ export function makePinService(
       id,
     );
 
-    if (!!initialMod)
+    if (initialMod)
       await repositories.modification.applyModification(initialMod.id, adminId);
 
     return result;

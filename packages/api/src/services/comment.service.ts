@@ -29,7 +29,7 @@ function nestComments(rows: Comment[]): CommentWithReplies[] {
 
 export function makeCommentService(
   repositories: { comment: CommentRepository; user: UserRepository },
-  db: Database,
+  // db: Database,
 ) {
   async function getByPinId(pinId: string) {
     const rows = await repositories.comment.getByPinId(pinId);
