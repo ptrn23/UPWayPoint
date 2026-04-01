@@ -23,12 +23,23 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     return (
         <>
-            <div className="sidebar-overlay" onClick={onClose}></div>
+            {/* OVERLAY */}
+            <div 
+                className="fixed inset-0 bg-border-color backdrop-blur-[4px] z-[400] animate-fade-in" 
+                onClick={onClose}
+            ></div>
 
-            <div className="sidebar-panel">
-                <div className="sidebar-header">
-                    <h2 className="brand-title">UP WAYPOINT</h2>
-                    <button type="button" onClick={onClose} className="close-btn">
+            {/* SIDEBAR PANEL */}
+            <div className="fixed top-0 left-0 h-screen w-full max-w-[320px] bg-panel border-r border-border-color z-[401] flex flex-col shadow-[20px_0_50px_var(--border-color)] animate-slide-right">
+                
+                {/* HEADER */}
+                <div className="flex justify-between items-center p-6 border-b border-border-color">
+                    <h2 className="m-0 font-cubao-wide text-[20px] tracking-[0.1em] text-primary">UP WAYPOINT</h2>
+                    <button 
+                        type="button" 
+                        onClick={onClose} 
+                        className="bg-transparent border-none text-secondary cursor-pointer flex items-center justify-center p-1 transition-colors duration-200 hover:text-primary shrink-0"
+                    >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -36,12 +47,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     </button>
                 </div>
 
-                <div className="sidebar-content custom-vertical-scrollbar">
+                {/* CONTENT */}
+                <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-8 custom-vertical-scrollbar">
+                    
                     {/* PRIMARY ACTIONS */}
-                    <div className="menu-group">
-                        <span className="group-label">SYSTEM ACCESS</span>
+                    <div className="flex flex-col gap-3">
+                        <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">SYSTEM ACCESS</span>
                         <button 
-                            className="tactical-button menu-item primary-action"
+                            className="tactical-button w-full text-left p-4 text-[14px] flex justify-start bg-panel border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-base hover:shadow-[0_0_15px_var(--shadow-glow)]"
                             onClick={() => handleNavigation(sessionData?.user ? "/dashboard" : "/sign-in")}
                         >
                             {sessionData?.user ? "DASHBOARD" : "LOGIN"}
@@ -49,147 +62,32 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     </div>
 
                     {/* SETTINGS */}
-                    <div className="menu-group">
-                        <span className="group-label">DISPLAY SETTINGS</span>
-                        <button className="tactical-button menu-item" onClick={toggleTheme}>
+                    <div className="flex flex-col gap-3">
+                        <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">DISPLAY SETTINGS</span>
+                        {/* We use !bg-transparent here to cleanly override the global tactical-button background */}
+                        <button className="tactical-button w-full text-left p-4 text-[14px] flex justify-start !bg-transparent hover:!bg-panel-hover" onClick={toggleTheme}>
                             SWITCH TO {theme === "dark" ? "DAY" : "NIGHT"} MODE
                         </button>
                     </div>
 
                     {/* PLACEHOLDERS */}
-                    <div className="menu-group">
-                        <span className="group-label">DATABASE</span>
-                        <button className="tactical-button menu-item" onClick={() => {}}>
+                    <div className="flex flex-col gap-3">
+                        <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">DATABASE</span>
+                        <button className="tactical-button w-full text-left p-4 text-[14px] flex justify-start !bg-transparent hover:!bg-panel-hover" onClick={() => {}}>
                             SAVED WAYPOINTS
                         </button>
-                        <button className="tactical-button menu-item" onClick={() => {}}>
+                        <button className="tactical-button w-full text-left p-4 text-[14px] flex justify-start !bg-transparent hover:!bg-panel-hover" onClick={() => {}}>
                             ABOUT US
                         </button>
                     </div>
                 </div>
 
-                <div className="sidebar-footer">
+                {/* FOOTER */}
+                <div className="py-5 px-6 border-t border-border-color flex justify-between font-chakra text-[10px] font-bold text-secondary tracking-[0.1em]">
                     <span>UP WAYPOINT v1.3.0</span>
                     <span>SYSTEM ONLINE</span>
                 </div>
             </div>
-
-            <style jsx>{`
-                .sidebar-overlay {
-                    position: fixed;
-                    inset: 0;
-                    background: var(--border-color);
-                    backdrop-filter: blur(4px);
-                    -webkit-backdrop-filter: blur(4px);
-                    z-index: 400;
-                    animation: fadeIn 0.2s ease-out;
-                }
-
-                .sidebar-panel {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    height: 100vh;
-                    width: 100%;
-                    max-width: 320px;
-                    background: var(--bg-panel);
-                    border-right: 1px solid var(--border-color);
-                    z-index: 401;
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: 20px 0 50px var(--border-color);
-                    animation: slideRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                }
-
-                .sidebar-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 24px;
-                    border-bottom: 1px solid var(--border-color);
-                }
-
-                .brand-title {
-                    margin: 0;
-                    font-family: var(--font-cubao-wide);
-                    font-size: 20px;
-                    letter-spacing: 0.1em;
-                    color: var(--text-primary);
-                }
-
-                .close-btn {
-                    background: transparent;
-                    border: none;
-                    color: var(--text-secondary);
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 4px;
-                    transition: color 0.2s;
-                }
-
-                .close-btn:hover { color: var(--text-primary); }
-
-                .sidebar-content {
-                    flex: 1;
-                    overflow-y: auto;
-                    padding: 24px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 32px;
-                }
-
-                .menu-group {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                }
-
-                .group-label {
-                    font-family: var(--font-chakra);
-                    font-size: 11px;
-                    font-weight: 800;
-                    color: var(--text-secondary);
-                    letter-spacing: 0.15em;
-                }
-
-                .menu-item {
-                    width: 100%;
-                    text-align: left;
-                    padding: 16px;
-                    font-size: 14px;
-                    display: flex;
-                    justify-content: flex-start;
-                    background: transparent;
-                }
-
-                .primary-action {
-                    background: var(--bg-panel);
-                    border-color: var(--neon-blue);
-                    color: var(--neon-blue);
-                }
-
-                .primary-action:hover {
-                    background: var(--neon-blue);
-                    color: var(--bg-base);
-                    box-shadow: 0 0 15px var(--shadow-glow);
-                }
-
-                .sidebar-footer {
-                    padding: 20px 24px;
-                    border-top: 1px solid var(--border-color);
-                    display: flex;
-                    justify-content: space-between;
-                    font-family: var(--font-chakra);
-                    font-size: 10px;
-                    font-weight: 700;
-                    color: var(--text-secondary);
-                    letter-spacing: 0.1em;
-                }
-
-                
-            `}</style>
         </>
     );
 }
