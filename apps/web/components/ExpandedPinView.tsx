@@ -44,7 +44,7 @@ const CommentNode = ({
   const { data: sessionData } = useSession();
   const utils = trpc.useUtils();
   const createComment = trpc.comment.create.useMutation({
-    onSuccess(output) {
+    onSuccess() {
       utils.pin.getById.invalidate();
       setIsReplying(false);
     },
@@ -137,13 +137,13 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
   );
 
   const createComment = trpc.comment.create.useMutation({
-    onSuccess(output) {
+    onSuccess() {
       utils.pin.getById.invalidate();
       setIsReplying(false);
     },
   });
   const deletePin = trpc.pin.userDelete.useMutation({
-    onSuccess(output) {
+    onSuccess() {
       utils.pin.getAll.invalidate();
       onClose();
     },

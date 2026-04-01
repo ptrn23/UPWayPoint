@@ -306,7 +306,7 @@ export default function Dashboard() {
                         {data?.name || "UNKNOWN NAME"}
                       </span>
                       <span className="font-mono text-[12px] text-secondary">
-                        {(data as any)?.email || "UNKNOWN EMAIL"}
+                        {(data as { email?: string })?.email || "UNKNOWN EMAIL"}
                       </span>
                     </div>
                   </div>

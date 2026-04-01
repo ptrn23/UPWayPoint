@@ -48,7 +48,6 @@ export default function Home() {
     selectedPinId,
     selectPin,
     clearSelection,
-    expandDetails,
     toggleMenu,
     toggleLock,
   } = useWaypointState();

@@ -1,6 +1,6 @@
 {
 	"$schema": "https://turborepo.dev/schema.json",
-	"globalEnv": ["DATABASE_URL", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"],
+	"globalEnv": ["DATABASE_URL", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "S3_API", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME"],
 	"ui": "tui",
 	"tasks": {
 		"build": {

@@ -1,8 +1,5 @@
 import { useState, useCallback } from "react";
 
-import type { PinRouterOutputs } from "@repo/api";
-type Pin = PinRouterOutputs["getById"];
-
 export type AppMode =
   | "IDLE" // Scanning map
   | "SELECTED" // Pin clicked (Simple HUD)

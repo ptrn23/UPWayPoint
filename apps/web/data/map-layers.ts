@@ -32,13 +32,22 @@ export interface CampusZone {
   paths: { lat: number; lng: number }[];
 }
 
-const parseGeoJson = (coords: any[]): { lat: number; lng: number }[] => {
-  const isNested = Array.isArray(coords[0]) && Array.isArray(coords[0][0]);
-  const activeArray = isNested ? coords[0] : coords;
+const parseGeoJson = (
+  coords: number[][] | number[][][]
+): { lat: number; lng: number }[] => {
+  if (!coords || coords.length === 0) return [];
 
-  return activeArray.map((point: any) => ({
-    lat: Number(point[1]),
-    lng: Number(point[0]),
+  const isNested = Array.isArray(coords[0]) && Array.isArray(coords[0][0]);
+
+  const points = isNested
+    ? (coords as number[][][])[0]
+    : (coords as number[][]);
+
+  if (!points) return [];
+
+  return points.map((point) => ({
+    lat: point[1] ?? 0, 
+    lng: point[0] ?? 0,
   }));
 };
 

@@ -22,11 +22,6 @@ export function HeadsUpDisplay({
 }: HUDProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleClear = () => {
-    setIsExpanded(false);
-    if (onClearSelection) onClearSelection();
-  };
-
   const { data: sessionData } = useSession();
   const isLoggedIn = useMemo(() => !!sessionData?.user?.id, [sessionData]);
 

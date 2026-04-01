@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
@@ -29,20 +29,20 @@ export default function AdminDashboard() {
   });
   const utils = trpc.useUtils();
   const rejectPin = trpc.pin.reject.useMutation({
-    onSuccess: (output) => {
+    onSuccess: () => {
       utils.pin.getAllAdmin.invalidate();
       utils.modification.getPending.invalidate();
     },
   });
   const approvePin = trpc.pin.approve.useMutation({
-    onSuccess: (output) => {
+    onSuccess: () => {
       utils.pin.getAll.invalidate();
       utils.pin.getAllAdmin.invalidate();
       utils.modification.getPending.invalidate();
     },
   });
   const applyMod = trpc.pin.applyUpdate.useMutation({
-    onSuccess: (output) => {
+    onSuccess: () => {
       utils.modification.getPending.invalidate();
       utils.pin.getAll.invalidate();
       utils.pin.getAllAdmin.invalidate();
@@ -50,13 +50,13 @@ export default function AdminDashboard() {
     },
   });
   const rejectMod = trpc.pin.rejectUpdate.useMutation({
-    onSuccess: (output) => {
+    onSuccess: () => {
       utils.modification.getPending.invalidate();
     },
   });
 
   const deletePin = trpc.pin.adminDelete.useMutation({
-    onSuccess: (output) => {
+    onSuccess: () => {
       utils.pin.getAllAdmin.invalidate();
     },
   });
