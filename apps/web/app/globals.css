@@ -1,41 +1,45 @@
 @import "tailwindcss";
 
-@theme {
-  --font-chakra: var(--font-chakra), sans-serif;
-  --font-nunito: var(--font-nunito), sans-serif;
-  --font-cubao-wide: var(--font-cubao-wide), sans-serif;
+:root {
+  --bg-base: #f0f2f5;
+  --bg-panel: rgba(255, 255, 255, 0.95);
+  --bg-panel-hover: rgba(0, 0, 0, 0.05);
+  --text-primary: #121212;
+  --text-secondary: #555555;
+  --border-color: rgba(0, 0, 0, 0.2);
+  --shadow-glow: rgba(0, 136, 255, 0.2);
+  --neon-blue: #0066cc;
+  --neon-red: #d90040;
+  --neon-yellow: #d4a017;
+  --status-success: #008844;
+  --status-warning: #d98200;
+  --status-danger: #cc0000;
+  --pin-academic: #d91a4d;
+  --pin-food: #00995c;
+  --pin-social: #8e00e6;
+  --pin-transit: #d98200;
+  --pin-utility: #0088cc;
+}
 
-  --color-base: var(--bg-base);
-  --color-panel: var(--bg-panel);
-  --color-panel-hover: var(--bg-panel-hover);
-  
-  --color-primary: var(--text-primary);
-  --color-secondary: var(--text-secondary);
-  --color-border-color: var(--border-color);
-  
-  --color-neon-blue: var(--neon-blue);
-  --color-neon-red: var(--neon-red);
-  --color-neon-yellow: var(--neon-yellow);
-  
-  --color-status-success: var(--status-success);
-  --color-status-warning: var(--status-warning);
-  --color-status-danger: var(--status-danger);
-
-  --color-pin-academic: var(--pin-academic);
-  --color-pin-food: var(--pin-food);
-  --color-pin-social: var(--pin-social);
-  --color-pin-transit: var(--pin-transit);
-  --color-pin-utility: var(--pin-utility);
-
-  --animate-pan: autoPan 20s linear infinite;
-  --animate-scroll-text: scrollText 5s ease-in-out infinite alternate;
-  --animate-slide-up: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  --animate-fade-in: fadeIn 0.2s ease-out forwards;
-  --animate-fade-up: fadeUp 0.3s ease-out forwards;
-  --animate-pulse-glow: pulseGlow 2s infinite alternate;
-  --animate-radar: radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-  --animate-slide-right: slideRight 0.3s ease-out forwards;
-  --animate-spin-slow: spin 20s linear infinite;
+.dark {
+  --bg-base: #0f1115;
+  --bg-panel: rgba(10, 10, 12, 0.95);
+  --bg-panel-hover: rgba(255, 255, 255, 0.1);
+  --text-primary: #ffffff;
+  --text-secondary: #8899a6;
+  --border-color: rgba(255, 255, 255, 0.15);
+  --shadow-glow: rgba(0, 229, 255, 0.2);
+  --neon-blue: #00e5ff;
+  --neon-red: #ff0055;
+  --neon-yellow: #ffd700;
+  --status-success: #00ff99;
+  --status-warning: #ffcc00;
+  --status-danger: #ff4d4d;
+  --pin-academic: #ff3366;
+  --pin-food: #00ff99;
+  --pin-social: #b026ff;
+  --pin-transit: #ffd700;
+  --pin-utility: #00e5ff;
 }
 
 @keyframes spin {
@@ -126,60 +130,42 @@
 	to { transform: translateX(0); }
 }
 
-:root {
-	--bg-base: #f0f2f5;
-	--bg-panel: rgba(255, 255, 255, 0.95);
-	--bg-panel-hover: rgba(0, 0, 0, 0.05);
+@theme {
+  --font-chakra: "Chakra Petch", var(--font-chakra), sans-serif;
+  --font-nunito: "Nunito", var(--font-nunito), sans-serif;
+  --font-cubao: "Cubao Wide", sans-serif;
 
-	--text-primary: #121212;
-	--text-secondary: #555555;
+  --color-base: var(--bg-base);
+  --color-panel: var(--bg-panel);
+  --color-panel-hover: var(--bg-panel-hover);
+  
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-border: var(--border-color);
+  
+  --color-neon-blue: var(--neon-blue);
+  --color-neon-red: var(--neon-red);
+  --color-neon-yellow: var(--neon-yellow);
+  
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
 
-	--border-color: rgba(0, 0, 0, 0.2);
-	--shadow-glow: rgba(0, 136, 255, 0.2);
+  --color-pin-academic: var(--pin-academic);
+  --color-pin-food: var(--pin-food);
+  --color-pin-social: var(--pin-social);
+  --color-pin-transit: var(--pin-transit);
+  --color-pin-utility: var(--pin-utility);
 
-    --pin-academic: #d91a4d;
-    --pin-food: #00995c;
-    --pin-social: #8e00e6;
-    --pin-transit: #d98200;
-    --pin-utility: #0088cc;
-
-    --neon-blue: #0066cc;
-    --neon-red: #d90040;
-	--neon-yellow: #d4a017;
-    --theme-sun: #d98200;
-    --theme-moon: #8899a6;
-
-    --status-success: #008844;
-    --status-warning: #d98200;
-    --status-danger: #cc0000;
-}
-
-.dark {
-	--bg-base: #0f1115;
-	--bg-panel: rgba(10, 10, 12, 0.95);
-	--bg-panel-hover: rgba(255, 255, 255, 0.1);
-
-	--text-primary: #ffffff;
-	--text-secondary: #8899a6;
-
-	--border-color: rgba(255, 255, 255, 0.15);
-	--shadow-glow: rgba(0, 229, 255, 0.2);
-
-    --pin-academic: #ff3366;
-    --pin-food: #00ff99;
-    --pin-social: #b026ff;
-    --pin-transit: #ffd700;
-    --pin-utility: #00e5ff;
-
-    --neon-blue: #00e5ff;
-    --neon-red: #ff0055;
-	--neon-yellow: #ffd700;
-    --theme-sun: #ffd700;
-    --theme-moon: #ffffff;
-
-    --status-success: #00ff99;
-    --status-warning: #ffcc00;
-    --status-danger: #ff4d4d;
+  --animate-pan: autoPan 20s linear infinite;
+  --animate-scroll-text: scrollText 5s ease-in-out infinite alternate;
+  --animate-slide-up: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  --animate-fade-in: fadeIn 0.2s ease-out forwards;
+  --animate-fade-up: fadeUp 0.3s ease-out forwards;
+  --animate-pulse-glow: pulseGlow 2s infinite alternate;
+  --animate-radar: radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-slide-right: slideRight 0.3s ease-out forwards;
+  --animate-spin-slow: spin 20s linear infinite;
 }
 
 body {
@@ -238,7 +224,6 @@ p {
 	display: none;
 }
 
-/* --- SIDE CONTROLS --- */
 .icon-button,
 .control-button {
     @apply w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-xl text-primary flex items-center justify-center cursor-pointer transition-transform duration-100 font-chakra active:scale-95;
