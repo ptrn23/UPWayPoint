@@ -94,7 +94,7 @@ export function TopBar({
                     transition: "opacity 0.3s ease",
                 }}
             >
-				<button type="button" onClick={onMenuClick} className="icon-button">
+				<button type="button" onClick={onMenuClick} className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0">
 					<svg
 						width="24"
 						height="24"
@@ -114,7 +114,7 @@ export function TopBar({
 				<div className="relative flex items-center">
 					<button
 						type="button"
-						className={`icon-button ${isTransitMenuOpen ? "bg-neon-blue/15 text-neon-blue border-neon-blue" : ""}`}
+						className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isTransitMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
 						title="Toggle Transit Routes"
 						onClick={() => setIsTransitMenuOpen(!isTransitMenuOpen)}
 					>
@@ -176,7 +176,7 @@ export function TopBar({
 				<div className="relative flex items-center">
 					<button
 						type="button"
-						className={`icon-button ${isZoneMenuOpen ? "bg-neon-blue/15 text-neon-blue border-neon-blue" : ""}`}
+						className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isZoneMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
 						title="Toggle Zone Layers"
 						onClick={() => {
 							setIsZoneMenuOpen(!isZoneMenuOpen);
@@ -288,7 +288,7 @@ export function TopBar({
                 <div className="flex flex-col gap-2">
 					<button
 						type="button"
-						className="icon-button profile-btn hidden md:flex"
+						className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 profile-btn hidden md:flex"
 						onClick={handleProfileClick}
 						title={sessionData?.user ? "Access Dashboard" : "System Login"}
 					>
@@ -311,7 +311,7 @@ export function TopBar({
 					<button
 						type="button"
 						onClick={toggleTheme}
-						className="icon-button theme-toggle hidden md:flex"
+						className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 theme-toggle hidden md:flex"
 					>
 						{theme === "dark" ? (
 							<svg
@@ -362,7 +362,7 @@ export function TopBar({
 				>
 					<button
 						type="button"
-						className="icon-button gps-btn"
+						className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 gps-btn"
 						onClick={handleCenterMap}
 						title="Center on Current Location"
 					>
@@ -381,7 +381,7 @@ export function TopBar({
 					<div className="flex flex-col bg-panel backdrop-blur-md border border-border-color rounded-xl overflow-hidden">
 						<button
 							type="button"
-							className="control-button zoom-in"
+							className="w-11 h-11 bg-transparent border-none text-primary cursor-pointer flex items-center justify-center transition-colors duration-200 hover:bg-panel-hover active:bg-border-color"
 							onClick={handleZoomIn}
 							title="Zoom In"
 						>
@@ -400,7 +400,7 @@ export function TopBar({
 						<div className="h-[1px] bg-border-color w-4/5 mx-auto"></div>
 						<button
 							type="button"
-							className="control-button zoom-out"
+							className="w-11 h-11 bg-transparent border-none text-primary cursor-pointer flex items-center justify-center transition-colors duration-200 hover:bg-panel-hover active:bg-border-color"
 							onClick={handleZoomOut}
 							title="Zoom Out"
 						>
