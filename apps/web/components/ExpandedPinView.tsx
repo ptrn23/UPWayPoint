@@ -255,41 +255,11 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 		return (
 			// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
 			// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-			<div className="modal-overlay" onClick={onClose}>
+			<div className="fixed inset-0 bg-border-color backdrop-blur-md z-[200] flex items-center justify-center p-6 animate-fade-in pointer-events-auto" onClick={onClose}>
 				<div
-					className="modal-content"
-					style={{
-						borderTop: "3px solid black",
-						animation:
-							"slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), pulse 1s ease-in-out infinite",
-						minHeight: "156px",
-					}}
+					className="w-full max-w-[500px] h-[70vh] min-h-[156px] bg-base border border-border-color border-t-4 rounded-[24px] shadow-[0_30px_60px_var(--border-color)] animate-[slideUp_0.4s_cubic-bezier(0.175,0.885,0.32,1.275),pulse_1s_ease-in-out_infinite]"
+					style={{ borderTopColor: "black" }}
 				></div>
-				<style jsx>{`
-            .modal-overlay {
-                position: fixed; inset: 0; 
-                background: var(--border-color); backdrop-filter: blur(8px);
-                z-index: 200; display: flex; align-items: center; justify-content: center;
-                padding: 24px; animation: fadeIn 0.2s ease-out; pointer-events: auto;
-            }
-
-            .modal-content {
-                background: var(--bg-base);
-                border: 1px solid var(--border-color);
-                border-top: 4px solid ${color}; 
-                border-radius: 24px;
-                width: 100%; 
-                max-width: 500px; 
-                height: 70vh; 
-                display: flex; 
-                flex-direction: column;
-                box-shadow: 0 30px 60px var(--border-color);
-                animation: scalePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                overflow: hidden; 
-                position: relative;
-                padding: 0; 
-            }
-      `}</style>
 			</div>
 		);
 
