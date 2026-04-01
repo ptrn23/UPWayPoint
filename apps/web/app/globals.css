@@ -14,6 +14,8 @@
   --status-success: #008844;
   --status-warning: #d98200;
   --status-danger: #cc0000;
+  --theme-sun: #d98200;
+  --theme-moon: #8899a6;
   --pin-academic: #d91a4d;
   --pin-food: #00995c;
   --pin-social: #8e00e6;
@@ -35,6 +37,8 @@
   --status-success: #00ff99;
   --status-warning: #ffcc00;
   --status-danger: #ff4d4d;
+  --theme-sun: #ffd700;
+  --theme-moon: #ffffff;
   --pin-academic: #ff3366;
   --pin-food: #00ff99;
   --pin-social: #b026ff;
@@ -134,6 +138,8 @@
   --font-chakra: "Chakra Petch", var(--font-chakra), sans-serif;
   --font-nunito: "Nunito", var(--font-nunito), sans-serif;
   --font-cubao: "Cubao Wide", sans-serif;
+  --font-cubao-narrow: "Cubao Wide", sans-serif;
+  --font-cubao-wide: "Cubao Wide", sans-serif;
 
   --color-base: var(--bg-base);
   --color-panel: var(--bg-panel);
@@ -141,7 +147,7 @@
   
   --color-primary: var(--text-primary);
   --color-secondary: var(--text-secondary);
-  --color-border: var(--border-color);
+  --color-border-color: var(--border-color);
   
   --color-neon-blue: var(--neon-blue);
   --color-neon-red: var(--neon-red);
@@ -150,6 +156,9 @@
   --color-status-success: var(--status-success);
   --color-status-warning: var(--status-warning);
   --color-status-danger: var(--status-danger);
+
+  --color-theme-sun: var(--theme-sun);
+  --color-theme-moon: var(--theme-moon);
 
   --color-pin-academic: var(--pin-academic);
   --color-pin-food: var(--pin-food);
