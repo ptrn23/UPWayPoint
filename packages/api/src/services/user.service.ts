@@ -1,9 +1,10 @@
 import type { UserRepository } from "@repo/db";
-import type { GetAllUsersOptions, GetUserCountOptions } from "@repo/db";
+import type { GetAllUsersOptions, GetUserCountOptions, Database } from "@repo/db";
 
 export function makeUserService(
   repositories: { user: UserRepository },
-  // db: Database,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  db: Database,
 ) {
   async function getById(id: string) {
     return await repositories.user.getById(id);

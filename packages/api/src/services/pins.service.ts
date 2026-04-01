@@ -1,6 +1,6 @@
 import type {
   CreatePin,
-  // Database,
+  Database,
   PinImagesRepository,
   PinRepository,
   PinTagsRepository,
@@ -20,7 +20,8 @@ export function makePinService(
     modification: ModificationRepository;
   },
   services: { comment: CommentService },
-  // db: Database,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  db: Database,
 ) {
   async function getAll() {
     return await repositories.pin.getAll();

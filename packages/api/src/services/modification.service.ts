@@ -1,8 +1,9 @@
-import type { ModificationRepository } from "@repo/db";
+import type { Database, ModificationRepository } from "@repo/db";
 
 export function makeModificationService(
   repositories: { modification: ModificationRepository },
-  // db: Database,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  db: Database,
 ) {
   async function getAllPending() {
     return await repositories.modification.getPending();
