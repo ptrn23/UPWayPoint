@@ -101,10 +101,10 @@ export default function Dashboard() {
 			)}
 
 			{/* --- SIDEBAR --- */}
-      <aside className={`w-[280px] bg-panel border-r border-border-color flex flex-col shrink-0 transition-transform duration-300 z-[100] max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:-translate-x-full ${isSidebarOpen ? "max-md:translate-x-0" : ""}`}>
-        <div className="h-[72px] flex items-center px-6 border-b border-border-color">
-          <h2 className="font-cubao-wide text-[18px] text-primary tracking-[0.1em] m-0">UP WAYPOINT</h2>
-        </div>
+			<aside className={`w-[280px] bg-panel border-r border-border-color flex flex-col shrink-0 transition-transform duration-300 z-[100] max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:-translate-x-full ${isSidebarOpen ? "max-md:translate-x-0" : ""}`}>
+				<div className="h-[72px] flex items-center px-6 border-b border-border-color">
+					<h2 className="font-cubao-wide text-[18px] text-primary tracking-[0.1em] m-0">UP WAYPOINT</h2>
+				</div>
 
 				<nav className="flex-1 py-6 px-4 overflow-y-auto custom-vertical-scrollbar">
 					<div className="flex flex-col gap-2">
@@ -118,10 +118,10 @@ export default function Dashboard() {
 								className="text-left px-4 py-3 bg-neon-blue/10 text-neon-blue border-l-3 border-neon-blue rounded-r-lg font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200"
 								onClick={goToAdmin}
 								style={{
-                  color: "var(--status-danger)",
-                  border: "1px solid color-mix(in srgb, var(--status-danger) 30%, transparent)",
-                  background: "color-mix(in srgb, var(--status-danger) 5%, transparent)",
-                }}
+									color: "var(--status-danger)",
+									border: "1px solid color-mix(in srgb, var(--status-danger) 30%, transparent)",
+									background: "color-mix(in srgb, var(--status-danger) 5%, transparent)",
+								}}
 							>
 								<div
 									style={{ display: "flex", alignItems: "center", gap: "8px" }}
@@ -259,25 +259,25 @@ export default function Dashboard() {
 								<div className="flex justify-between items-center border-b border-border-color pb-3">
 									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">YOUR PROFILE</h3>
 									<span className="bg-status-success/15 text-status-success border border-status-success px-2 py-1 rounded text-[10px] font-chakra font-bold tracking-[0.1em]">
-                    {data?.userRole === "admin" ? "ADMIN" : "REGULAR USER"}
-                  </span>
+										{data?.userRole === "admin" ? "ADMIN" : "REGULAR USER"}
+									</span>
 								</div>
 
 								<div className="flex-1 flex flex-col gap-6">
 									<div className="flex items-center gap-5">
 										<div className="w-[72px] h-[72px] rounded-full border-2 border-[color-mix(in_srgb,var(--neon-blue)_50%,transparent)] p-1 relative after:content-[''] after:absolute after:-inset-[6px] after:rounded-full after:border after:border-dashed after:border-[color-mix(in_srgb,var(--neon-blue)_30%,transparent)] after:animate-spin-slow">
 											<div className="w-full h-full rounded-full bg-neon-blue/15 text-neon-blue flex items-center justify-center font-cubao-wide text-[28px]">
-                        {data?.name ? data.name.charAt(0).toUpperCase() : "O"}
-                      </div>
+												{data?.name ? data.name.charAt(0).toUpperCase() : "O"}
+											</div>
 										</div>
 										<div className="flex flex-col gap-1">
-                      <span className="font-chakra text-[20px] font-bold text-primary tracking-[0.05em]">
-                        {data?.name || "UNKNOWN NAME"}
-                      </span>
-                      <span className="font-mono text-[12px] text-secondary">
-                        {(data as any)?.email || "UNKNOWN EMAIL"}
-                      </span>
-                    </div>
+											<span className="font-chakra text-[20px] font-bold text-primary tracking-[0.05em]">
+												{data?.name || "UNKNOWN NAME"}
+											</span>
+											<span className="font-mono text-[12px] text-secondary">
+												{(data as any)?.email || "UNKNOWN EMAIL"}
+											</span>
+										</div>
 									</div>
 
 									{/* <div className="bio-section">
@@ -366,29 +366,29 @@ export default function Dashboard() {
 									<div className="flex flex-col gap-2">
 										<div className="flex justify-between items-end">
 											<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">VERIFICATIONS</span>
-                      <span className="font-chakra text-[14px] font-extrabold text-status-success">{verificationRate}%</span>
+											<span className="font-chakra text-[14px] font-extrabold text-status-success">{verificationRate}%</span>
 										</div>
 										<div className="h-[6px] bg-panel-hover rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-status-success shadow-[0_0_10px_color-mix(in_srgb,var(--status-success)_50%,transparent)] rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
-                        style={{ width: `${verificationRate}%` }}
-                      ></div>
-                    </div>
+											<div
+												className="h-full bg-status-success shadow-[0_0_10px_color-mix(in_srgb,var(--status-success)_50%,transparent)] rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
+												style={{ width: `${verificationRate}%` }}
+											></div>
+										</div>
 										<div className="flex gap-3 font-chakra text-[10px] font-bold tracking-[0.05em]">
-                      <span className="text-status-success">{stats.verifiedPins} VERIFIED</span>
-                      <span className="text-status-warning">{stats.pendingPins} PENDING</span>
-                      <span className="text-status-danger">{stats.rejectedPins} REJECTED</span>
-                    </div>
+											<span className="text-status-success">{stats.verifiedPins} VERIFIED</span>
+											<span className="text-status-warning">{stats.pendingPins} PENDING</span>
+											<span className="text-status-danger">{stats.rejectedPins} REJECTED</span>
+										</div>
 									</div>
 
 									{/* Category Distribution */}
 									<div className="flex flex-col gap-3">
-                    <span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">CATEGORY DISTRIBUTION</span>
-                    <div className="flex flex-col gap-2.5">
+										<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">CATEGORY DISTRIBUTION</span>
+										<div className="flex flex-col gap-2.5">
 											{PIN_CATEGORIES.map((category) => {
 												const count =
 													stats.categoryBreakdown[
-														category.id as keyof typeof stats.categoryBreakdown
+													category.id as keyof typeof stats.categoryBreakdown
 													] || 0;
 												const percentage =
 													stats.totalPins && stats.totalPins > 0
@@ -398,19 +398,19 @@ export default function Dashboard() {
 												return (
 													<div key={category.id} className="flex flex-col gap-1">
 														<div className="flex justify-between font-chakra text-[11px] font-bold tracking-[0.1em]">
-                              <span style={{ color: category.color }}>{category.label}</span>
-                              <span className="text-primary font-nunito">{count}</span>
-                            </div>
+															<span style={{ color: category.color }}>{category.label}</span>
+															<span className="text-primary font-nunito">{count}</span>
+														</div>
 														<div className="h-1 bg-panel-hover rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
-                              style={{
-                                width: `${percentage}%`,
-                                backgroundColor: category.color,
-                                boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`,
-                              }}
-                            ></div>
-                          </div>
+															<div
+																className="h-full rounded-full transition-all duration-1000 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
+																style={{
+																	width: `${percentage}%`,
+																	backgroundColor: category.color,
+																	boxShadow: `0 0 10px color-mix(in srgb, ${category.color} 50%, transparent)`,
+																}}
+															></div>
+														</div>
 													</div>
 												);
 											})}
@@ -427,7 +427,7 @@ export default function Dashboard() {
 									</span>
 								</div>
 								<div className="flex-1 flex flex-col">
-                  <div className="flex flex-col gap-3">
+									<div className="flex flex-col gap-3">
 										{stats.pendingList?.map((pin) => {
 											const color = getPinColor(
 												pin.pinTags?.[0]?.tag.title || "",
@@ -435,42 +435,24 @@ export default function Dashboard() {
 											return (
 												<div key={pin.id} className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]">
 													<div className="flex items-center gap-4">
-                            <div 
-                              className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
-                              style={{ borderColor: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
-                            >
-                              <span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
+														<div
+															className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
+															style={{ borderColor: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
+														>
+															<span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
 																{pin.title.charAt(0).toUpperCase()}
 															</span>
 														</div>
 
 														<div className="flex flex-col gap-1">
-                              <span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{pin.title}</span>
-                              <span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
-                                {pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
-                              </span>
-                            </div>
+															<span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{pin.title}</span>
+															<span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
+																{pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
+															</span>
+														</div>
 													</div>
 
-													<Link
-														className="locate-btn"
-														style={{
-															background: "transparent",
-															border: "1px solid var(--border-color)",
-															borderRadius: "8px",
-															width: "36px",
-															height: "36px",
-															display: "flex",
-															alignItems: "center",
-															justifyContent: "center",
-															color: "var(--text-secondary)",
-															cursor: "pointer",
-															transition: "all 0.2s",
-															flexShrink: "0",
-														}}
-														href={`/?pin=${pin.id}`}
-														target="_blank"
-													>
+													<Link className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95" href={`/?pin=${pin.id}`} target="_blank">
 														<svg
 															width="18"
 															height="18"
@@ -497,7 +479,7 @@ export default function Dashboard() {
 									</span>
 								</div>
 								<div className="flex-1 flex flex-col">
-                  <div className="flex flex-col gap-3">
+									<div className="flex flex-col gap-3">
 										{stats.recentList?.map((pin) => {
 											const color = getPinColor(
 												pin.pinTags?.[0]?.tag.title || "",
@@ -505,42 +487,24 @@ export default function Dashboard() {
 											return (
 												<div key={pin.id} className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]">
 													<div className="flex items-center gap-4">
-                            <div 
-                              className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
-                              style={{ borderColor: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
-                            >
-                              <span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
+														<div
+															className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
+															style={{ borderColor: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
+														>
+															<span className="-rotate-45 font-cubao-wide text-[14px]" style={{ color }}>
 																{pin.title.charAt(0).toUpperCase()}
 															</span>
 														</div>
 
 														<div className="flex flex-col gap-1">
-                              <span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{pin.title}</span>
-                              <span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
-                                {pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
-                              </span>
-                            </div>
+															<span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">{pin.title}</span>
+															<span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
+																{pin.latitude.toFixed(4)}, {pin.longitude.toFixed(4)}
+															</span>
+														</div>
 													</div>
 
-													<Link
-														className="locate-btn"
-														style={{
-															background: "transparent",
-															border: "1px solid var(--border-color)",
-															borderRadius: "8px",
-															width: "36px",
-															height: "36px",
-															display: "flex",
-															alignItems: "center",
-															justifyContent: "center",
-															color: "var(--text-secondary)",
-															cursor: "pointer",
-															transition: "all 0.2s",
-															flexShrink: "0",
-														}}
-														href={`/?pin=${pin.id}`}
-														target="_blank"
-													>
+													<Link className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95" href={`/?pin=${pin.id}`} target="_blank">
 														<svg
 															width="18"
 															height="18"
