@@ -31,37 +31,16 @@ export function HeadsUpDisplay({
 	const isLoggedIn = useMemo(() => !!sessionData?.user?.id, [sessionData]);
     
 	return (
-		<div
-			style={{
-				position: "absolute",
-				top: 0,
-				left: 0,
-				width: "100%",
-				height: "100%",
-				pointerEvents: "none",
-				zIndex: 90, // lower than TopBar if needed
-				display: "flex",
-				flexDirection: "column",
-				justifyContent: "flex-end",
-			}}
-		>
+		<div className="absolute inset-0 w-full h-full pointer-events-none z-[90] flex flex-col justify-end">
+			
 			{/* BOTTOM SECTION */}
-			<div
-				style={{
-					padding: "20px",
-					pointerEvents: "auto",
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-					gap: "10px",
-					marginBottom: "20px",
-				}}
-			>
+			<div className="p-5 pointer-events-auto flex flex-col items-center gap-2.5 mb-5">
+				
 				{/* ADD PIN BUTTON (Only if NO pin is selected AND we are logged in) */}
 				{!selectedPinId && isLoggedIn && (
 					<button
 						type="button"
-						className="add-pin-btn"
+						className="w-16 h-16 flex items-center justify-center rounded-full bg-panel border-2 border-neon-blue text-neon-blue shadow-[0_0_20px_var(--shadow-glow),inset_0_0_10px_var(--shadow-glow)] cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] animate-pulse-glow hover:bg-neon-blue hover:text-base hover:scale-110 hover:shadow-[0_0_30px_var(--shadow-glow),inset_0_0_15px_var(--shadow-glow)] active:scale-95"
 						onClick={onAddPinClick}
 						title="Deploy New Waypoint"
 					>
@@ -103,38 +82,6 @@ export function HeadsUpDisplay({
 					/>
 				)}
 			</div>
-
-			{/* TACTICAL BUTTON STYLING */}
-			<style jsx>{`
-        .add-pin-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 64px;
-          height: 64px;
-          border-radius: 50%;
-          background: var(--bg-panel);
-          border: 2px solid var(--neon-blue);
-          color: var(--neon-blue);
-          box-shadow: 0 0 20px var(--shadow-glow), inset 0 0 10px var(--shadow-glow);
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          animation: pulseGlow 2s infinite alternate;
-        }
-
-        .add-pin-btn:hover {
-          background: var(--neon-blue);
-          box-shadow: 0 0 30px var(--shadow-glow), inset 0 0 15px var(--shadow-glow);
-          transform: scale(1.1);
-          color: var(--bg-base); 
-        }
-
-        .add-pin-btn:active {
-          transform: scale(0.95);
-        }
-
-        
-      `}</style>
 		</div>
 	);
 }
