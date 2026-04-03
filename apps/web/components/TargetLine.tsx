@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useMap } from "@vis.gl/react-google-maps";
 
 interface TargetLineProps {
@@ -12,20 +12,29 @@ interface TargetLineProps {
 export function TargetLine({
   start,
   end,
-  color = "var(--neon-blue)",
+  color = "--neon-blue",
 }: TargetLineProps) {
   const map = useMap();
   const polylineRef = useRef<google.maps.Polyline | null>(null);
   const animationRef = useRef<number>(0);
+  const [resolvedColor, setResolvedColor] = useState("#00e5ff");
 
   useEffect(() => {
     if (!map || !window.google) return;
+
+    const element = document.documentElement;
+    const styles = getComputedStyle(element);
+    const hexCode = styles.getPropertyValue(color).trim();
+
+    if (hexCode) {
+      setResolvedColor(hexCode);
+    }
 
     const lineSymbol = {
       path: "M 0,-1 0,1",
       strokeOpacity: 1,
       scale: 3,
-      strokeColor: color,
+      strokeColor: resolvedColor,
     };
 
     const polyline = new window.google.maps.Polyline({
@@ -64,7 +73,7 @@ export function TargetLine({
         polylineRef.current.setMap(null);
       }
     };
-  }, [map, start, end, color]);
+  }, [map, start, end, color, resolvedColor]);
 
   return null;
 }

@@ -215,7 +215,7 @@ export default function Home() {
             <TargetLine
               start={mockUserLocation}
               end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
-              color="var(--neon-blue)"
+              color="--neon-blue"
             />
           )}
 
