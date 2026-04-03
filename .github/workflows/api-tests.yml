@@ -4,7 +4,7 @@ name: API Tests on Supabase DB
 
 on:
   workflow_dispatch:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -13,7 +13,7 @@ permissions:
 jobs:
   api-tests:
     runs-on: ubuntu-latest
-    
+
     env: # makes env vars available to all steps
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
@@ -32,11 +32,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: pnpm install --frozen-lockfile
 
-
       - name: Create .env for db package
         run: echo "DATABASE_URL=${DATABASE_URL}" > packages/db/.env
       - name: Create .env for api package
         run: echo "DATABASE_URL=${DATABASE_URL}" > packages/api/.env
-
 
       - run: pnpm run test:api

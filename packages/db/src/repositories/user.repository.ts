@@ -33,8 +33,7 @@ export function makeUserRepository(db: Database) {
       if (options.search) {
         conditions.push(ilike(user.name, `%${options.search}%`));
       }
-      whereClause =
-        conditions.length > 0 ? and(...conditions) : undefined;
+      whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     }
 
     const query = await db

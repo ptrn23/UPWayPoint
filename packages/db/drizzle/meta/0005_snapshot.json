@@ -110,12 +110,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -187,12 +183,8 @@
           "name": "comment_owner_id_user_id_fk",
           "tableFrom": "comment",
           "tableTo": "user",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -200,12 +192,8 @@
           "name": "comment_pin_id_pin_id_fk",
           "tableFrom": "comment",
           "tableTo": "pin",
-          "columnsFrom": [
-            "pin_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pin_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -277,12 +265,8 @@
           "name": "modification_pin_id_pin_id_fk",
           "tableFrom": "modification",
           "tableTo": "pin",
-          "columnsFrom": [
-            "pin_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pin_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -290,12 +274,8 @@
           "name": "modification_user_id_user_id_fk",
           "tableFrom": "modification",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -303,12 +283,8 @@
           "name": "modification_reviewed_by_user_id_fk",
           "tableFrom": "modification",
           "tableTo": "user",
-          "columnsFrom": [
-            "reviewed_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reviewed_by"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -387,12 +363,8 @@
           "name": "pin_owner_id_user_id_fk",
           "tableFrom": "pin",
           "tableTo": "user",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -439,12 +411,8 @@
           "name": "pin_images_pin_id_pin_id_fk",
           "tableFrom": "pin_images",
           "tableTo": "pin",
-          "columnsFrom": [
-            "pin_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pin_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -492,12 +460,8 @@
           "name": "pin_tags_pin_id_pin_id_fk",
           "tableFrom": "pin_tags",
           "tableTo": "pin",
-          "columnsFrom": [
-            "pin_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pin_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -505,12 +469,8 @@
           "name": "pin_tags_tag_id_tag_id_fk",
           "tableFrom": "pin_tags",
           "tableTo": "tag",
-          "columnsFrom": [
-            "tag_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tag_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -518,10 +478,7 @@
       "compositePrimaryKeys": {
         "pin_tags_pin_id_tag_id_pk": {
           "name": "pin_tags_pin_id_tag_id_pk",
-          "columns": [
-            "pin_id",
-            "tag_id"
-          ]
+          "columns": ["pin_id", "tag_id"]
         }
       },
       "uniqueConstraints": {},
@@ -605,12 +562,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -620,9 +573,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -740,9 +691,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -821,10 +770,7 @@
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": [
-        "user",
-        "admin"
-      ]
+      "values": ["user", "admin"]
     }
   },
   "schemas": {},

@@ -235,7 +235,8 @@ export function TopBar({
       </div>
 
       {/* === CENTER ZONE (Search + Filters) === */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-20px)] flex flex-col items-stretch gap-2 pointer-events-none z-[10]"
+      <div
+        className="absolute top-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-20px)] flex flex-col items-stretch gap-2 pointer-events-none z-[10]"
         style={{
           opacity: hideControls ? 0 : 1,
           pointerEvents: hideControls ? "none" : "auto",
@@ -295,7 +296,8 @@ export function TopBar({
       {/* === RIGHT ZONE (Full Height Tool Stack) === */}
       <div className="absolute top-2 right-2 bottom-6 flex flex-col justify-between w-11 z-20 pointer-events-auto">
         {/* Top Group */}
-        <div className="flex flex-col gap-2"
+        <div
+          className="flex flex-col gap-2"
           style={{
             opacity: hideControls ? 0 : 1,
             pointerEvents: hideControls ? "none" : "auto",

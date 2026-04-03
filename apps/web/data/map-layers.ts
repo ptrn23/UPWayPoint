@@ -33,7 +33,7 @@ export interface CampusZone {
 }
 
 const parseGeoJson = (
-  coords: number[][] | number[][][]
+  coords: number[][] | number[][][],
 ): { lat: number; lng: number }[] => {
   if (!coords || coords.length === 0) return [];
 
@@ -46,7 +46,7 @@ const parseGeoJson = (
   if (!points) return [];
 
   return points.map((point) => ({
-    lat: point[1] ?? 0, 
+    lat: point[1] ?? 0,
     lng: point[0] ?? 0,
   }));
 };

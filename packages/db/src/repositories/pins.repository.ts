@@ -1,6 +1,6 @@
 import { eq, desc, ilike, and, count } from "drizzle-orm";
 import type { Database } from "../db/database";
-import { pin, } from "../db/schema";
+import { pin } from "../db/schema";
 import type {
   CreatePin,
   Pin,
