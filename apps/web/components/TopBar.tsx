@@ -84,7 +84,7 @@ export function TopBar({
   ];
 
   return (
-    <div className="absolute inset-0 pointer-events-none flex justify-between p-2 z-[100] overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none flex justify-between p-2 z-[50] overflow-hidden">
       {/* === LEFT ZONE === */}
       <div
         className="absolute left-2 z-20 pointer-events-auto bottom-6 top-auto flex flex-col-reverse gap-2 md:top-2 md:bottom-auto md:flex-col"
@@ -235,7 +235,13 @@ export function TopBar({
       </div>
 
       {/* === CENTER ZONE (Search + Filters) === */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-20px)] flex flex-col items-stretch gap-2 pointer-events-none z-10">
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-20px)] flex flex-col items-stretch gap-2 pointer-events-none z-[10]"
+        style={{
+          opacity: hideControls ? 0 : 1,
+          pointerEvents: hideControls ? "none" : "auto",
+          transition: "opacity 0.3s ease",
+        }}
+      >
         <div className="relative w-full mx-auto pointer-events-auto flex items-center transition-transform duration-200">
           <input
             type="text"

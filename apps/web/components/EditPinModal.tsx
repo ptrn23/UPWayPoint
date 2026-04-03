@@ -98,7 +98,7 @@ export function EditPinModal({ onSave, onCancel, pin }: IEditPinModalProps) {
   }, [formMethods, pin.description, pin.pinTags, pin.title]);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-border-color backdrop-blur-md flex items-center justify-center z-[200] p-5">
+    <div className="fixed inset-0 w-screen h-screen bg-border-color backdrop-blur-md flex items-center justify-center z-[150] p-5">
       <div className="w-full max-w-[400px] p-6 animate-slide-up tactical-panel flex flex-col gap-5">
         <div className="flex items-center gap-3 border-b border-border-color pb-4">
           <svg

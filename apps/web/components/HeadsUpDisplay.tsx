@@ -26,7 +26,7 @@ export function HeadsUpDisplay({
   const isLoggedIn = useMemo(() => !!sessionData?.user?.id, [sessionData]);
 
   return (
-    <div className="absolute inset-0 w-full h-full pointer-events-none z-[90] flex flex-col justify-end">
+    <div className="absolute inset-0 w-full h-full pointer-events-none z-[15] flex flex-col justify-end">
       {/* BOTTOM SECTION */}
       <div className="p-5 pointer-events-auto flex flex-col items-center gap-2.5 mb-5">
         {/* ADD PIN BUTTON (Only if NO pin is selected AND we are logged in) */}

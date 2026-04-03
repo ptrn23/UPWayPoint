@@ -281,7 +281,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
     // biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
-      className="fixed inset-0 bg-border-color backdrop-blur-md z-[200] flex items-center justify-center p-6 animate-fade-in pointer-events-auto"
+      className="fixed inset-0 bg-border-color backdrop-blur-md z-[100] flex items-center justify-center p-6 animate-fade-in pointer-events-auto"
       onClick={onClose}
     >
       {/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
