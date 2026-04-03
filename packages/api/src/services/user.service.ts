@@ -1,5 +1,9 @@
 import type { UserRepository } from "@repo/db";
-import type { GetAllUsersOptions, GetUserCountOptions, Database } from "@repo/db";
+import type {
+  GetAllUsersOptions,
+  GetUserCountOptions,
+  Database,
+} from "@repo/db";
 
 export function makeUserService(
   repositories: { user: UserRepository },

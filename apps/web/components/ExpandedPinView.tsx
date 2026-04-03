@@ -93,26 +93,28 @@ const CommentNode = ({
         ) : (
           <form
             onSubmit={formMethods.handleSubmit(onSubmit)}
-            className="flex gap-2 w-full items-center mt-2"
+            className="flex flex-col w-full gap-3"
           >
             <input
               {...formMethods.register("message")}
               placeholder="Write a reply..."
-              className="flex-1 bg-base border border-border-color rounded-md py-2 px-3 text-primary font-nunito text-[13px] outline-none focus:border-neon-blue"
+              className="w-full rounded-md border p-2 flex-1 bg-base border border-border-color rounded-md py-2 px-3 text-primary font-nunito text-[13px] outline-none focus:border-neon-blue"
             />
-            <button
-              type="submit"
-              className="tactical-button-primary px-3 py-1.5 text-[11px] rounded-md"
-            >
-              Send
-            </button>
-            <button
-              type="button"
-              className="tactical-button px-3 py-1.5 text-[11px] rounded-md"
-              onClick={() => setIsReplying(false)}
-            >
-              Cancel
-            </button>
+            <div className="flex w-full justify-end gap-2">
+              <button
+                type="submit"
+                className="tactical-button-primary px-3 py-1.5 text-[11px] rounded-md"
+              >
+                SEND
+              </button>
+              <button
+                type="button"
+                className="tactical-button px-3 py-1.5 text-[11px] rounded-md"
+                onClick={() => setIsReplying(false)}
+              >
+                CANCEL
+              </button>
+            </div>
           </form>
         )}
       </div>
@@ -279,7 +281,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
     // biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
-      className="fixed inset-0 bg-border-color backdrop-blur-md z-[200] flex items-center justify-center p-6 animate-fade-in pointer-events-auto"
+      className="fixed inset-0 bg-border-color backdrop-blur-md z-[100] flex items-center justify-center p-6 animate-fade-in pointer-events-auto"
       onClick={onClose}
     >
       {/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
@@ -527,26 +529,28 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
               ) : (
                 <form
                   onSubmit={formMethods.handleSubmit(onSubmit)}
-                  className="flex gap-2 w-full items-center mb-6"
+                  className="flex flex-col w-full gap-3"
                 >
                   <input
                     {...formMethods.register("message")}
                     placeholder="Write a comment..."
-                    className="flex-1 bg-base border border-border-color rounded-md py-2.5 px-3 text-primary font-nunito text-[13px] outline-none focus:border-neon-blue"
+                    className="w-full rounded-md border p-2 flex-1 bg-base border border-border-color rounded-md py-2.5 px-3 text-primary font-nunito text-[13px] outline-none focus:border-neon-blue"
                   />
-                  <button
-                    type="submit"
-                    className="tactical-button-primary px-4 py-2.5 text-[11px] rounded-md"
-                  >
-                    POST
-                  </button>
-                  <button
-                    type="button"
-                    className="tactical-button px-4 py-2.5 text-[11px] rounded-md"
-                    onClick={() => setIsReplying(false)}
-                  >
-                    CANCEL
-                  </button>
+                  <div className="flex w-full justify-end gap-2">
+                    <button
+                      type="submit"
+                      className="tactical-button-primary px-4 py-2.5 text-[11px] rounded-md"
+                    >
+                      POST
+                    </button>
+                    <button
+                      type="button"
+                      className="tactical-button px-4 py-2.5 text-[11px] rounded-md"
+                      onClick={() => setIsReplying(false)}
+                    >
+                      CANCEL
+                    </button>
+                  </div>
                 </form>
               )}
               <div>

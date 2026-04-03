@@ -43,7 +43,7 @@ export function PinDetailsCard({
 
   return (
     <div
-      className="p-6 w-full max-w-[400px] flex flex-col gap-4 bg-panel backdrop-blur-[20px] border border-border-color border-t-[3px] rounded-[20px] shadow-[0_20px_40px_var(--border-color)] animate-[slideUp_0.4s_cubic-bezier(0.175,0.885,0.32,1.275)]"
+      className="p-6 w-full z-[25] max-w-[400px] flex flex-col gap-4 bg-panel backdrop-blur-[20px] border border-border-color border-t-[3px] rounded-[20px] shadow-[0_20px_40px_var(--border-color)] animate-[slideUp_0.4s_cubic-bezier(0.175,0.885,0.32,1.275)]"
       style={{ borderTopColor: color }}
     >
       {/* HEADER */}
@@ -108,7 +108,7 @@ export function PinDetailsCard({
           )}
           onClick={onLockClick}
         >
-          {isLocked ? "TARGET LOCKED" : "LOCK TARGET"}
+          {isLocked ? "NAVIGATING..." : "NAVIGATE"}
         </button>
       </div>
     </div>

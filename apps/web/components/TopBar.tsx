@@ -84,7 +84,7 @@ export function TopBar({
   ];
 
   return (
-    <div className="absolute inset-0 pointer-events-none flex justify-between p-2 z-[100] overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none flex justify-between p-2 z-[50] overflow-hidden">
       {/* === LEFT ZONE === */}
       <div
         className="absolute left-2 z-20 pointer-events-auto bottom-6 top-auto flex flex-col-reverse gap-2 md:top-2 md:bottom-auto md:flex-col"
@@ -97,7 +97,7 @@ export function TopBar({
         <button
           type="button"
           onClick={onMenuClick}
-          className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0"
+          className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0"
         >
           <svg
             width="24"
@@ -118,7 +118,7 @@ export function TopBar({
         <div className="relative flex items-center">
           <button
             type="button"
-            className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isTransitMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
+            className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isTransitMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
             title="Toggle Transit Routes"
             onClick={() => setIsTransitMenuOpen(!isTransitMenuOpen)}
           >
@@ -180,7 +180,7 @@ export function TopBar({
         <div className="relative flex items-center">
           <button
             type="button"
-            className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isZoneMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
+            className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isZoneMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
             title="Toggle Zone Layers"
             onClick={() => {
               setIsZoneMenuOpen(!isZoneMenuOpen);
@@ -235,8 +235,15 @@ export function TopBar({
       </div>
 
       {/* === CENTER ZONE (Search + Filters) === */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-120px)] flex flex-col items-stretch gap-2 pointer-events-none z-10">
-        <div className="relative w-full mx-auto pointer-events-auto flex items-center transition-transform duration-200 focus-within:scale-105">
+      <div
+        className="absolute top-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-20px)] flex flex-col items-stretch gap-2 pointer-events-none z-[10]"
+        style={{
+          opacity: hideControls ? 0 : 1,
+          pointerEvents: hideControls ? "none" : "auto",
+          transition: "opacity 0.3s ease",
+        }}
+      >
+        <div className="relative w-full mx-auto pointer-events-auto flex items-center transition-transform duration-200">
           <input
             type="text"
             placeholder="Search..."
@@ -261,7 +268,7 @@ export function TopBar({
           </div>
         </div>
 
-        <div className="flex justify-center gap-2 w-full overflow-x-auto py-1 pointer-events-auto no-scrollbar">
+        <div className="flex justify-start gap-2 w-full overflow-x-auto py-1 pointer-events-auto no-scrollbar">
           {filters.map((filter) => {
             const color = getPinColor(filter);
             const isActive = activeFilter === filter;
@@ -289,10 +296,17 @@ export function TopBar({
       {/* === RIGHT ZONE (Full Height Tool Stack) === */}
       <div className="absolute top-2 right-2 bottom-6 flex flex-col justify-between w-11 z-20 pointer-events-auto">
         {/* Top Group */}
-        <div className="flex flex-col gap-2">
+        <div
+          className="flex flex-col gap-2"
+          style={{
+            opacity: hideControls ? 0 : 1,
+            pointerEvents: hideControls ? "none" : "auto",
+            transition: "opacity 0.3s ease",
+          }}
+        >
           <button
             type="button"
-            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 profile-btn hidden md:flex"
+            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 profile-btn hidden md:flex"
             onClick={handleProfileClick}
             title={sessionData?.user ? "Access Dashboard" : "System Login"}
           >
@@ -313,7 +327,7 @@ export function TopBar({
           <button
             type="button"
             onClick={toggleTheme}
-            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 theme-toggle hidden md:flex"
+            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 theme-toggle hidden md:flex"
           >
             {theme === "dark" ? (
               <svg
@@ -364,7 +378,7 @@ export function TopBar({
         >
           <button
             type="button"
-            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 gps-btn"
+            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 gps-btn"
             onClick={handleCenterMap}
             title="Center on Current Location"
           >
