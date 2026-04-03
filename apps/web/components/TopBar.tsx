@@ -261,7 +261,7 @@ export function TopBar({
           </div>
         </div>
 
-        <div className="flex justify-center gap-2 w-full overflow-x-auto py-1 pointer-events-auto no-scrollbar">
+        <div className="flex justify-start gap-2 w-full overflow-x-auto py-1 pointer-events-auto no-scrollbar">
           {filters.map((filter) => {
             const color = getPinColor(filter);
             const isActive = activeFilter === filter;
