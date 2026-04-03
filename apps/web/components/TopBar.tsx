@@ -97,7 +97,7 @@ export function TopBar({
         <button
           type="button"
           onClick={onMenuClick}
-          className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0"
+          className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0"
         >
           <svg
             width="24"
@@ -118,7 +118,7 @@ export function TopBar({
         <div className="relative flex items-center">
           <button
             type="button"
-            className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isTransitMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
+            className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isTransitMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
             title="Toggle Transit Routes"
             onClick={() => setIsTransitMenuOpen(!isTransitMenuOpen)}
           >
@@ -180,7 +180,7 @@ export function TopBar({
         <div className="relative flex items-center">
           <button
             type="button"
-            className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isZoneMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
+            className={`w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 ${isZoneMenuOpen ? "!bg-neon-blue/15 !text-neon-blue !border-neon-blue" : ""}`}
             title="Toggle Zone Layers"
             onClick={() => {
               setIsZoneMenuOpen(!isZoneMenuOpen);
@@ -292,7 +292,7 @@ export function TopBar({
         <div className="flex flex-col gap-2">
           <button
             type="button"
-            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 profile-btn hidden md:flex"
+            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 profile-btn hidden md:flex"
             onClick={handleProfileClick}
             title={sessionData?.user ? "Access Dashboard" : "System Login"}
           >
@@ -313,7 +313,7 @@ export function TopBar({
           <button
             type="button"
             onClick={toggleTheme}
-            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 theme-toggle hidden md:flex"
+            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 theme-toggle hidden md:flex"
           >
             {theme === "dark" ? (
               <svg
@@ -364,7 +364,7 @@ export function TopBar({
         >
           <button
             type="button"
-            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] shadow-[0_4px_12px_var(--border-color)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 gps-btn"
+            className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 gps-btn"
             onClick={handleCenterMap}
             title="Center on Current Location"
           >
