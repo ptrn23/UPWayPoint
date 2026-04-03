@@ -108,7 +108,7 @@ export function PinDetailsCard({
           )}
           onClick={onLockClick}
         >
-          {isLocked ? "TARGET LOCKED" : "LOCK TARGET"}
+          {isLocked ? "NAVIGATING..." : "NAVIGATE"}
         </button>
       </div>
     </div>
