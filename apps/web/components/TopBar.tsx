@@ -295,7 +295,13 @@ export function TopBar({
       {/* === RIGHT ZONE (Full Height Tool Stack) === */}
       <div className="absolute top-2 right-2 bottom-6 flex flex-col justify-between w-11 z-20 pointer-events-auto">
         {/* Top Group */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2"
+          style={{
+            opacity: hideControls ? 0 : 1,
+            pointerEvents: hideControls ? "none" : "auto",
+            transition: "opacity 0.3s ease",
+          }}
+        >
           <button
             type="button"
             className="w-11 h-11 bg-panel backdrop-blur-md border border-border-color rounded-[14px] flex justify-center items-center text-primary cursor-pointer transition-all duration-[250ms] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover hover:scale-105 active:scale-95 shrink-0 profile-btn hidden md:flex"
