@@ -7,8 +7,9 @@ import { trpc } from "@/lib/trpc";
 import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
 import { useTheme } from "@/lib/ThemeContext";
 import Link from "next/link";
-import { PinDiffType } from "@/types/pins";
+import type { PinDiffType } from "@/types/pins";
 import { DiffsModal } from "@/components/DiffsModal";
+import { PinRouterOutputs } from "@repo/api";
 
 export default function AdminDashboard() {
 	const router = useRouter();
@@ -43,19 +44,6 @@ export default function AdminDashboard() {
 			utils.modification.getPending.invalidate();
 		},
 	});
-	const applyMod = trpc.pin.applyUpdate.useMutation({
-		onSuccess: () => {
-			utils.modification.getPending.invalidate();
-			utils.pin.getAll.invalidate();
-			utils.pin.getAllAdmin.invalidate();
-			utils.pin.getStatusCounts.invalidate();
-		},
-	});
-	const rejectMod = trpc.pin.rejectUpdate.useMutation({
-		onSuccess: () => {
-			utils.modification.getPending.invalidate();
-		},
-	});
 
 	const deletePin = trpc.pin.adminDelete.useMutation({
 		onSuccess: () => {
@@ -67,7 +55,11 @@ export default function AdminDashboard() {
 	const { theme, toggleTheme } = useTheme();
 
 	const [isDeletingPin, setIsDeletingPin] = useState(false);
+	const [modId, setModId] = useState<string>("");
 	const [diffs, setDiffs] = useState<PinDiffType | undefined>();
+	const [current, setCurrent] = useState<
+		PinRouterOutputs["getSimpleById"] | undefined
+	>();
 
 	const scrollToSection = (sectionId: string) => {
 		const element = document.getElementById(sectionId);
@@ -744,6 +736,14 @@ export default function AdminDashboard() {
 											</h3>
 										</div>
 
+										{diffs && (
+											<DiffsModal
+												onCancel={() => setDiffs(undefined)}
+												current={current}
+												diffs={diffs}
+												modId={modId}
+											/>
+										)}
 										<div className="flex-1 flex flex-col">
 											<div className="flex flex-col gap-3">
 												{pendingModifications?.map((mod) => {
@@ -778,14 +778,23 @@ export default function AdminDashboard() {
 																	</span>
 																</div>
 															</div>
-															{diffs && (
-																<DiffsModal
-																	onCancel={() => setDiffs(undefined)}
-																	current={mod.pin}
-																	diffs={diffs}
-																/>
-															)}
 															<div className="flex items-center gap-2">
+																<Link
+																	className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95"
+																	href={`/?pin=${mod.pin.id}`}
+																	target="_blank"
+																>
+																	<svg
+																		width="18"
+																		height="18"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2.5"
+																	>
+																		<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+																	</svg>
+																</Link>
 																<button
 																	type="button"
 																	className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95"
@@ -795,6 +804,8 @@ export default function AdminDashboard() {
 																				? (mod.after as PinDiffType)
 																				: undefined,
 																		);
+																		setCurrent(mod.pin);
+																		setModId(mod.id);
 																	}}
 																>
 																	<svg
@@ -813,67 +824,6 @@ export default function AdminDashboard() {
 																		<path d="M9 10h6" />
 																		<path d="M12 13V7" />
 																		<path d="M9 17h6" />
-																	</svg>
-																</button>
-																<Link
-																	className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95"
-																	href={`/?pin=${mod.pin.id}`}
-																	target="_blank"
-																>
-																	<svg
-																		width="18"
-																		height="18"
-																		viewBox="0 0 24 24"
-																		fill="none"
-																		stroke="currentColor"
-																		strokeWidth="2.5"
-																	>
-																		<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-																	</svg>
-																</Link>
-
-																<button
-																	type="button"
-																	className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-danger/15 hover:border-status-danger hover:text-status-danger hover:scale-105 active:scale-95"
-																	title="Reject Pin"
-																	onClick={() =>
-																		rejectMod.mutate({ id: mod.id })
-																	}
-																>
-																	<svg
-																		width="18"
-																		height="18"
-																		viewBox="0 0 24 24"
-																		fill="none"
-																		stroke="currentColor"
-																		strokeWidth="2.5"
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																	>
-																		<line x1="18" y1="6" x2="6" y2="18"></line>
-																		<line x1="6" y1="6" x2="18" y2="18"></line>
-																	</svg>
-																</button>
-
-																<button
-																	type="button"
-																	className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-status-success/15 hover:border-status-success hover:text-status-success hover:scale-105 active:scale-95"
-																	title="Verify & Approve Pin"
-																	onClick={() =>
-																		applyMod.mutate({ id: mod.id })
-																	}
-																>
-																	<svg
-																		width="18"
-																		height="18"
-																		viewBox="0 0 24 24"
-																		fill="none"
-																		stroke="currentColor"
-																		strokeWidth="2.5"
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																	>
-																		<polyline points="20 6 9 17 4 12"></polyline>
 																	</svg>
 																</button>
 															</div>
