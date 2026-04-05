@@ -8,9 +8,8 @@ import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
 import { useTheme } from "@/lib/ThemeContext";
 import Link from "next/link";
 import { DiffsModal } from "@/components/DiffsModal";
-import type { PinRouterOutputs } from "@repo/api";
+import type { ModificationRouterOutputs, PinRouterOutputs } from "@repo/api";
 import type { PinDiffType } from "@/types/pins";
-import { ModificationRouterOutputs } from "../../../../packages/api/src/routers/modification.router";
 
 export default function Dashboard() {
 	const [mod, setMod] =

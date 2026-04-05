@@ -16,10 +16,15 @@ export function makeModificationService(
 		return await repositories.modification.deleteModification(modId);
 	}
 
+	async function getByPinId(pinId: string) {
+		return await repositories.modification.getByPinId(pinId);
+	}
+
 	return {
 		getAllPending,
 		getAllPendingByUser,
 		userCancel,
+		getByPinId,
 	};
 }
 

@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import type { Database } from "../db/database";
-import { modification } from "../db/schema";
+import { modification, pinTags } from "../db/schema";
 import type { Modification, CreateModification } from "../db/types";
 
 export function makeModificationRepository(db: Database) {
@@ -36,8 +36,9 @@ export function makeModificationRepository(db: Database) {
 	async function getByPinId(id: string) {
 		const query = await db.query.modification.findMany({
 			where: and(eq(modification.pinId, id)),
-			orderBy: desc(modification.createdAt),
+			orderBy: desc(modification.reviewedAt),
 			with: {
+				pin: { with: { pinTags: { with: { tag: true } } } },
 				user: true,
 				reviewer: true,
 			},
