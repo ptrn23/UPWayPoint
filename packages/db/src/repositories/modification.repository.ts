@@ -48,6 +48,25 @@ export function makeModificationRepository(db: Database) {
 		});
 	}
 
+	async function getByUserId(id: string) {
+		const query = await db.query.modification.findMany({
+			where: and(eq(modification.userId, id)),
+			orderBy: desc(modification.createdAt),
+			with: {
+				pin: {
+					with: {
+						pinTags: { with: { tag: true } },
+					},
+				},
+				reviewer: true,
+			},
+		});
+
+		return query.map((q) => {
+			return { ...q, reviewer: q.reviewer?.name };
+		});
+	}
+
 	async function getByUserPinId(userId: string, pinId: string) {
 		return await db.query.modification.findFirst({
 			where: and(
@@ -72,6 +91,14 @@ export function makeModificationRepository(db: Database) {
 			.where(eq(modification.id, id));
 	}
 
+	async function deleteModification(modId: string) {
+		const d = await db
+			.delete(modification)
+			.where(eq(modification.id, modId))
+			.returning();
+		return !!d;
+	}
+
 	return {
 		create,
 		getPending,
@@ -80,6 +107,8 @@ export function makeModificationRepository(db: Database) {
 		rejectModification,
 		getByUserPinId,
 		getByPinId,
+		getByUserId,
+		deleteModification,
 	};
 }
 

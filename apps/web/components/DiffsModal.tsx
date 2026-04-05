@@ -10,6 +10,7 @@ interface IDiffsModal {
 	diffs: PinDiffType;
 	onCancel: () => void;
 	modId: string;
+	isUser?: boolean;
 }
 
 type DiffChunk =
@@ -57,7 +58,13 @@ function diffStrings(before: string, after: string): DiffChunk[] {
 	return chunks.reverse();
 }
 
-export function DiffsModal({ current, diffs, onCancel, modId }: IDiffsModal) {
+export function DiffsModal({
+	current,
+	diffs,
+	onCancel,
+	modId,
+	isUser = false,
+}: IDiffsModal) {
 	const utils = trpc.useUtils();
 
 	const applyMod = trpc.pin.applyUpdate.useMutation({
@@ -72,6 +79,15 @@ export function DiffsModal({ current, diffs, onCancel, modId }: IDiffsModal) {
 	const rejectMod = trpc.pin.rejectUpdate.useMutation({
 		onSuccess: () => {
 			utils.modification.getPending.invalidate();
+			utils.modification.getPendingByUser.invalidate();
+			onCancel();
+		},
+	});
+
+	const userCancelMod = trpc.modification.userCancelMod.useMutation({
+		onSuccess: () => {
+			utils.modification.getPending.invalidate();
+			utils.modification.getPendingByUser.invalidate();
 			onCancel();
 		},
 	});
@@ -316,17 +332,25 @@ export function DiffsModal({ current, diffs, onCancel, modId }: IDiffsModal) {
 						<button
 							type="button"
 							className="bg-status-danger/15 w-full sm:w-fit px-8 border border-status-danger text-status-danger shadow-[0_0_10px_var(--shadow-glow)] rounded-lg font-chakra font-semibold cursor-pointer transition-all duration-200 hover:bg-status-danger hover:text-base hover:shadow-[0_0_20px_var(--status-danger)] active:translate-y-[1px] p-3.5 text-[13px] tracking-[0.05em] disabled:opacity-50 disabled:cursor-not-allowed"
-							onClick={() => rejectMod.mutate({ id: modId })}
+							onClick={() => {
+								if (!isUser) {
+									rejectMod.mutate({ id: modId });
+								} else {
+									userCancelMod.mutate({ modId: modId });
+								}
+							}}
 						>
-							REJECT
+							{isUser ? "DELETE" : "REJECT"}
 						</button>
-						<button
-							type="button"
-							className="bg-status-success/15 w-full sm:w-fit px-8 border border-status-success text-status-success shadow-[0_0_10px_var(--shadow-glow)] rounded-lg font-chakra font-semibold cursor-pointer transition-all duration-200 hover:bg-status-success hover:text-base hover:shadow-[0_0_20px_var(--status-success)] active:translate-y-[1px] p-3.5 text-[13px] tracking-[0.05em] disabled:opacity-50 disabled:cursor-not-allowed"
-							onClick={() => applyMod.mutate({ id: modId })}
-						>
-							APPLY
-						</button>
+						{!isUser && (
+							<button
+								type="button"
+								className="bg-status-success/15 w-full sm:w-fit px-8 border border-status-success text-status-success shadow-[0_0_10px_var(--shadow-glow)] rounded-lg font-chakra font-semibold cursor-pointer transition-all duration-200 hover:bg-status-success hover:text-base hover:shadow-[0_0_20px_var(--status-success)] active:translate-y-[1px] p-3.5 text-[13px] tracking-[0.05em] disabled:opacity-50 disabled:cursor-not-allowed"
+								onClick={() => applyMod.mutate({ id: modId })}
+							>
+								APPLY
+							</button>
+						)}
 					</div>
 				</div>
 			</div>
