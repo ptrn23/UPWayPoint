@@ -11,6 +11,7 @@ interface IDiffsModal {
 	onCancel: () => void;
 	modId: string;
 	isUser?: boolean;
+	isApplied?: boolean;
 }
 
 type DiffChunk =
@@ -64,6 +65,7 @@ export function DiffsModal({
 	onCancel,
 	modId,
 	isUser = false,
+	isApplied = false,
 }: IDiffsModal) {
 	const utils = trpc.useUtils();
 
@@ -140,95 +142,99 @@ export function DiffsModal({
 				className="w-full max-w-[400px] sm:max-w-[900px] p-6 animate-slide-up tactical-panel flex flex-col gap-5"
 			>
 				<div className="flex flex-row gap-6 w-full">
-					<div className="flex flex-col gap-5 w-full border border-dashed border-y-0 border-l-0 border-r-2 border-border-color">
-						<h3 className="font-cubao-wide text-primary text-[20px] m-0 tracking-[0.05em]">
-							CURRENT PIN DETAILS
-						</h3>
-						{titleDiffs && (
-							<div className="flex flex-col gap-2">
-								<span className="font-chakra text-[12px] text-neon-blue tracking-[0.1em] font-bold">
-									TITLE
-								</span>
-								<div className="flex flex-row leading-tight flex-wrap items-end w-full">
-									{currentTitle?.map((ct, i) => {
-										const isFirstInSequence =
-											i !== 0 ? currentTitle[i - 1]?.type !== "removed" : true;
-										return (
-											<span
-												key={`${ct.type} ${ct.value} ${i + 1}`}
-												className={clsxm(
-													"text-primary font-nunito text-[16px] p-1",
-													ct.type === "removed" &&
-														"text-status-danger bg-status-danger/15",
-													!isFirstInSequence && "pl-0",
-												)}
-											>
-												{ct.type === "removed" && isFirstInSequence && "- "}
-												{ct.value}
-											</span>
-										);
-									})}
+					{!isApplied && (
+						<div className="flex flex-col gap-5 w-full border border-dashed border-y-0 border-l-0 border-r-2 border-border-color">
+							<h3 className="font-cubao-wide text-primary text-[20px] m-0 tracking-[0.05em]">
+								CURRENT PIN DETAILS
+							</h3>
+							{titleDiffs && (
+								<div className="flex flex-col gap-2">
+									<span className="font-chakra text-[12px] text-neon-blue tracking-[0.1em] font-bold">
+										TITLE
+									</span>
+									<div className="flex flex-row leading-tight flex-wrap items-end w-full">
+										{currentTitle?.map((ct, i) => {
+											const isFirstInSequence =
+												i !== 0
+													? currentTitle[i - 1]?.type !== "removed"
+													: true;
+											return (
+												<span
+													key={`${ct.type} ${ct.value} ${i + 1}`}
+													className={clsxm(
+														"text-primary font-nunito text-[16px] p-1",
+														ct.type === "removed" &&
+															"text-status-danger bg-status-danger/15",
+														!isFirstInSequence && "pl-0",
+													)}
+												>
+													{ct.type === "removed" && isFirstInSequence && "- "}
+													{ct.value}
+												</span>
+											);
+										})}
+									</div>
 								</div>
-							</div>
-						)}
+							)}
 
-						{descDiffs && (
-							<div className="flex flex-col gap-2">
-								<span className="font-chakra text-[12px] text-neon-blue tracking-[0.1em] font-bold">
-									DESCRIPTION
-								</span>
-								<div className="flex flex-row leading-tight flex-wrap items-end w-full">
-									{currentDesc?.map((cd, i) => {
-										const isFirstInSequence =
-											i !== 0 ? currentDesc[i - 1]?.type !== "removed" : true;
-										return (
-											<span
-												key={`${cd.type} ${cd.value} ${i + 1}`}
-												className={clsxm(
-													"text-primary font-nunito text-[16px] p-1",
-													cd.type === "removed" &&
-														"text-status-danger bg-status-danger/15",
-													!isFirstInSequence && "pl-0",
-												)}
-											>
-												{cd.type === "removed" && isFirstInSequence && "- "}
-												{cd.value}
-											</span>
-										);
-									})}
+							{descDiffs && (
+								<div className="flex flex-col gap-2">
+									<span className="font-chakra text-[12px] text-neon-blue tracking-[0.1em] font-bold">
+										DESCRIPTION
+									</span>
+									<div className="flex flex-row leading-tight flex-wrap items-end w-full">
+										{currentDesc?.map((cd, i) => {
+											const isFirstInSequence =
+												i !== 0 ? currentDesc[i - 1]?.type !== "removed" : true;
+											return (
+												<span
+													key={`${cd.type} ${cd.value} ${i + 1}`}
+													className={clsxm(
+														"text-primary font-nunito text-[16px] p-1",
+														cd.type === "removed" &&
+															"text-status-danger bg-status-danger/15",
+														!isFirstInSequence && "pl-0",
+													)}
+												>
+													{cd.type === "removed" && isFirstInSequence && "- "}
+													{cd.value}
+												</span>
+											);
+										})}
+									</div>
 								</div>
-							</div>
-						)}
+							)}
 
-						{diffs.tags.length > 0 && (
-							<div className="flex flex-col gap-2">
-								<span className="font-chakra text-[12px] text-neon-blue tracking-[0.1em] font-bold">
-									PIN TYPE
-								</span>
-								<div className="grid grid-cols-2 gap-2">
-									{current.pinTags.map((pt) => {
-										const t = pt.tag;
-										const tagColor = getPinColor(t.title);
+							{diffs.tags.length > 0 && (
+								<div className="flex flex-col gap-2">
+									<span className="font-chakra text-[12px] text-neon-blue tracking-[0.1em] font-bold">
+										PIN TYPE
+									</span>
+									<div className="grid grid-cols-2 gap-2">
+										{current.pinTags.map((pt) => {
+											const t = pt.tag;
+											const tagColor = getPinColor(t.title);
 
-										return (
-											<div
-												key={t.id}
-												className="bg-transparent border border-border-color text-secondary p-2.5 rounded-md font-chakra text-[11px] cursor-pointer transition-all duration-200 hover:bg-panel-hover hover:text-primary"
-												style={{
-													backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`,
-													borderColor: tagColor,
-													color: tagColor,
-													boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`,
-												}}
-											>
-												{t.title.toUpperCase()}
-											</div>
-										);
-									})}
+											return (
+												<div
+													key={t.id}
+													className="bg-transparent border border-border-color text-secondary p-2.5 rounded-md font-chakra text-[11px] cursor-pointer transition-all duration-200 hover:bg-panel-hover hover:text-primary"
+													style={{
+														backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`,
+														borderColor: tagColor,
+														color: tagColor,
+														boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`,
+													}}
+												>
+													{t.title.toUpperCase()}
+												</div>
+											);
+										})}
+									</div>
 								</div>
-							</div>
-						)}
-					</div>
+							)}
+						</div>
+					)}
 					<div className="flex flex-col gap-5 w-full">
 						<h3 className="font-cubao-wide text-primary text-[20px] m-0 tracking-[0.05em]">
 							MODIFIED PIN DETAILS
@@ -238,7 +244,7 @@ export function DiffsModal({
 								<span className="font-chakra text-[12px] text-neon-blue tracking-[0.1em] font-bold">
 									TITLE
 								</span>
-								<div className="flex flex-row leading-tight flex-wrap items-end w-full">
+								<div className="flex flex-row leading-tight flex-wrap items-end w-full gap-1">
 									{afterTitle?.map((ct, i) => {
 										const isFirstInSequence =
 											i !== 0 ? afterTitle[i - 1]?.type !== "added" : true;
@@ -246,13 +252,16 @@ export function DiffsModal({
 											<span
 												key={`${ct.type} ${ct.value} ${i + 1}`}
 												className={clsxm(
-													"text-primary font-nunito text-[16px] p-1",
+													"text-primary font-nunito text-[16px]",
 													ct.type === "added" &&
-														"text-status-success bg-status-success/15",
-													!isFirstInSequence && "pl-0",
+														!isApplied &&
+														"text-status-success bg-status-success/15 p-1",
 												)}
 											>
-												{ct.type === "added" && isFirstInSequence && "+ "}
+												{ct.type === "added" &&
+													isFirstInSequence &&
+													!isApplied &&
+													"+ "}
 												{ct.value}
 											</span>
 										);
@@ -267,7 +276,7 @@ export function DiffsModal({
 									DESCRIPTION
 								</span>
 
-								<div className="flex flex-row leading-tight flex-wrap items-end w-full">
+								<div className="flex flex-row leading-tight flex-wrap items-end w-full gap-1">
 									{afterDesc?.map((ad, i) => {
 										const isFirstInSequence =
 											i !== 0 ? afterDesc[i - 1]?.type !== "added" : true;
@@ -276,13 +285,16 @@ export function DiffsModal({
 											<span
 												key={`${ad.type} ${ad.value} ${i + 1}`}
 												className={clsxm(
-													"text-primary font-nunito text-[16px] p-1",
+													"text-primary font-nunito text-[16px]",
 													ad.type === "added" &&
-														"text-status-success bg-status-success/15",
-													!isFirstInSequence && "pl-0",
+														!isApplied &&
+														"text-status-success bg-status-success/15 p-1",
 												)}
 											>
-												{ad.type === "added" && isFirstInSequence && "+ "}
+												{ad.type === "added" &&
+													isFirstInSequence &&
+													!isApplied &&
+													"+ "}
 												{ad.value}
 											</span>
 										);
@@ -326,22 +338,24 @@ export function DiffsModal({
 						className="tactical-button w-full sm:w-fit p-3.5 px-6 text-[13px] tracking-[0.05em]"
 						onClick={onCancel}
 					>
-						CANCEL
+						{isUser ? "CLOSE" : "CANCEL"}
 					</button>
 					<div className="flex flex-col sm:flex-row gap-3">
-						<button
-							type="button"
-							className="bg-status-danger/15 w-full sm:w-fit px-8 border border-status-danger text-status-danger shadow-[0_0_10px_var(--shadow-glow)] rounded-lg font-chakra font-semibold cursor-pointer transition-all duration-200 hover:bg-status-danger hover:text-base hover:shadow-[0_0_20px_var(--status-danger)] active:translate-y-[1px] p-3.5 text-[13px] tracking-[0.05em] disabled:opacity-50 disabled:cursor-not-allowed"
-							onClick={() => {
-								if (!isUser) {
-									rejectMod.mutate({ id: modId });
-								} else {
-									userCancelMod.mutate({ modId: modId });
-								}
-							}}
-						>
-							{isUser ? "DELETE" : "REJECT"}
-						</button>
+						{!isApplied && (
+							<button
+								type="button"
+								className="bg-status-danger/15 w-full sm:w-fit px-8 border border-status-danger text-status-danger shadow-[0_0_10px_var(--shadow-glow)] rounded-lg font-chakra font-semibold cursor-pointer transition-all duration-200 hover:bg-status-danger hover:text-base hover:shadow-[0_0_20px_var(--status-danger)] active:translate-y-[1px] p-3.5 text-[13px] tracking-[0.05em] disabled:opacity-50 disabled:cursor-not-allowed"
+								onClick={() => {
+									if (!isUser) {
+										rejectMod.mutate({ id: modId });
+									} else {
+										userCancelMod.mutate({ modId: modId });
+									}
+								}}
+							>
+								{isUser ? "DELETE" : "REJECT"}
+							</button>
+						)}
 						{!isUser && (
 							<button
 								type="button"

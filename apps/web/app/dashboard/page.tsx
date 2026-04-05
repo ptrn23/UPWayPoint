@@ -10,9 +10,11 @@ import Link from "next/link";
 import { DiffsModal } from "@/components/DiffsModal";
 import type { PinRouterOutputs } from "@repo/api";
 import type { PinDiffType } from "@/types/pins";
+import { ModificationRouterOutputs } from "../../../../packages/api/src/routers/modification.router";
 
 export default function Dashboard() {
-	const [modId, setModId] = useState<string>("");
+	const [mod, setMod] =
+		useState<ModificationRouterOutputs["getPendingByUser"][number]>();
 	const [diffs, setDiffs] = useState<PinDiffType | undefined>();
 	const [current, setCurrent] = useState<
 		PinRouterOutputs["getSimpleById"] | undefined
@@ -644,13 +646,14 @@ export default function Dashboard() {
 									</span>
 								</div>
 
-								{diffs && (
+								{diffs && mod && (
 									<DiffsModal
 										isUser
+										isApplied={mod.status !== "PENDING"}
 										onCancel={() => setDiffs(undefined)}
 										current={current}
 										diffs={diffs}
-										modId={modId}
+										modId={mod.id}
 									/>
 								)}
 								<div className="flex-1 flex flex-col">
@@ -718,7 +721,214 @@ export default function Dashboard() {
 																		: undefined,
 																);
 																setCurrent(mod.pin);
-																setModId(mod.id);
+																setMod(mod);
+															}}
+														>
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																width="24"
+																height="24"
+																viewBox="0 0 24 24"
+																fill="none"
+																stroke="currentColor"
+																strokeWidth="2"
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																className="lucide lucide-file-diff-icon lucide-file-diff"
+															>
+																<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+																<path d="M9 10h6" />
+																<path d="M12 13V7" />
+																<path d="M9 17h6" />
+															</svg>
+														</button>
+													</div>
+												</div>
+											);
+										})}
+									</div>
+								</div>
+							</div>
+
+							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+								<div className="flex justify-between items-center border-b border-border-color pb-3">
+									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
+										YOUR APPLIED MODIFICATIONS
+									</h3>
+									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
+										{stats.appliedModifications?.length}
+									</span>
+								</div>
+
+								<div className="flex-1 flex flex-col">
+									<div className="flex flex-col gap-3">
+										{stats.appliedModifications?.map((mod) => {
+											const color = getPinColor(
+												mod.pin.pinTags?.[0]?.tag.title || "",
+											);
+											return (
+												<div
+													key={mod.id}
+													className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]"
+												>
+													<div className="flex items-center gap-4">
+														<div
+															className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
+															style={{
+																borderColor: color,
+																backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
+															}}
+														>
+															<span
+																className="-rotate-45 font-cubao-wide text-[14px]"
+																style={{ color }}
+															>
+																{mod.pin.title.charAt(0).toUpperCase()}
+															</span>
+														</div>
+
+														<div className="flex flex-col gap-1">
+															<span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">
+																{mod.pin.title}
+															</span>
+															<span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
+																{mod.pin.latitude.toFixed(4)},{" "}
+																{mod.pin.longitude.toFixed(4)}
+															</span>
+														</div>
+													</div>
+
+													<div className="flex flex-row items-center gap-3">
+														<Link
+															className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95"
+															href={`/?pin=${mod.pin.id}`}
+															target="_blank"
+														>
+															<svg
+																width="18"
+																height="18"
+																viewBox="0 0 24 24"
+																fill="none"
+																stroke="currentColor"
+																strokeWidth="2.5"
+															>
+																<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+															</svg>
+														</Link>
+														<button
+															type="button"
+															className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95"
+															onClick={() => {
+																setDiffs(
+																	mod.after
+																		? (mod.after as PinDiffType)
+																		: undefined,
+																);
+																setCurrent(mod.pin);
+																setMod(mod);
+															}}
+														>
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																width="24"
+																height="24"
+																viewBox="0 0 24 24"
+																fill="none"
+																stroke="currentColor"
+																strokeWidth="2"
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																className="lucide lucide-file-diff-icon lucide-file-diff"
+															>
+																<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+																<path d="M9 10h6" />
+																<path d="M12 13V7" />
+																<path d="M9 17h6" />
+															</svg>
+														</button>
+													</div>
+												</div>
+											);
+										})}
+									</div>
+								</div>
+							</div>
+							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
+								<div className="flex justify-between items-center border-b border-border-color pb-3">
+									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
+										YOUR REJECTED MODIFICATIONS
+									</h3>
+									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
+										{stats.rejectedModifications?.length}
+									</span>
+								</div>
+
+								<div className="flex-1 flex flex-col">
+									<div className="flex flex-col gap-3">
+										{stats.rejectedModifications?.map((mod) => {
+											const color = getPinColor(
+												mod.pin.pinTags?.[0]?.tag.title || "",
+											);
+											return (
+												<div
+													key={mod.id}
+													className="flex items-center justify-between bg-panel-hover border border-border-color rounded-xl py-3 px-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--text-secondary)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--bg-panel-hover)_80%,var(--border-color))]"
+												>
+													<div className="flex items-center gap-4">
+														<div
+															className="w-8 h-8 rotate-45 border-[1.5px] flex items-center justify-center shrink-0 shadow-[0_4px_10px_var(--border-color)]"
+															style={{
+																borderColor: color,
+																backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
+															}}
+														>
+															<span
+																className="-rotate-45 font-cubao-wide text-[14px]"
+																style={{ color }}
+															>
+																{mod.pin.title.charAt(0).toUpperCase()}
+															</span>
+														</div>
+
+														<div className="flex flex-col gap-1">
+															<span className="font-chakra text-[14px] font-bold text-primary tracking-[0.05em]">
+																{mod.pin.title}
+															</span>
+															<span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
+																{mod.pin.latitude.toFixed(4)},{" "}
+																{mod.pin.longitude.toFixed(4)}
+															</span>
+														</div>
+													</div>
+
+													<div className="flex flex-row items-center gap-3">
+														<Link
+															className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95"
+															href={`/?pin=${mod.pin.id}`}
+															target="_blank"
+														>
+															<svg
+																width="18"
+																height="18"
+																viewBox="0 0 24 24"
+																fill="none"
+																stroke="currentColor"
+																strokeWidth="2.5"
+															>
+																<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+															</svg>
+														</Link>
+														<button
+															type="button"
+															className="w-9 h-9 bg-transparent border border-border-color rounded-lg flex items-center justify-center text-secondary cursor-pointer shrink-0 transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-neon-blue/15 hover:border-neon-blue hover:text-neon-blue hover:scale-105 active:scale-95"
+															onClick={() => {
+																setDiffs(
+																	mod.after
+																		? (mod.after as PinDiffType)
+																		: undefined,
+																);
+																setCurrent(mod.pin);
+																setMod(mod);
 															}}
 														>
 															<svg
