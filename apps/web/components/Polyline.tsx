@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useMap, useApiIsLoaded } from "@vis.gl/react-google-maps";
+import { useAnimationPreference } from "../hooks/usePreferences"; // Import Hook
 
 interface PolylineProps {
   path: { lat: number; lng: number }[];
@@ -13,7 +14,7 @@ interface PolylineProps {
 
 export function Polyline({
   path,
-  color = "var(--pin-transit)",
+  color = "--pin-transit",
   weight = 5,
   animateDirection = "forward",
   speed = 0.8,
@@ -22,9 +23,14 @@ export function Polyline({
   const isLoaded = useApiIsLoaded();
   const polylineRef = useRef<google.maps.Polyline | null>(null);
   const animationRef = useRef<number>(0);
+  
+  const { animationsEnabled } = useAnimationPreference();
 
   useEffect(() => {
     if (!map || !isLoaded || !window.google) return;
+
+    const styles = getComputedStyle(document.documentElement);
+    const resolvedColor = styles.getPropertyValue(color.replace('var(', '').replace(')', '')).trim() || color;
 
     const baseOpacity = 0.4;
     const clusterSpacing = 120;
@@ -42,7 +48,7 @@ export function Polyline({
               ? window.google.maps.SymbolPath.BACKWARD_OPEN_ARROW
               : window.google.maps.SymbolPath.FORWARD_OPEN_ARROW,
           scale: 2.5,
-          strokeColor: color,
+          strokeColor: resolvedColor,
           strokeWeight: 4,
           strokeOpacity: opacity,
         };
@@ -58,7 +64,7 @@ export function Polyline({
     if (!polylineRef.current) {
       polylineRef.current = new window.google.maps.Polyline({
         path,
-        strokeColor: color,
+        strokeColor: resolvedColor,
         strokeWeight: weight,
         strokeOpacity: baseOpacity,
         icons: icons,
@@ -67,7 +73,7 @@ export function Polyline({
     } else {
       polylineRef.current.setOptions({
         path,
-        strokeColor: color,
+        strokeColor: resolvedColor,
         strokeWeight: weight,
         strokeOpacity: baseOpacity,
         icons: icons,
@@ -101,12 +107,15 @@ export function Polyline({
         polylineRef.current.set("icons", currentIcons);
       }
 
-      animationRef.current = requestAnimationFrame(animateLoop);
+      if (animationsEnabled) {
+        animationRef.current = requestAnimationFrame(animateLoop);
+      }
     };
 
+    cancelAnimationFrame(animationRef.current);
+    
     if (animateDirection !== "none") {
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = requestAnimationFrame(animateLoop);
+      animateLoop(); 
     }
 
     return () => {
@@ -115,7 +124,7 @@ export function Polyline({
         polylineRef.current.setMap(null);
       }
     };
-  }, [map, isLoaded, path, color, weight, animateDirection, speed]);
+  }, [map, isLoaded, path, color, weight, animateDirection, speed, animationsEnabled]);
 
   return null;
 }

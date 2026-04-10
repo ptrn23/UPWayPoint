@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useMap } from "@vis.gl/react-google-maps";
+import { useAnimationPreference } from "../hooks/usePreferences";
 
 interface TargetLineProps {
   start: { lat: number; lng: number };
@@ -17,24 +18,21 @@ export function TargetLine({
   const map = useMap();
   const polylineRef = useRef<google.maps.Polyline | null>(null);
   const animationRef = useRef<number>(0);
-  const [resolvedColor, setResolvedColor] = useState("#00e5ff");
+  
+  const { animationsEnabled } = useAnimationPreference();
 
   useEffect(() => {
     if (!map || !window.google) return;
 
     const element = document.documentElement;
     const styles = getComputedStyle(element);
-    const hexCode = styles.getPropertyValue(color).trim();
-
-    if (hexCode) {
-      setResolvedColor(hexCode);
-    }
+    const hexCode = styles.getPropertyValue(color).trim() || "#00e5ff";
 
     const lineSymbol = {
       path: "M 0,-1 0,1",
       strokeOpacity: 1,
       scale: 3,
-      strokeColor: resolvedColor,
+      strokeColor: hexCode,
     };
 
     const polyline = new window.google.maps.Polyline({
@@ -54,6 +52,8 @@ export function TargetLine({
 
     let offset = 0;
     const animate = () => {
+      if (!animationsEnabled) return; 
+
       offset = (offset + 0.5) % 15;
 
       const icons = polyline.get("icons");
@@ -65,7 +65,9 @@ export function TargetLine({
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    animationRef.current = requestAnimationFrame(animate);
+    if (animationsEnabled) {
+      animationRef.current = requestAnimationFrame(animate);
+    }
 
     return () => {
       cancelAnimationFrame(animationRef.current);
@@ -73,7 +75,7 @@ export function TargetLine({
         polylineRef.current.setMap(null);
       }
     };
-  }, [map, start, end, color, resolvedColor]);
+  }, [map, start, end, color, animationsEnabled]);
 
   return null;
 }
