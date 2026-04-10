@@ -12,6 +12,7 @@ import { DiffsModal } from "@/components/DiffsModal";
 import { PinRouterOutputs } from "@repo/api";
 import { AnimationToggle } from "@/components/AnimationToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 export default function AdminDashboard() {
 	const router = useRouter();
@@ -172,6 +173,7 @@ export default function AdminDashboard() {
 						</span>
 						<ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 						<AnimationToggle />
+						<LanguageToggle />
 					</div>
 				</nav>
 

@@ -12,6 +12,7 @@ import { AnimationToggle } from "@/components/AnimationToggle";
 import type { ModificationRouterOutputs, PinRouterOutputs } from "@repo/api";
 import type { PinDiffType } from "@/types/pins";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 export default function Dashboard() {
 	const [mod, setMod] =
@@ -193,6 +194,7 @@ export default function Dashboard() {
 						</span>
 						<ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 						<AnimationToggle />
+						<LanguageToggle />
 					</div>
 				</nav>
 

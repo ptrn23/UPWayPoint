@@ -5,6 +5,7 @@ import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { AnimationToggle } from "./AnimationToggle";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageToggle } from "./LanguageToggle";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -99,6 +100,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </span>
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
             <AnimationToggle />
+            <LanguageToggle />
           </div>
         </div>
 
