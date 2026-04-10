@@ -8,6 +8,7 @@ import { PIN_CATEGORIES, getPinColor } from "@/data/pin-categories";
 import { useTheme } from "@/lib/ThemeContext";
 import Link from "next/link";
 import { DiffsModal } from "@/components/DiffsModal";
+import { AnimationToggle } from "@/components/AnimationToggle";
 import type { ModificationRouterOutputs, PinRouterOutputs } from "@repo/api";
 import type { PinDiffType } from "@/types/pins";
 
@@ -240,6 +241,7 @@ export default function Dashboard() {
 								)}
 							</div>
 						</button>
+						<AnimationToggle />
 					</div>
 				</nav>
 
