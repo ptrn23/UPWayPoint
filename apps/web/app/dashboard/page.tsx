@@ -190,7 +190,7 @@ export default function Dashboard() {
 					</div>
 					<div className="flex flex-col gap-2" style={{ marginTop: "24px" }}>
 						<span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em] px-2 mb-1">
-							DISPLAY SETTINGS
+							{t("settings.display")}
 						</span>
 						<ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 						<AnimationToggle />

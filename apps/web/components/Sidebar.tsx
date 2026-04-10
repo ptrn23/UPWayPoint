@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AnimationToggle } from "./AnimationToggle";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { theme, toggleTheme } = useTheme();
   const { data: sessionData } = useSession();
   const router = useRouter();
+  const { t } = useLanguage();
 
   if (!isOpen) return null;
 
@@ -96,7 +98,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* SETTINGS */}
           <div className="flex flex-col gap-3">
             <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">
-              DISPLAY SETTINGS
+              {t("settings.display")}
             </span>
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
             <AnimationToggle />

@@ -13,9 +13,11 @@ import { PinRouterOutputs } from "@repo/api";
 import { AnimationToggle } from "@/components/AnimationToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function AdminDashboard() {
 	const router = useRouter();
+	const { t } = useLanguage();
 
 	const { data, isLoading } = trpc.user.getCurrent.useQuery();
 
@@ -169,7 +171,7 @@ export default function AdminDashboard() {
 
 					<div className="flex flex-col gap-2 mt-6">
 						<span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em] px-2 mb-1">
-							DISPLAY SETTINGS
+							{t("settings.display")}
 						</span>
 						<ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 						<AnimationToggle />
