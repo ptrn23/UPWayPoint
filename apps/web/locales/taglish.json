@@ -1,0 +1,10 @@
+{
+  "settings.display": "MGA SETTINGS NG DISPLAY",
+  "settings.theme": "TEMA NG UI",
+  "settings.theme.day": "ARAW",
+  "settings.theme.night": "GABI",
+  "settings.animations": "GALAW",
+  "settings.animations.on": "NAKA-ON",
+  "settings.animations.off": "NAKA-OFF",
+  "settings.language": "WIKA"
+}

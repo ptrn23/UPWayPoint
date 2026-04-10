@@ -1,5 +1,10 @@
 {
-  "settings.display": "MGA SETTING NG DISPLAY",
-  "settings.theme": "TEMA NG UI",
+  "settings.display": "KONPIGURASYON",
+  "settings.theme": "TEMA",
+  "settings.theme.day": "ARAW",
+  "settings.theme.night": "GABI",
+  "settings.animations": "GALAW",
+  "settings.animations.on": "BUKAS",
+  "settings.animations.off": "SARA",
   "settings.language": "WIKA"
 }
