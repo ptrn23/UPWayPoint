@@ -1,0 +1,10 @@
+{
+  "settings.display": "DISPLAY SETTINGS",
+  "settings.theme": "UI THEME",
+  "settings.theme.day": "DAY",
+  "settings.theme.night": "NIGHT",
+  "settings.animations": "ANIMATIONS",
+  "settings.animations.on": "ON",
+  "settings.animations.off": "OFF",
+  "settings.language": "LANGUAGE"
+}
