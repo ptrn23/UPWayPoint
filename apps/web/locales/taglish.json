@@ -6,5 +6,10 @@
   "settings.animations": "GALAW",
   "settings.animations.on": "NAKA-ON",
   "settings.animations.off": "NAKA-OFF",
-  "settings.language": "WIKA"
+  "settings.language": "WIKA",
+  "settings.system": "SISTEMA",
+  "settings.access": "I-ACCESS ANG DASHBOARD",
+  "settings.login": "MAG-LOGIN",
+  "settings.online": "ONLINE",
+  "settings.offline": "OFFLINE"
 }

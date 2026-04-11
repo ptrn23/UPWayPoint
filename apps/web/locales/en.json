@@ -6,5 +6,10 @@
   "settings.animations": "ANIMATIONS",
   "settings.animations.on": "ON",
   "settings.animations.off": "OFF",
-  "settings.language": "LANGUAGE"
+  "settings.language": "LANGUAGE",
+  "settings.system": "SYSTEM",
+  "settings.access": "ACCESS DASHBOARD",
+  "settings.login": "LOGIN",
+  "settings.online": "ONLINE",
+  "settings.offline": "OFFLINE"
 }

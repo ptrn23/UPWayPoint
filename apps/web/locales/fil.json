@@ -6,5 +6,10 @@
   "settings.animations": "GALAW",
   "settings.animations.on": "BUKAS",
   "settings.animations.off": "SARA",
-  "settings.language": "WIKA"
+  "settings.language": "WIKA",
+  "settings.system": "SISTEMA",
+  "settings.access": "PUMUNTA SA DASHBOARD",
+  "settings.login": "MAG-LOGIN",
+  "settings.online": "BUKAS",
+  "settings.offline": "SARA"
 }

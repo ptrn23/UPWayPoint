@@ -67,7 +67,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* PRIMARY ACTIONS */}
           <div className="flex flex-col gap-3">
             <span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em]">
-              SYSTEM ACCESS
+              {t("settings.system")}
             </span>
             <button
               type="button"
@@ -77,7 +77,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               }
             >
               <span>
-                {sessionData?.user ? "ACCESS DASHBOARD" : "SYSTEM LOGIN"}
+                {sessionData?.user ? t("settings.access") : t("settings.login")}
               </span>
               <svg
                 width="16"
@@ -109,7 +109,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* FOOTER */}
         <div className="py-5 px-6 border-t border-border-color flex justify-between font-chakra text-[10px] font-bold text-secondary tracking-[0.1em]">
           <span>UP WAYPOINT v1.3.0</span>
-          <span>SYSTEM ONLINE</span>
+          <span>{t("settings.online")}</span>
         </div>
       </div>
     </>
