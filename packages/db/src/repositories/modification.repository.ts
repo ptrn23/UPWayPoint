@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import type { Database } from "../db/database";
-import { modification, pinTags } from "../db/schema";
+import { modification } from "../db/schema";
 import type { Modification, CreateModification } from "../db/types";
 
 export function makeModificationRepository(db: Database) {
