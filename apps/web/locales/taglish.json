@@ -37,5 +37,21 @@
   "user.recent.pins": "MGA RECENT PINS MO",
   "user.pending.modifications": "MGA PENDING MODIFICATIONS MO",
   "user.applied.modifications": "MGA NA-APPLY NA MODIFICATIONS MO",
-  "user.rejected.modifications": "MGA REJECTED MODIFICATIONS MO"
+  "user.rejected.modifications": "MGA REJECTED MODIFICATIONS MO",
+  "admin.control": "CONTROL CENTER",
+  "admin.dashboard": "Admin Dashboard",
+  "admin.message": "Welcome sa admin dashboard!",
+  "admin.pin-management": "PIN MANAGEMENT",
+  "admin.user-management": "USER MANAGEMENT",
+  "admin.pin.statistics": "OVERALL PIN STATS",
+  "admin.total.pins": "TOTAL NA PINS",
+  "admin.pending.pins": "MGA PENDING PINS",
+  "admin.global.verification": "GLOBAL VERIFICATION",
+  "admin.user.statistics": "OVERALL USER STATS",
+  "admin.total.users": "TOTAL NA USERS",
+  "admin.active.users": "MGA ACTIVE USERS",
+  "admin.total.comments": "TOTAL NA COMMENTS",
+  "admin.recently.verified.pins": "MGA RECENTLY VERIFIED PINS",
+  "admin.pending.modifications": "MGA RECENT MODIFICATION REQUESTS",
+  "admin.modification.by": "Modification ni"
 }

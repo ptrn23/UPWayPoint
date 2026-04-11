@@ -37,5 +37,21 @@
   "user.recent.pins": "ANG IYONG MGA KAMAKAILANG PIN",
   "user.pending.modifications": "ANG IYONG MGA NAKABINBIN NA PAGBABAGO",
   "user.applied.modifications": "ANG IYONG MGA NAILAPAT NA PAGBABAGO",
-  "user.rejected.modifications": "ANG IYONG MGA TINANGGIHANG PAGBABAGO"
+  "user.rejected.modifications": "ANG IYONG MGA TINANGGIHANG PAGBABAGO",
+  "admin.control": "SENTRO NG KONTROL",
+  "admin.dashboard": "Dashboard ng Admin",
+  "admin.message": "Maligayang pagdating sa dashboard ng admin!",
+  "admin.pin-management": "PAMAMAHALA NG PIN",
+  "admin.user-management": "PAMAMAHALA NG GUMAGAMIT",
+  "admin.pin.statistics": "PANGKALAHATANG ESTADISTIKA NG PIN",
+  "admin.total.pins": "KABUUANG MGA PIN",
+  "admin.pending.pins": "MGA NAKABINBIN NA PIN",
+  "admin.global.verification": "PANGKALAHATANG BERIPIKASYON",
+  "admin.user.statistics": "PANGKALAHATANG ESTADISTIKA NG GUMAGAMIT",
+  "admin.total.users": "KABUUANG MGA GUMAGAMIT",
+  "admin.active.users": "MGA AKTIBONG GUMAGAMIT",
+  "admin.total.comments": "KABUUANG MGA KOMENTO",
+  "admin.recently.verified.pins": "MGA KAMAKAILANG KUMPIRMADONG PIN",
+  "admin.pending.modifications": "MGA KAMAKAILANG HILING NA PAGBABAGO",
+  "admin.modification.by": "Pagbabago ni"
 }

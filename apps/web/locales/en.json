@@ -37,5 +37,21 @@
   "user.recent.pins": "YOUR RECENT PINS",
   "user.pending.modifications": "YOUR PENDING MODIFICATIONS",
   "user.applied.modifications": "YOUR APPLIED MODIFICATIONS",
-  "user.rejected.modifications": "YOUR REJECTED MODIFICATIONS"
+  "user.rejected.modifications": "YOUR REJECTED MODIFICATIONS",
+  "admin.control": "CONTROL CENTER",
+  "admin.dashboard": "Admin Dashboard",
+  "admin.message": "Welcome to the admin dashboard!",
+  "admin.pin-management": "PIN MANAGEMENT",
+  "admin.user-management": "USER MANAGEMENT",
+  "admin.pin.statistics": "OVERALL PIN STATISTICS",
+  "admin.total.pins": "TOTAL PINS",
+  "admin.pending.pins": "PENDING PINS",
+  "admin.global.verification": "GLOBAL VERIFICATION",
+  "admin.user.statistics": "OVERALL USER STATISTICS",
+  "admin.total.users": "TOTAL USERS",
+  "admin.active.users": "ACTIVE USERS",
+  "admin.total.comments": "TOTAL COMMENTS",
+  "admin.recently.verified.pins": "RECENTLY VERIFIED PINS",
+  "admin.pending.modifications": "RECENT MODIFICATION REQUESTS",
+  "admin.modification.by": "Modification by"
 }

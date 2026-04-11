@@ -133,7 +133,7 @@ export default function AdminDashboard() {
 				<nav className="flex-1 py-6 px-4 overflow-y-auto custom-vertical-scrollbar">
 					<div className="flex flex-col gap-2">
 						<span className="font-chakra text-[11px] font-extrabold text-secondary tracking-[0.15em] px-2 mb-1">
-							COMMAND CENTER
+							{t("admin.control")}
 						</span>
 
 						<button
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
 							className="text-left px-4 py-3 font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 bg-transparent text-secondary border-none rounded-lg hover:bg-panel-hover hover:text-primary"
 							onClick={() => scrollToSection("overview")}
 						>
-							OVERVIEW
+							{t("user.overview")}
 						</button>
 
 						<button
@@ -149,7 +149,7 @@ export default function AdminDashboard() {
 							className="text-left px-4 py-3 font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 bg-transparent text-secondary border-none rounded-lg hover:bg-panel-hover hover:text-primary"
 							onClick={() => scrollToSection("pin-management")}
 						>
-							PIN MANAGEMENT
+							{t("admin.pin-management")}
 						</button>
 
 						{/* <button
@@ -157,7 +157,7 @@ export default function AdminDashboard() {
 							className={`nav-item ${activeSection === "user-management" ? "active" : ""}`}
 							onClick={() => scrollToSection("user-management")}
 						>
-							USER MANAGEMENT
+							{t("admin.user-management")}
 						</button> */}
 
 						<button
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
 							className="text-left px-4 py-3 bg-transparent border-none rounded-lg text-secondary font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-panel-hover hover:text-primary"
 							onClick={goToMap}
 						>
-							RETURN TO MAP
+							{t("user.goto.map")}
 						</button>
 					</div>
 
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
 						className="w-full bg-transparent border border-border-color text-status-danger p-3 rounded-lg font-chakra text-[12px] font-bold cursor-pointer transition-all duration-200 hover:bg-status-danger/10 hover:border-status-danger"
 						onClick={handleSignOut}
 					>
-						SIGN OUT
+						{t("user.signout")}
 					</button>
 				</div>
 			</aside>
@@ -215,7 +215,7 @@ export default function AdminDashboard() {
 							</svg>
 						</button>
 						<h1 className="font-chakra text-[16px] font-bold m-0 tracking-[0.05em] text-pin-social">
-							Admin Dashboard
+							{t("admin.dashboard")}
 						</h1>
 					</div>
 				</header>
@@ -226,31 +226,31 @@ export default function AdminDashboard() {
 						<div className="flex flex-col gap-2">
 							<h2 className="font-chakra text-[28px] font-extrabold text-primary m-0">
 								{isLoading
-									? "LOADING..."
-									: `Welcome, ${data?.name ? data.name.toUpperCase() : "ADMIN"}!`}
+									? t("user.loading")
+									: `Welcome, ${data?.name ? data.name.toUpperCase() : t("user.admin")}!`}
 							</h2>
 							<p className="font-nunito text-[15px] text-secondary m-0">
-								You have accessed the restricted area. 🚨
+								{t("admin.message")}
 							</p>
 						</div>
 
 						<div className="flex flex-col gap-16">
 							<section id="overview" className="scroll-mt-6">
 								<h2 className="font-chakra text-[20px] font-bold text-primary tracking-[0.1em] m-0 mb-6 pb-3 border-b border-border-color">
-									OVERVIEW
+									{t("user.overview")}
 								</h2>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 										<div className="flex justify-between items-center border-b border-border-color pb-3">
 											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-												OVERALL PIN STATISTICS
+												{t("admin.pin.statistics")}
 											</h3>
 										</div>
 										<div className="flex-1 flex flex-col gap-6">
 											<div className="grid grid-cols-2 gap-4">
 												<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
 													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-														TOTAL PINS
+														{t("admin.total.pins")}
 													</span>
 													<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
 														{totalPins}
@@ -258,7 +258,7 @@ export default function AdminDashboard() {
 												</div>
 												<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
 													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-														PENDING PINS
+														{t("admin.pending.pins")}
 													</span>
 													<span
 														className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]"
@@ -272,7 +272,7 @@ export default function AdminDashboard() {
 											<div className="flex flex-col gap-2">
 												<div className="flex justify-between items-end">
 													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-														GLOBAL VERIFICATION
+														{t("admin.global.verification")}
 													</span>
 													<span className="font-chakra text-[14px] font-extrabold text-status-success">
 														{globalVerificationRate}%
@@ -291,13 +291,13 @@ export default function AdminDashboard() {
 												</div>
 												<div className="flex gap-3 font-chakra text-[10px] font-bold tracking-[0.05em] mt-1">
 													<span className="text-status-success">
-														{activePinCount} VERIFIED
+														{activePinCount} {t("user.verified")}
 													</span>
 													<span className="text-status-warning">
-														{pendingPinCount} PENDING
+														{pendingPinCount} {t("user.pending")}
 													</span>
 													<span className="text-status-danger">
-														{rejectedPinCount} REJECTED
+														{rejectedPinCount} {t("user.rejected")}
 													</span>
 												</div>
 											</div>
@@ -348,14 +348,14 @@ export default function AdminDashboard() {
 									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 										<div className="flex justify-between items-center border-b border-border-color pb-3">
 											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-												OVERALL USER STATISTICS
+												{t("admin.user.statistics")}
 											</h3>
 										</div>
 										<div className="flex-1 flex flex-col gap-6">
 											<div className="grid grid-cols-2 gap-4">
 												<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
 													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-														TOTAL USERS
+														{t("admin.total.users")}
 													</span>
 													<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
 														{globalUserStats.totalUsers}
@@ -363,7 +363,7 @@ export default function AdminDashboard() {
 												</div>
 												<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
 													<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-														TOTAL COMMENTS
+														{t("admin.total.comments")}
 													</span>
 													<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
 														{globalUserStats.totalComments}
@@ -421,13 +421,13 @@ export default function AdminDashboard() {
 
 							<section id="pin-management" className="scroll-mt-6">
 								<h2 className="font-chakra text-[20px] font-bold text-primary tracking-[0.1em] m-0 mb-6 pb-3 border-b border-border-color">
-									PIN MANAGEMENT
+									{t("admin.pin-management")}
 								</h2>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 										<div className="flex justify-between items-center border-b border-border-color pb-3">
 											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-												PENDING PIN VERIFICATIONS
+												{t("admin.pending.pins")}
 											</h3>
 										</div>
 
@@ -542,7 +542,7 @@ export default function AdminDashboard() {
 									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 										<div className="flex justify-between items-center border-b border-border-color pb-3">
 											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-												RECENTLY VERIFIED PINS
+												{t("admin.recently.verified.pins")}
 											</h3>
 										</div>
 
@@ -690,7 +690,7 @@ export default function AdminDashboard() {
 									<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 										<div className="flex justify-between items-center border-b border-border-color pb-3">
 											<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-												RECENT MODIFICATION REQUESTS
+												{t("admin.pending.modifications")}
 											</h3>
 										</div>
 
@@ -732,7 +732,7 @@ export default function AdminDashboard() {
 																		{mod.pin.title}
 																	</span>
 																	<span className="font-mono text-[11px] text-secondary tracking-[0.05em]">
-																		Modification by {mod.user.name}
+																		{t("admin.modification.by")} {mod.user.name}
 																	</span>
 																</div>
 															</div>
