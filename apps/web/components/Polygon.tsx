@@ -33,10 +33,16 @@ export function Polygon({
 
   useEffect(() => {
     if (!map || !isLoaded || !window.google) return;
-    
+
     const styles = getComputedStyle(document.documentElement);
-    const resolvedFill = styles.getPropertyValue(fillColor.replace('var(', '').replace(')', '')).trim() || fillColor;
-    const resolvedStroke = styles.getPropertyValue(strokeColor.replace('var(', '').replace(')', '')).trim() || strokeColor;
+    const resolvedFill =
+      styles
+        .getPropertyValue(fillColor.replace("var(", "").replace(")", ""))
+        .trim() || fillColor;
+    const resolvedStroke =
+      styles
+        .getPropertyValue(strokeColor.replace("var(", "").replace(")", ""))
+        .trim() || strokeColor;
 
     if (!polygonRef.current) {
       polygonRef.current = new window.google.maps.Polygon({

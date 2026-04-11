@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 export function useAnimationPreference() {
   const [animationsEnabled, setAnimationsEnabledState] = useState(() => {
     if (typeof window === "undefined") return true;
-    
+
     const storedPreference = localStorage.getItem("upwaypoint_animations");
     if (storedPreference !== null) {
       return storedPreference === "true";
@@ -27,7 +27,10 @@ export function useAnimationPreference() {
       }
     };
 
-    window.addEventListener("upwaypoint_animations_changed", handleGlobalChange);
+    window.addEventListener(
+      "upwaypoint_animations_changed",
+      handleGlobalChange,
+    );
 
     if (!animationsEnabled) {
       document.body.classList.add("reduce-motion");
@@ -36,7 +39,10 @@ export function useAnimationPreference() {
     }
 
     return () => {
-      window.removeEventListener("upwaypoint_animations_changed", handleGlobalChange);
+      window.removeEventListener(
+        "upwaypoint_animations_changed",
+        handleGlobalChange,
+      );
     };
   }, [animationsEnabled]);
 

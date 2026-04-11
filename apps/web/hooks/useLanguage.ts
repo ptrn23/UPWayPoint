@@ -27,7 +27,7 @@ export function useLanguage() {
     window.dispatchEvent(new Event("upwaypoint_language_changed"));
   }, []);
 
-const cycleLanguage = useCallback(() => {
+  const cycleLanguage = useCallback(() => {
     const currentIndex = languageKeys.indexOf(currentLang);
     const nextIndex = (currentIndex + 1) % languageKeys.length;
     const nextLang = languageKeys[nextIndex] || "en";
@@ -39,7 +39,7 @@ const cycleLanguage = useCallback(() => {
       const wordInCurrentLang = locales[currentLang].data[key];
       return wordInCurrentLang || locales.en.data[key] || key;
     },
-    [currentLang]
+    [currentLang],
   );
 
   useEffect(() => {
@@ -50,7 +50,11 @@ const cycleLanguage = useCallback(() => {
       }
     };
     window.addEventListener("upwaypoint_language_changed", handleGlobalChange);
-    return () => window.removeEventListener("upwaypoint_language_changed", handleGlobalChange);
+    return () =>
+      window.removeEventListener(
+        "upwaypoint_language_changed",
+        handleGlobalChange,
+      );
   }, []);
 
   return { currentLang, langName: locales[currentLang].name, cycleLanguage, t };

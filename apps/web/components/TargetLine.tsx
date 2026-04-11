@@ -18,7 +18,7 @@ export function TargetLine({
   const map = useMap();
   const polylineRef = useRef<google.maps.Polyline | null>(null);
   const animationRef = useRef<number>(0);
-  
+
   const { animationsEnabled } = useAnimationPreference();
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export function TargetLine({
 
     let offset = 0;
     const animate = () => {
-      if (!animationsEnabled) return; 
+      if (!animationsEnabled) return;
 
       offset = (offset + 0.5) % 15;
 

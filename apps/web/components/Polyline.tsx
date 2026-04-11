@@ -23,14 +23,17 @@ export function Polyline({
   const isLoaded = useApiIsLoaded();
   const polylineRef = useRef<google.maps.Polyline | null>(null);
   const animationRef = useRef<number>(0);
-  
+
   const { animationsEnabled } = useAnimationPreference();
 
   useEffect(() => {
     if (!map || !isLoaded || !window.google) return;
 
     const styles = getComputedStyle(document.documentElement);
-    const resolvedColor = styles.getPropertyValue(color.replace('var(', '').replace(')', '')).trim() || color;
+    const resolvedColor =
+      styles
+        .getPropertyValue(color.replace("var(", "").replace(")", ""))
+        .trim() || color;
 
     const baseOpacity = 0.4;
     const clusterSpacing = 120;
@@ -113,9 +116,9 @@ export function Polyline({
     };
 
     cancelAnimationFrame(animationRef.current);
-    
+
     if (animateDirection !== "none") {
-      animateLoop(); 
+      animateLoop();
     }
 
     return () => {
@@ -124,7 +127,16 @@ export function Polyline({
         polylineRef.current.setMap(null);
       }
     };
-  }, [map, isLoaded, path, color, weight, animateDirection, speed, animationsEnabled]);
+  }, [
+    map,
+    isLoaded,
+    path,
+    color,
+    weight,
+    animateDirection,
+    speed,
+    animationsEnabled,
+  ]);
 
   return null;
 }
