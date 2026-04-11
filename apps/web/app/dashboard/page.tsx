@@ -140,7 +140,7 @@ export default function Dashboard() {
 							type="button"
 							className="text-left px-4 py-3 bg-transparent border-none rounded-lg text-secondary font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-panel-hover hover:text-primary"
 						>
-							OVERVIEW
+							{t("user.overview")}
 						</button>
 						{data?.userRole === "admin" && (
 							<button
@@ -171,7 +171,7 @@ export default function Dashboard() {
 										></rect>
 										<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
 									</svg>
-									GO TO ADMIN DASHBOARD
+									{t("user.goto.admin")}
 								</div>
 							</button>
 						)}
@@ -180,7 +180,7 @@ export default function Dashboard() {
 							className="text-left px-4 py-3 bg-transparent border-none rounded-lg text-secondary font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-panel-hover hover:text-primary"
 							onClick={goToMap}
 						>
-							RETURN TO MAP
+							{t("user.goto.map")}
 						</button>
 					</div>
 					<div className="flex flex-col gap-2" style={{ marginTop: "24px" }}>
@@ -199,7 +199,7 @@ export default function Dashboard() {
 						className="w-full bg-transparent border border-border-color text-status-danger p-3 rounded-lg font-chakra text-[12px] font-bold cursor-pointer transition-all duration-200 hover:bg-status-danger/10 hover:border-status-danger"
 						onClick={handleSignOut}
 					>
-						SIGN OUT
+						{t("user.signout")}
 					</button>
 				</div>
 			</aside>
@@ -229,7 +229,7 @@ export default function Dashboard() {
 							</svg>
 						</button>
 						<h1 className="font-chakra text-[16px] font-bold text-primary m-0 tracking-[0.05em]">
-							User Dashboard
+							{t("user.dashboard")}
 						</h1>
 					</div>
 				</header>
@@ -240,11 +240,11 @@ export default function Dashboard() {
 						<div className="flex flex-col gap-2">
 							<h2 className="font-chakra text-[28px] font-extrabold text-primary m-0">
 								{isLoading
-									? "LOADING..."
-									: `Welcome, ${data?.name ? data.name.toUpperCase() : "UNKNOWN"}!`}
+									? t("user.loading")
+									: `Welcome, ${data?.name ? data.name.toUpperCase() : t("user.unknown")}!`}
 							</h2>
 							<p className="font-nunito text-[15px] text-secondary m-0">
-								You made it!
+								{t("user.message")}
 							</p>
 						</div>
 
@@ -253,10 +253,10 @@ export default function Dashboard() {
 							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 								<div className="flex justify-between items-center border-b border-border-color pb-3">
 									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-										YOUR PROFILE
+										{t("user.profile")}
 									</h3>
 									<span className="bg-status-success/15 text-status-success border border-status-success px-2 py-1 rounded text-[10px] font-chakra font-bold tracking-[0.1em]">
-										{data?.userRole === "admin" ? "ADMIN" : "REGULAR USER"}
+										{data?.userRole === "admin" ? t("user.admin") : t("user.regular")}
 									</span>
 								</div>
 
@@ -269,10 +269,10 @@ export default function Dashboard() {
 										</div>
 										<div className="flex flex-col gap-1">
 											<span className="font-chakra text-[20px] font-bold text-primary tracking-[0.05em]">
-												{data?.name || "UNKNOWN NAME"}
+												{data?.name || t("user.unknown.name")}
 											</span>
 											<span className="font-mono text-[12px] text-secondary">
-												{(data as { email?: string })?.email || "UNKNOWN EMAIL"}
+												{(data as { email?: string })?.email || t("user.unknown.email")}
 											</span>
 										</div>
 									</div>
@@ -344,7 +344,7 @@ export default function Dashboard() {
 							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 								<div className="flex justify-between items-center border-b border-border-color pb-3">
 									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-										YOUR STATISTICS
+										{t("user.statistics")}
 									</h3>
 								</div>
 
@@ -353,7 +353,7 @@ export default function Dashboard() {
 									<div className="grid grid-cols-2 gap-4">
 										<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
 											<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-												TOTAL PINS ADDED
+												{t("user.pins.total")}
 											</span>
 											<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
 												{stats.totalPins}
@@ -361,7 +361,7 @@ export default function Dashboard() {
 										</div>
 										<div className="bg-panel-hover border border-border-color rounded-xl p-4 flex flex-col gap-1">
 											<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-												TOTAL COMMENTS
+												{t("user.comments.total")}
 											</span>
 											<span className="font-cubao-wide text-[32px] text-primary tracking-[0.05em]">
 												{stats.comments}
@@ -373,7 +373,7 @@ export default function Dashboard() {
 									<div className="flex flex-col gap-2">
 										<div className="flex justify-between items-end">
 											<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-												VERIFICATIONS
+												{t("user.verifications")}
 											</span>
 											<span className="font-chakra text-[14px] font-extrabold text-status-success">
 												{verificationRate}%
@@ -387,13 +387,13 @@ export default function Dashboard() {
 										</div>
 										<div className="flex gap-3 font-chakra text-[10px] font-bold tracking-[0.05em]">
 											<span className="text-status-success">
-												{stats.verifiedPins} VERIFIED
+												{stats.verifiedPins} {t("user.verified")}
 											</span>
 											<span className="text-status-warning">
-												{stats.pendingPins} PENDING
+												{stats.pendingPins} {t("user.pending")}
 											</span>
 											<span className="text-status-danger">
-												{stats.rejectedPins} REJECTED
+												{stats.rejectedPins} {t("user.rejected")}
 											</span>
 										</div>
 									</div>
@@ -401,7 +401,7 @@ export default function Dashboard() {
 									{/* Category Distribution */}
 									<div className="flex flex-col gap-3">
 										<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.15em]">
-											CATEGORY DISTRIBUTION
+											{t("user.category.distribution")}
 										</span>
 										<div className="flex flex-col gap-2.5">
 											{PIN_CATEGORIES.map((category) => {
@@ -448,7 +448,7 @@ export default function Dashboard() {
 							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 								<div className="flex justify-between items-center border-b border-border-color pb-3">
 									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-										YOUR PENDING PINS
+										{t("user.pending.pins")}
 									</h3>
 									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
 										{stats.pendingList?.length}
@@ -518,7 +518,7 @@ export default function Dashboard() {
 							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 								<div className="flex justify-between items-center border-b border-border-color pb-3">
 									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-										YOUR RECENT PINS
+										{t("user.recent.pins")}
 									</h3>
 									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
 										{stats.recentList?.length}
@@ -588,7 +588,7 @@ export default function Dashboard() {
 							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 								<div className="flex justify-between items-center border-b border-border-color pb-3">
 									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-										YOUR PENDING MODIFICATIONS
+										{t("user.pending.modifications")}
 									</h3>
 									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
 										{stats.pendingModifications?.length}
@@ -702,7 +702,7 @@ export default function Dashboard() {
 							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 								<div className="flex justify-between items-center border-b border-border-color pb-3">
 									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-										YOUR APPLIED MODIFICATIONS
+										{t("user.applied.modifications")}
 									</h3>
 									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
 										{stats.appliedModifications?.length}
@@ -805,7 +805,7 @@ export default function Dashboard() {
 							<div className="bg-panel border border-border-color rounded-[16px] p-6 flex flex-col gap-5 transition-transform transition-shadow duration-200">
 								<div className="flex justify-between items-center border-b border-border-color pb-3">
 									<h3 className="font-chakra text-[14px] font-extrabold text-secondary tracking-[0.15em] m-0">
-										YOUR REJECTED MODIFICATIONS
+										{t("user.pending.pins")}
 									</h3>
 									<span className="bg-[color-mix(in_srgb,var(--status-warning)_15%,transparent)] text-status-warning border border-status-warning px-2 py-0.5 rounded-[12px] font-nunito font-extrabold text-[12px]">
 										{stats.rejectedModifications?.length}
