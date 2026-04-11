@@ -4,6 +4,7 @@ import { getPinColor } from "@/data/pin-categories";
 import { useSession } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useLanguage } from "@/hooks/useLanguage";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -133,6 +134,7 @@ const CommentNode = ({
 
 export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 	const utils = trpc.useUtils();
+	const { t } = useLanguage();
 	const { data: sessionData } = useSession();
 	const { data: pin, isLoading: isPinLoading } = trpc.pin.getById.useQuery(
 		{ id: pinId },
@@ -424,7 +426,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 								<polyline points="21 15 16 10 5 21"></polyline>
 								<line x1="3" y1="3" x2="21" y2="21"></line>
 							</svg>
-							<span>NO IMAGES AVAILABLE</span>
+							<span>{t("pin.images.none")}</span>
 						</div>
 					)}
 
@@ -438,7 +440,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* PIN ID */}
 							<div className="flex flex-col gap-1 min-w-0 overflow-hidden @container">
 								<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.1em]">
-									PIN ID
+									{t("pin.id")}
 								</span>
 								<span className="font-nunito text-[14px] font-bold text-primary whitespace-nowrap w-max bg-[length:200%_200%] animate-scroll-text overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden font-mono">
 									{pin?.id?.padStart(7, "0")}
@@ -447,7 +449,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* OWNER */}
 							<div className="flex flex-col gap-1 min-w-0 overflow-hidden @container">
 								<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.1em]">
-									CREATED BY
+									{t("pin.created.by")}
 								</span>
 								<span className="font-nunito text-[14px] font-bold text-primary whitespace-nowrap w-max bg-[length:200%_200%] animate-scroll-text overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 									{pin?.owner}
@@ -456,7 +458,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* COORDINATES */}
 							<div className="flex flex-col gap-1 min-w-0 overflow-hidden @container col-span-2">
 								<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.1em]">
-									COORDINATES (LAT, LNG)
+									{t("pin.coordinates")}
 								</span>
 								<span className="font-nunito text-[14px] font-bold text-primary whitespace-nowrap w-max bg-[length:200%_200%] animate-scroll-text overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden font-mono">
 									{pin?.latitude?.toFixed(6)}, {pin?.longitude?.toFixed(6)}
@@ -465,7 +467,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* STATUS */}
 							<div className="flex flex-col gap-1 min-w-0 overflow-hidden @container">
 								<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.1em]">
-									STATUS
+									{t("pin.status")}
 								</span>
 								<span
 									className="font-nunito font-bold whitespace-nowrap w-max bg-[length:200%_200%] animate-scroll-text overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden font-mono flex items-center gap-1.5 text-[14px]"
@@ -481,7 +483,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 							{/* TIMESTAMPS */}
 							<div className="flex flex-col gap-1 min-w-0 overflow-hidden @container">
 								<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.1em]">
-									CREATED AT
+									{t("pin.created.at")}
 								</span>
 								<span className="font-nunito text-[14px] font-bold text-primary whitespace-nowrap w-max bg-[length:200%_200%] animate-scroll-text overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 									{new Date(pin?.createdAt || "").toLocaleString("default", {
@@ -496,7 +498,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 								0 && (
 								<div className="flex flex-col gap-1 min-w-0 overflow-hidden @container col-span-2">
 									<span className="font-chakra text-[10px] font-extrabold text-secondary tracking-[0.1em]">
-										LAST UPDATED
+										{t("pin.last.updated")}
 									</span>
 									<span className="font-nunito text-[14px] font-bold text-primary whitespace-nowrap w-max bg-[length:200%_200%] animate-scroll-text overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 										{new Date(pin?.updatedAt || "").toLocaleString("default", {
@@ -517,14 +519,14 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 								className="tactical-button border-status-danger text-status-danger p-3 hover:bg-status-danger hover:text-white hover:transform-none"
 								onClick={() => setIsDeleting(true)}
 							>
-								DELETE PIN
+								{t("pin.delete")}
 							</button>
 						)}
 
 						{isDeleting && (
 							<div className="bg-panel-hover border border-status-danger rounded-xl p-4 flex flex-col gap-3">
 								<p className="m-0 text-primary font-nunito text-[14px]">
-									Are you sure you want to permanently delete this pin?
+									{t("pin.delete.confirmation")}
 								</p>
 								<div className="flex gap-2">
 									<button
@@ -532,14 +534,14 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 										className="tactical-button-primary bg-status-danger border-status-danger text-white shadow-none flex-1 p-2.5 hover:bg-status-danger hover:shadow-[0_0_15px_var(--status-danger)]"
 										onClick={onDelete}
 									>
-										CONFIRM DELETE
+										{t("pin.delete.confirm")}
 									</button>
 									<button
 										type="button"
 										className="tactical-button flex-1 p-2.5"
 										onClick={() => setIsDeleting(false)}
 									>
-										CANCEL
+										{t("pin.delete.cancel")}
 									</button>
 								</div>
 							</div>
@@ -547,7 +549,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 
 						<div className="mt-2 border-t border-border-color pt-6 pb-[100px]">
 							<h3 className="font-chakra text-[12px] font-black tracking-[0.15em] text-secondary mb-5">
-								FORUM
+								{t("pin.forum")}
 							</h3>
 							{!isReplying ? (
 								sessionData && (
@@ -556,7 +558,7 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 										className="bg-transparent border-none text-secondary font-chakra text-[11px] font-bold cursor-pointer flex items-center gap-1 p-0 transition-colors duration-200 hover:text-primary"
 										onClick={() => setIsReplying(true)}
 									>
-										+ ADD COMMENT
+										{t("pin.comment.add")}
 									</button>
 								)
 							) : (
@@ -574,14 +576,14 @@ export function ExpandedPinView({ pinId, onClose }: ExpandedPinViewProps) {
 											type="submit"
 											className="tactical-button-primary px-4 py-2.5 text-[11px] rounded-md"
 										>
-											POST
+											{t("pin.comment.post")}
 										</button>
 										<button
 											type="button"
 											className="tactical-button px-4 py-2.5 text-[11px] rounded-md"
 											onClick={() => setIsReplying(false)}
 										>
-											CANCEL
+											{t("pin.comment.cancel")}
 										</button>
 									</div>
 								</form>

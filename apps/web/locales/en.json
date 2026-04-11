@@ -53,5 +53,20 @@
   "admin.total.comments": "TOTAL COMMENTS",
   "admin.recently.verified.pins": "RECENTLY VERIFIED PINS",
   "admin.pending.modifications": "RECENT MODIFICATION REQUESTS",
-  "admin.modification.by": "Modification by"
+  "admin.modification.by": "Modification by",
+  "pin.images.none": "NO IMAGES AVAILABLE",
+  "pin.id": "PIN ID",
+  "pin.created.by": "CREATED BY",
+  "pin.coordinates": "COORDINATES (LAT, LNG)",
+  "pin.status": "STATUS",
+  "pin.created.at": "CREATED AT",
+  "pin.last.updated": "LAST UPDATED",
+  "pin.delete": "DELETE PIN",
+  "pin.delete.confirmation": "Are you sure you want to permanently delete this pin?",
+  "pin.delete.confirm": "CONFIRM DELETE",
+  "pin.delete.cancel": "CANCEL",
+  "pin.forum": "FORUM",
+  "pin.comment.add": "+ ADD COMMENT",
+  "pin.comment.post": "POST",
+  "pin.comment.cancel": "CANCEL"
 }

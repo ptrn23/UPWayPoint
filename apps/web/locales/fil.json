@@ -53,5 +53,20 @@
   "admin.total.comments": "KABUUANG MGA KOMENTO",
   "admin.recently.verified.pins": "MGA KAMAKAILANG KUMPIRMADONG PIN",
   "admin.pending.modifications": "MGA KAMAKAILANG HILING NA PAGBABAGO",
-  "admin.modification.by": "Pagbabago ni"
+  "admin.modification.by": "Pagbabago ni",
+  "pin.images.none": "WALANG MGA LARAWAN",
+  "pin.id": "PIN ID",
+  "pin.created.by": "GINAWA NI",
+  "pin.coordinates": "MGA KORDINADO (LAT, LNG)",
+  "pin.status": "ESTADO",
+  "pin.created.at": "GINAWA NOONG",
+  "pin.last.updated": "HULING BINAGO",
+  "pin.delete": "BURAHIN ANG PIN",
+  "pin.delete.confirmation": "Sigurado ka bang nais mong tuluyang burahin ang pin na ito?",
+  "pin.delete.confirm": "KUMPIRMAHIN ANG PAGBURA",
+  "pin.delete.cancel": "KANSELAHIN",
+  "pin.forum": "FORUM",
+  "pin.comment.add": "+ MAGDAGDAG NG KOMENTO",
+  "pin.comment.post": "I-POST",
+  "pin.comment.cancel": "KANSELAHIN"
 }

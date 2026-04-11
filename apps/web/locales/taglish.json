@@ -53,5 +53,20 @@
   "admin.total.comments": "TOTAL NA COMMENTS",
   "admin.recently.verified.pins": "MGA RECENTLY VERIFIED PINS",
   "admin.pending.modifications": "MGA RECENT MODIFICATION REQUESTS",
-  "admin.modification.by": "Modification ni"
+  "admin.modification.by": "Modification ni",
+  "pin.images.none": "WALANG AVAILABLE NA IMAGES",
+  "pin.id": "PIN ID",
+  "pin.created.by": "GINAWA NI",
+  "pin.coordinates": "COORDINATES (LAT, LNG)",
+  "pin.status": "STATUS",
+  "pin.created.at": "GINAWA NOONG",
+  "pin.last.updated": "HULING UPDATE NOONG",
+  "pin.delete": "I-DELETE ANG PIN",
+  "pin.delete.confirmation": "Sure ka ba na gusto mong i-delete permanently ang pin na 'to?",
+  "pin.delete.confirm": "I-CONFIRM ANG DELETE",
+  "pin.delete.cancel": "CANCEL",
+  "pin.forum": "FORUM",
+  "pin.comment.add": "+ MAG-ADD NG COMMENT",
+  "pin.comment.post": "POST",
+  "pin.comment.cancel": "CANCEL"
 }
