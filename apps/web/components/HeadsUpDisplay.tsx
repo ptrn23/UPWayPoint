@@ -9,6 +9,8 @@ interface HUDProps {
   selectedPinId: string | null;
   onLockClick: () => void;
   isLocked: boolean;
+  isNavigating?: boolean;
+  onNavigateClick: () => void;
   onClearSelection?: () => void;
   onAddPinClick?: () => void;
 }
@@ -17,6 +19,8 @@ export function HeadsUpDisplay({
   selectedPinId,
   onLockClick,
   isLocked,
+  isNavigating = false,
+  onNavigateClick,
   onClearSelection,
   onAddPinClick,
 }: HUDProps) {
@@ -58,7 +62,9 @@ export function HeadsUpDisplay({
           <PinDetailsCard
             pinId={selectedPinId}
             isLocked={isLocked}
+            isNavigating={isNavigating}
             onLockClick={onLockClick}
+            onNavigateClick={onNavigateClick}
             onClose={onClearSelection}
             onExpand={() => setIsExpanded(true)}
           />

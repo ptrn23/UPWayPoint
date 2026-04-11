@@ -5,11 +5,13 @@ export type AppMode =
   | "SELECTED" // Pin clicked (Simple HUD)
   | "LOCKED" // Double-clicked (Tracking Line)
   | "EXPANDED" // "View More" clicked (Full details)
+  | "NAVIGATING" // Navigation mode active (route displayed)
   | "MENU"; // Sidebar open
 
 export function useWaypointState() {
   const [mode, setMode] = useState<AppMode>("IDLE");
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
+  const [navigationPinId, setNavigationPinId] = useState<string | null>(null);
 
   // select a pin
   const selectPin = useCallback(
@@ -36,6 +38,7 @@ export function useWaypointState() {
       // otherwise, fully reset
       setMode("IDLE");
       setSelectedPinId(null);
+      setNavigationPinId(null);
     }
   }, [mode]);
 
@@ -59,13 +62,36 @@ export function useWaypointState() {
     setMode((prev) => (prev === "MENU" ? "IDLE" : "MENU"));
   }, []);
 
+  // start navigation to a pin
+  const startNavigation = useCallback(
+    (pinId: string) => {
+      setNavigationPinId(pinId);
+      setMode("NAVIGATING");
+    },
+    [],
+  );
+
+  // stop navigation
+  const stopNavigation = useCallback(() => {
+    setNavigationPinId(null);
+    // Don't fully reset - stay in selected mode with the pin still selected
+    if (selectedPinId) {
+      setMode("SELECTED");
+    } else {
+      setMode("IDLE");
+    }
+  }, [selectedPinId]);
+
   return {
     mode,
     selectedPinId,
+    navigationPinId,
     selectPin,
     clearSelection,
     expandDetails,
     toggleMenu,
     toggleLock,
+    startNavigation,
+    stopNavigation,
   };
 }
