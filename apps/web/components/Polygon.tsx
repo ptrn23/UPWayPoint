@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useMap, useApiIsLoaded } from "@vis.gl/react-google-maps";
+import { useAnimationPreference } from "../hooks/usePreferences";
 
 interface PolygonProps {
   paths: { lat: number; lng: number }[];
@@ -16,9 +17,9 @@ interface PolygonProps {
 
 export function Polygon({
   paths,
-  fillColor = "var(--neon-green)",
+  fillColor = "--neon-green",
   fillOpacity = 0.05,
-  strokeColor = "var(--neon-green)",
+  strokeColor = "--neon-green",
   strokeOpacity = 0.8,
   strokeWeight = 2,
   zIndex = 1,
@@ -28,16 +29,27 @@ export function Polygon({
   const isLoaded = useApiIsLoaded();
   const polygonRef = useRef<google.maps.Polygon | null>(null);
   const animationRef = useRef<number>(0);
+  const { animationsEnabled } = useAnimationPreference();
 
   useEffect(() => {
     if (!map || !isLoaded || !window.google) return;
 
+    const styles = getComputedStyle(document.documentElement);
+    const resolvedFill =
+      styles
+        .getPropertyValue(fillColor.replace("var(", "").replace(")", ""))
+        .trim() || fillColor;
+    const resolvedStroke =
+      styles
+        .getPropertyValue(strokeColor.replace("var(", "").replace(")", ""))
+        .trim() || strokeColor;
+
     if (!polygonRef.current) {
       polygonRef.current = new window.google.maps.Polygon({
         paths,
-        fillColor,
+        fillColor: resolvedFill,
         fillOpacity,
-        strokeColor,
+        strokeColor: resolvedStroke,
         strokeOpacity,
         strokeWeight,
         zIndex,
@@ -46,8 +58,8 @@ export function Polygon({
     } else {
       polygonRef.current.setOptions({
         paths,
-        fillColor,
-        strokeColor,
+        fillColor: resolvedFill,
+        strokeColor: resolvedStroke,
         strokeOpacity,
         strokeWeight,
         zIndex,
@@ -67,11 +79,16 @@ export function Polygon({
         strokeOpacity: 0.6 + sineValue * 0.3,
       });
 
-      animationRef.current = requestAnimationFrame(animatePulse);
+      if (animationsEnabled) {
+        animationRef.current = requestAnimationFrame(animatePulse);
+      } else {
+        polygonRef.current.setOptions({ fillOpacity, strokeOpacity });
+      }
     };
 
-    if (isPulsating) {
-      cancelAnimationFrame(animationRef.current);
+    cancelAnimationFrame(animationRef.current);
+
+    if (isPulsating && animationsEnabled) {
       animationRef.current = requestAnimationFrame(animatePulse);
     } else {
       polygonRef.current.setOptions({ fillOpacity, strokeOpacity });
@@ -94,6 +111,7 @@ export function Polygon({
     strokeWeight,
     zIndex,
     isPulsating,
+    animationsEnabled,
   ]);
 
   return null;
