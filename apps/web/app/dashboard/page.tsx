@@ -13,6 +13,7 @@ import type { ModificationRouterOutputs, PinRouterOutputs } from "@repo/api";
 import type { PinDiffType } from "@/types/pins";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function Dashboard() {
 	const [mod, setMod] =
@@ -23,6 +24,7 @@ export default function Dashboard() {
 	>();
 
 	const router = useRouter();
+	const { t } = useLanguage();
 	const { data, isLoading } = trpc.user.getCurrent.useQuery();
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -136,22 +138,15 @@ export default function Dashboard() {
 						</span>
 						<button
 							type="button"
-							className="text-left px-4 py-3 bg-neon-blue/10 text-neon-blue border-l-3 border-neon-blue rounded-r-lg font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200"
+							className="text-left px-4 py-3 bg-transparent border-none rounded-lg text-secondary font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-panel-hover hover:text-primary"
 						>
 							OVERVIEW
 						</button>
 						{data?.userRole === "admin" && (
 							<button
 								type="button"
-								className="text-left px-4 py-3 bg-neon-blue/10 text-neon-blue border-l-3 border-neon-blue rounded-r-lg font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200"
+								className="text-left px-4 py-3 bg-transparent border-none rounded-lg text-secondary font-chakra text-[13px] font-semibold tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-panel-hover hover:text-primary"
 								onClick={goToAdmin}
-								style={{
-									color: "var(--status-danger)",
-									border:
-										"1px solid color-mix(in srgb, var(--status-danger) 30%, transparent)",
-									background:
-										"color-mix(in srgb, var(--status-danger) 5%, transparent)",
-								}}
 							>
 								<div
 									style={{ display: "flex", alignItems: "center", gap: "8px" }}
