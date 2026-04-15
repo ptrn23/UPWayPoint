@@ -216,7 +216,7 @@ export function makePinRepository(db: Database) {
 				lte(pin.latitude, maxLat),
 				gte(pin.longitude, minLng),
 				lte(pin.longitude, maxLng),
-				eq(pin.title, title),
+				ilike(pin.title, title),
 			),
 		});
 
