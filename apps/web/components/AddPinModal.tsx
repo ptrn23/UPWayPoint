@@ -24,7 +24,7 @@ async function uploadImages(files: File[]): Promise<string[]> {
   });
 
   const res = await fetch("/api/upload", { method: "POST", body: formData });
-  const { urls } = await res.json();
+  const { urls } = await res.json() as { urls: string[] };
   return urls;
 }
 
@@ -161,11 +161,11 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
                     style={
                       isActive
                         ? {
-                            backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`,
-                            borderColor: tagColor,
-                            color: tagColor,
-                            boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`,
-                          }
+                          backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`,
+                          borderColor: tagColor,
+                          color: tagColor,
+                          boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`,
+                        }
                         : {}
                     }
                   >
