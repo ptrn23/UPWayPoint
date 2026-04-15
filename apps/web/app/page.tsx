@@ -17,6 +17,10 @@ import { TargetLine } from "@/components/TargetLine";
 import { Polyline } from "@/components/Polyline";
 import { Polygon } from "@/components/Polygon";
 import { Sidebar } from "@/components/Sidebar";
+import { NavigationHUD } from "@/components/NavigationHUD";
+import { DirectionsRenderer } from "@/components/DirectionsRenderer";
+import { useUserLocation } from "@/hooks/useUserLocation";
+import { useNavigationRoute } from "@/hooks/useNavigationRoute";
 import {
   JEEPNEY_ROUTES,
   CAMPUS_ZONES,
@@ -46,10 +50,13 @@ export default function Home() {
   const {
     mode,
     selectedPinId,
+    navigationPinId,
     selectPin,
     clearSelection,
     toggleMenu,
     toggleLock,
+    startNavigation,
+    stopNavigation,
   } = useWaypointState();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -89,8 +96,25 @@ export default function Home() {
     });
   }, []);
 
-  const mockUserLocation = { lat: 14.6549, lng: 121.0645 };
+  // Real user location from browser geolocation
+  const {
+    location: userLocation,
+    isLoading: isLocationLoading,
+    error: locationError,
+  } = useUserLocation();
+
+  // Fallback to mock location if real location not available yet
+  const effectiveUserLocation = userLocation ?? { lat: 14.6549, lng: 121.0645 };
   const mockHeading = 45;
+
+  // Navigation route management
+  const {
+    route: navigationRoute,
+    error: routeError,
+    isLoading: isRouteLoading,
+    fetchRoute,
+    clearRoute,
+  } = useNavigationRoute();
 
   const { theme } = useTheme();
 
@@ -111,6 +135,46 @@ export default function Home() {
   const activePinObj = useMemo(() => {
     return pinsParsed.find((p) => p.id === selectedPinId);
   }, [pinsParsed, selectedPinId]);
+
+  // Find the navigation destination pin
+  const navigationDestination = useMemo(() => {
+    if (!navigationPinId) return null;
+    return pinsParsed.find((p) => p.id === navigationPinId);
+  }, [navigationPinId, pinsParsed]);
+
+  // Fetch route when navigation starts (only when navigationPinId changes, not on location updates)
+  useEffect(() => {
+
+
+    if (
+      navigationPinId &&
+      navigationDestination &&
+      effectiveUserLocation
+    ) {
+      fetchRoute(
+        {
+          latitude: effectiveUserLocation.lat,
+          longitude: effectiveUserLocation.lng,
+        },
+        {
+          latitude: navigationDestination.latitude,
+          longitude: navigationDestination.longitude,
+        },
+      );
+    }
+    // Only depend on navigationPinId to avoid re-fetching on every location update
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigationPinId]);
+
+  // Handle navigation click
+  const handleNavigateClick = useCallback(() => {
+    if (mode === "NAVIGATING" && navigationPinId) {
+      stopNavigation();
+      clearRoute();
+    } else if (selectedPinId) {
+      startNavigation(selectedPinId);
+    }
+  }, [mode, navigationPinId, selectedPinId, startNavigation, stopNavigation, clearRoute]);
 
   useEffect(() => {
     if (!isAddingPin) return;
@@ -207,15 +271,28 @@ export default function Home() {
             );
           })}
 
-          <AdvancedMarker position={mockUserLocation} zIndex={50}>
+          <AdvancedMarker position={effectiveUserLocation} zIndex={50}>
             <MapCursor heading={mockHeading} />
           </AdvancedMarker>
 
-          {activePinObj && (
+          {activePinObj && mode !== "NAVIGATING" && (
             <TargetLine
-              start={mockUserLocation}
+              start={effectiveUserLocation}
               end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
               color="--neon-blue"
+            />
+          )}
+
+          {/* Navigation Route Polyline */}
+          {mode === "NAVIGATING" && navigationRoute && (
+            <DirectionsRenderer
+              path={navigationRoute.coordinates.map((c) => ({
+                lat: c.latitude,
+                lng: c.longitude,
+              }))}
+              color="#00b0ff"
+              weight={5}
+              visible={true}
             />
           )}
 
@@ -266,9 +343,20 @@ export default function Home() {
           onToggleRoute={handleToggleRoute}
           activeZoneCategories={activeZoneCategories}
           onToggleZoneCategory={handleToggleZoneCategory}
-          userLocation={mockUserLocation}
-          hideControls={!!selectedPinId}
+          userLocation={effectiveUserLocation}
+          hideControls={!!selectedPinId || mode === "NAVIGATING"}
         />
+
+        {/* Navigation HUD - shown when navigating */}
+        {mode === "NAVIGATING" && navigationRoute && (
+          <NavigationHUD
+            distanceMeters={navigationRoute.distanceMeters}
+            durationSeconds={navigationRoute.durationSeconds}
+            isLoading={isRouteLoading}
+            error={routeError}
+            onCancel={handleNavigateClick}
+          />
+        )}
 
         {/* TARGETING CROSSHAIR (Only visible when armed) */}
         {isAddingPin && (
@@ -299,7 +387,9 @@ export default function Home() {
         <HeadsUpDisplay
           selectedPinId={selectedPinId}
           isLocked={mode === "LOCKED"}
+          isNavigating={mode === "NAVIGATING"}
           onLockClick={toggleLock}
+          onNavigateClick={handleNavigateClick}
           onClearSelection={clearSelection}
           onAddPinClick={() => {
             clearSelection();
