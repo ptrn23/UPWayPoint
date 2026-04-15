@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import z from "zod";
 import { fileSchema } from "@repo/api/schemas";
 import { getPinColor } from "@/data/pin-categories";
+import { clsxm } from "@repo/ui/clsxm";
 
 type Pin = Omit<PinRouterInputs["userCreate"], "ownerId">;
 
@@ -53,12 +54,21 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
   });
   const { data: tagsData } = trpc.tag.getAll.useQuery();
 
+
   const formMethods = useForm({
     defaultValues: { tags: [] },
     resolver: zodResolver(pinCreationSchema),
   });
 
+  const { refetch: checkIfSimilar, } = trpc.pin.isSimilar.useQuery({ lat: formMethods.watch("latitude"), lng: formMethods.watch("longitude"), title: formMethods.watch("title") })
+
+
   const onSubmit = async (data: pinCreationSchemaType) => {
+    const { data: isSimilar } = await checkIfSimilar()
+    if (isSimilar) {
+      formMethods.setError("title", { message: "A similar pin already exists here" })
+      return;
+    }
     let urls: string[] = [];
     if (data.images.length > 0) urls = await uploadImages(data.images);
     const newPin: Pin = {
@@ -120,9 +130,12 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
               type="text"
               placeholder="e.g. Quezon Hall"
               required
-              className="bg-base border border-border-color rounded-lg p-3 text-primary font-nunito text-[14px] outline-none transition-all duration-200 focus:border-neon-blue focus:shadow-[0_0_10px_var(--shadow-glow)]"
+              className={clsxm("transition-all duration-200 ease-in-out bg-base border border-border-color rounded-lg p-3 text-primary font-nunito text-[14px] outline-none transition-all duration-200 focus:border-neon-blue focus:shadow-[0_0_10px_var(--shadow-glow)]",
+                formMethods.formState.errors.title && "border-status-danger text-status-danger"
+              )}
               {...formMethods.register("title")}
             />
+            {formMethods.formState.errors.title && <span className="font-chakra text-status-danger">{formMethods.formState.errors.title.message}</span>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -131,7 +144,6 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
             </span>
             <textarea
               placeholder="Enter description..."
-              required
               className="bg-base border border-border-color rounded-lg p-3 text-primary font-nunito text-[14px] outline-none transition-all duration-200 focus:border-neon-blue focus:shadow-[0_0_10px_var(--shadow-glow)]"
               {...formMethods.register("description")}
             />
@@ -161,11 +173,11 @@ export function AddPinModal({ coords, onSave, onCancel }: AddPinModalProps) {
                     style={
                       isActive
                         ? {
-                            backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`,
-                            borderColor: tagColor,
-                            color: tagColor,
-                            boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`,
-                          }
+                          backgroundColor: `color-mix(in srgb, ${tagColor} 25%, transparent)`,
+                          borderColor: tagColor,
+                          color: tagColor,
+                          boxShadow: `inset 0 0 10px color-mix(in srgb, ${tagColor} 40%, transparent)`,
+                        }
                         : {}
                     }
                   >
