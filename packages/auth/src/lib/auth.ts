@@ -5,20 +5,20 @@ import { inferAdditionalFields } from "better-auth/client/plugins";
 
 export type { Session } from "better-auth";
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "pg", // or "mysql", "sqlite"
-    schema,
-  }),
-  emailAndPassword: {
-    enabled: false,
-  },
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      hd: "up.edu.ph",
-    },
-  },
-  baseURL: "http://localhost:3000",
-  plugins: [inferAdditionalFields()],
+	database: drizzleAdapter(db, {
+		provider: "pg", // or "mysql", "sqlite"
+		schema,
+	}),
+	emailAndPassword: {
+		enabled: false,
+	},
+	socialProviders: {
+		google: {
+			clientId: process.env.GOOGLE_CLIENT_ID as string,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+			hd: "up.edu.ph",
+		},
+	},
+	baseURL: process.env.BETTER_AUTH_URL as string,
+	plugins: [inferAdditionalFields()],
 });

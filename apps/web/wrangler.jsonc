@@ -1,0 +1,55 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"main": ".open-next/worker.js",
+	"name": "up-waypoint",
+	"compatibility_date": "2025-05-21",
+	"compatibility_flags": [
+		// Enable Node.js API
+		// see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#nodejs-compatibility-flag
+		"nodejs_compat",
+		// Allow to fetch URLs in your app
+		// see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#global-fetch-strictly-public
+		"global_fetch_strictly_public",
+		"nodejs_compat_populate_process_env"
+	],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"services": [
+		{
+			"binding": "WORKER_SELF_REFERENCE",
+			// The service should match the "name" of your worker
+			"service": "up-waypoint"
+		}
+	],
+	"r2_buckets": [
+		// Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"
+		// {
+		//   "binding": "NEXT_INC_CACHE_R2_BUCKET",
+		//   "bucket_name": "<BUCKET_NAME>",
+		// },
+	],
+	"images": {
+		// Enable image optimization
+		// see https://opennext.js.org/cloudflare/howtos/image
+		"binding": "IMAGES"
+	},
+	"observability": {
+		"logs": {
+			"enabled": true
+		}
+	},
+	"build": {
+		"watch_dir": [
+			"apps/web/*",
+			"packages/*"
+		]
+	},
+	"vars": {
+		"BETTER_AUTH_URL": "https://up-waypoint.jrbuizon.workers.dev",
+		"GOOGLE_CLIENT_ID": "757117045068-8mu8tv5pi679ne0mfm1alaim5cld13es.apps.googleusercontent.com",
+		"NODE_ENV": "production",
+		"R2_BUCKET_NAME": "up-waypoint-images"
+	}
+}
