@@ -276,7 +276,7 @@ export default function MapsProvider({ apiKey }: { apiKey: string }) {
 						<MapCursor heading={mockHeading} />
 					</AdvancedMarker>
 
-					{activePinObj && mode !== "NAVIGATING" && (
+					{activePinObj && mode === "LOCKED" && (
 						<TargetLine
 							start={effectiveUserLocation}
 							end={{ lat: activePinObj.latitude, lng: activePinObj.longitude }}
