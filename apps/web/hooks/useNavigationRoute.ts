@@ -60,7 +60,7 @@ const decodePolyline = (encoded: string): Coordinate[] => {
 	return poly;
 };
 
-export function useNavigationRoute(): UseNavigationRouteReturn {
+export function useNavigationRoute(apiKey: string): UseNavigationRouteReturn {
 	const [route, setRoute] = useState<RouteInfo | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -74,8 +74,6 @@ export function useNavigationRoute(): UseNavigationRouteReturn {
 
 	const fetchRoute = useCallback(
 		async (origin: Coordinate, destination: Coordinate) => {
-			const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-
 			if (!apiKey) {
 				setError("Google Maps API key not configured");
 				return;
@@ -186,7 +184,7 @@ export function useNavigationRoute(): UseNavigationRouteReturn {
 				setIsLoading(false);
 			}
 		},
-		[],
+		[apiKey],
 	);
 
 	const clearRoute = useCallback(() => {
