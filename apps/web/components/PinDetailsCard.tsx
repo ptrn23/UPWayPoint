@@ -95,108 +95,54 @@ export function PinDetailsCard({
       </div>
 
       {/* FOOTER ACTIONS */}
-      <div className="flex gap-2.5 mt-2">
+      <div className="flex gap-2 mt-2 w-full">
+        {/* DETAILS BUTTON */}
         <button
           type="button"
-          className="px-5 py-[14px] rounded-xl bg-transparent border border-border-color text-primary font-chakra font-black text-[13px] tracking-[0.05em] cursor-pointer transition-all duration-200 hover:bg-panel-hover active:scale-95 active:bg-border-color"
+          className="flex flex-1 justify-center items-center gap-1.5 px-2 py-3 rounded-xl bg-transparent border border-border-color text-primary font-chakra font-black text-[11px] sm:text-[12px] tracking-[0.05em] cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-panel-hover active:scale-95 min-w-0"
           onClick={onExpand}
         >
-          DETAILS
+          <span className="truncate">DETAILS</span>
         </button>
 
+        {/* TRACK BUTTON */}
         <button
           type="button"
           className={clsxm(
-            "flex flex-1 justify-center p-[14px] rounded-xl border-none font-chakra text-[13px] tracking-[0.05em] cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] text-base bg-primary font-black",
-            isLocked && "opacity-40 scale-95",
+            "flex flex-1 justify-center items-center gap-1.5 px-2 py-3 rounded-xl border border-transparent font-chakra font-black text-[11px] sm:text-[12px] tracking-[0.05em] cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] active:scale-95 min-w-0 text-[color:var(--bg-base)]",
+            isLocked ? "bg-primary/60 scale-95" : "bg-primary hover:opacity-90"
           )}
           onClick={onLockClick}
         >
-          {isLocked ? (
-            <span className="flex items-center gap-2">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              TRACKING
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-              </svg>
-              TRACK
-            </span>
-          )}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d={isLocked ? "M7 11V7a5 5 0 0 1 10 0v4" : "M7 11V7a5 5 0 0 1 9.9-1"} />
+          </svg>
+          <span className="truncate">{isLocked ? "TRACKING" : "TRACK"}</span>
         </button>
 
-        {/* NAVIGATE BUTTON - Shows route */}
+        {/* NAVIGATE BUTTON */}
         <button
           type="button"
           className={clsxm(
-            "flex flex-1 justify-center p-[14px] rounded-xl border-none font-chakra text-[13px] tracking-[0.05em] cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] text-base font-black",
-            isNavigating
-              ? "bg-neon-blue text-base"
-              : "bg-primary text-base",
+            "flex flex-1 justify-center items-center gap-1.5 px-2 py-3 rounded-xl border border-transparent font-chakra font-black text-[11px] sm:text-[12px] tracking-[0.05em] cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] active:scale-95 min-w-0 text-[color:var(--bg-base)]",
+            isNavigating ? "bg-neon-blue" : "bg-primary hover:opacity-90"
           )}
           onClick={onNavigateClick}
         >
-          {isNavigating ? (
-            <span className="flex items-center gap-2">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="animate-pulse"
-              >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={clsxm("shrink-0", isNavigating && "animate-pulse")}>
+            {isNavigating ? (
+              <>
                 <circle cx="12" cy="5" r="2" />
                 <path d="m9 20 3-6 3 6" />
                 <path d="m6 8 6 2 6-2" />
                 <path d="M12 10v4" />
-              </svg>
-              NAVIGATING...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="3 11 22 2 13 21 11 13 3 11" />
-              </svg>
-              NAVIGATE
-            </span>
-          )}
+              </>
+            ) : (
+              <polygon points="3 11 22 2 13 21 11 13 3 11" />
+            )}
+          </svg>
+          <span className="truncate">{isNavigating ? "NAVIGATING" : "NAVIGATE"}</span>
         </button>
       </div>
     </div>
