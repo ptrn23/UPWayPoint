@@ -36,6 +36,9 @@ const cubaoFreeWide = localFont({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/UPWayPoint.svg",
+  },
   title: "UP WayPoint",
   description: "Lead the way!",
 };
